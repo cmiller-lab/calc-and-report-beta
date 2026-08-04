@@ -888,14 +888,14 @@ body.light-mode .alkalinity-tile::before{
 }
 
 
-/* v12 dark-only build */
+/* v13 dark-only build */
 html{color-scheme:dark}
 body{background:#020b16!important;color:#eef6ff!important}
 .footer{padding-bottom:max(28px,env(safe-area-inset-bottom))}
 .utility-workspace[hidden]{display:none!important}
 
 
-/* ===== v12 Pentair EQ Curves + Incident PDF ===== */
+/* ===== v13 Pentair EQ Sizing + Incident PDF ===== */
 .pump-launcher,.incident-launcher{
   width:100%;margin-top:12px;padding:16px 18px;display:grid;
   grid-template-columns:54px minmax(0,1fr) 24px;align-items:center;gap:14px;
@@ -954,6 +954,27 @@ body{background:#020b16!important;color:#eef6ff!important}
   .pump-model-summary>div:first-child{grid-column:1/-1}
   .eq-vfd-estimate{grid-template-columns:1fr 1fr}
   .eq-vfd-estimate>div:first-child{grid-column:1/-1}
+}
+
+
+.pump-tabs-four{grid-template-columns:repeat(4,1fr)}
+.sizing-table-card{margin-top:14px;border:1px solid #224a6e;border-radius:16px;overflow:hidden;background:#061426}
+.sizing-table{width:100%;border-collapse:collapse;min-width:860px}
+.sizing-table th,.sizing-table td{padding:11px 9px;border-bottom:1px solid #183752;text-align:right;font-size:12px}
+.sizing-table th:first-child,.sizing-table td:first-child{text-align:left}
+.sizing-table th{background:#0b2948;color:#9fc2d9;font-size:10px;text-transform:uppercase;letter-spacing:.055em}
+.sizing-table td{color:#e6f0f8}
+.sizing-table tr.preferred{background:rgba(48,203,120,.09)}
+.sizing-table tr.capable{background:rgba(57,159,224,.035)}
+.sizing-table tr.not-capable{opacity:.62}
+.status-pill{display:inline-block;padding:5px 8px;border-radius:999px;font-size:10px;font-weight:850;white-space:nowrap}
+.status-preferred{background:#125b3b;color:#8af0bd;border:1px solid #36c985}
+.status-capable{background:#113c61;color:#8ed4ff;border:1px solid #3e9fd9}
+.status-low-speed{background:#5b4511;color:#f6d77a;border:1px solid #b8912f}
+.status-not-capable{background:#551d29;color:#ff9caa;border:1px solid #b94f62}
+@media(max-width:600px){
+  .pump-tabs-four{grid-template-columns:repeat(4,1fr)}
+  .pump-tabs-four .pump-tab{font-size:10px;padding:0 3px}
 }
 
 </style>
@@ -1546,8 +1567,9 @@ body{background:#020b16!important;color:#eef6ff!important}
     <div class="pump-hero-icon">📈</div>
   </div>
 
-  <div class="pump-tabs">
+  <div class="pump-tabs pump-tabs-four">
     <button type="button" class="pump-tab active" data-pump-tab="curve">Curve</button>
+    <button type="button" class="pump-tab" data-pump-tab="sizing">Sizing</button>
     <button type="button" class="pump-tab" data-pump-tab="tdh">Field TDH</button>
     <button type="button" class="pump-tab" data-pump-tab="vfd">VFD</button>
   </div>
@@ -1668,7 +1690,97 @@ body{background:#020b16!important;color:#eef6ff!important}
     </div>
   </section>
 
-  <section class="pump-workspace" id="pumpTdhWorkspace">
+  
+  <section class="pump-workspace" id="pumpSizingWorkspace">
+    <div class="grid">
+      <div class="card">
+        <h2>Pump Sizing Inputs</h2>
+        <div class="card-body">
+          <div class="field">
+            <label for="sizingFlow">Desired Flow (GPM)</label>
+            <input id="sizingFlow" type="number" min="1" step="1" value="470">
+          </div>
+          <div class="field">
+            <label for="sizingHead">Required TDH (ft)</label>
+            <input id="sizingHead" type="number" min="0" step="0.1" value="30">
+          </div>
+          <div class="field">
+            <label for="sizingMinHz">Minimum Allowed Frequency (Hz)</label>
+            <input id="sizingMinHz" type="number" min="1" max="60" step="0.1" value="30">
+          </div>
+          <div class="field">
+            <label for="sizingMaxHz">Maximum Allowed Frequency (Hz)</label>
+            <input id="sizingMaxHz" type="number" min="1" max="60" step="0.1" value="60">
+          </div>
+          <div class="field">
+            <label for="sizingBaselineHz">Savings Baseline (Hz)</label>
+            <input id="sizingBaselineHz" type="number" min="1" max="60" step="0.1" value="60">
+          </div>
+          <div class="field">
+            <label for="sizingMargin">Required Frequency Reserve (Hz)</label>
+            <input id="sizingMargin" type="number" min="0" max="20" step="0.1" value="2">
+            <small>A pump is marked preferred only when it meets the duty point below maximum frequency with this reserve remaining.</small>
+          </div>
+          <div class="error" id="sizingError"></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="result pump-result">
+          <small>Hydraulic Requirement</small>
+          <div class="big" id="sizingDuty">470 GPM</div>
+          <div class="sub" id="sizingDutyHead">30.0 ft TDH</div>
+        </div>
+        <div class="tiles">
+          <div class="tile"><span>Water Horsepower</span><b id="sizingWaterHp">3.56 HP</b></div>
+          <div class="tile"><span>Capable Models</span><b id="sizingCapableCount">—</b></div>
+          <div class="tile"><span>Preferred Selection</span><b id="sizingPreferred">—</b></div>
+          <div class="tile"><span>Model Basis</span><b>Published H-Q curves</b></div>
+        </div>
+        <div class="recommend-card">
+          <h3>Important Limitation</h3>
+          <ul>
+            <li>This comparison does not include BHP, pump efficiency, motor efficiency, input kW, NPSHr, or annual energy cost.</li>
+            <li>“Ideal savings” uses only the speed-cubed affinity relationship and is not a measured electrical-consumption estimate.</li>
+            <li>Final pump selection should be verified with Pentair performance data and the actual hydraulic system.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="sizing-table-card">
+      <div class="reference-header">
+        <h3>Pentair EQ Model Comparison</h3>
+        <p>Required frequency and operating margin for the entered duty point.</p>
+      </div>
+      <div class="table-wrap">
+        <table class="sizing-table">
+          <thead>
+            <tr>
+              <th>Model</th>
+              <th>HP</th>
+              <th>Required Hz</th>
+              <th>Speed</th>
+              <th>Reserve</th>
+              <th>Ideal Power</th>
+              <th>Ideal Savings</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="sizingTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="formula-card">
+      <h3>Calculation Basis</h3>
+      <div>
+        Each model curve is affinity-scaled from its 60 Hz published curve. The calculator searches for the frequency where the scaled curve passes through the desired GPM and TDH. Water horsepower = GPM × TDH ÷ 3960.
+      </div>
+    </div>
+  </section>
+
+<section class="pump-workspace" id="pumpTdhWorkspace">
     <div class="grid">
       <div class="card"><h2>Field TDH Inputs</h2><div class="card-body">
         <div class="field"><label for="tdhDischargePsi">Discharge Pressure (psi)</label><input id="tdhDischargePsi" type="number" step="0.1" value="25"></div>
@@ -1776,7 +1888,7 @@ body{background:#020b16!important;color:#eef6ff!important}
   <div class="incident-draft"><div><strong>Local Draft</strong><span id="incidentDraftStatus">No saved draft</span></div><button type="button" class="secondary-action compact" id="incidentClearDraft">Clear Draft</button></div>
 </section>
 
-<div class="footer">Offline-capable PWA • Pentair EQ Curves + Incident PDF</div>
+<div class="footer">Offline-capable PWA • Pentair EQ Sizing + Incident PDF</div>
 </div>
 
 
@@ -2385,6 +2497,105 @@ function updatePumpCurve(){
   else{setText('pumpOperatingFlow','No intersection');setText('pumpOperatingHead','Within entered curve range');setText('pumpCurveStatus','Check curve/system data');}
   updateEqFlowEstimate();updateRequiredHz();
 }
+
+function sizingModelRows(flow,head,minHz,maxHz,baselineHz,reserveHz){
+  const keys=['eqw300','eqw500','eq500','eq750','eq1000','eq1500'];
+  return keys.map(function(key){
+    const model=pentairEqCurves[key];
+    const oldBase=parseFloat(byId('pumpBaseHz').value);
+    byId('pumpBaseHz').value=model.ratedHz;
+    const originalPoints=[];
+    for(let i=0;i<9;i++){
+      originalPoints.push([byId('pumpQ'+i).value,byId('pumpH'+i).value]);
+      const p=model.points[i];
+      byId('pumpQ'+i).value=p?p[0]:'';
+      byId('pumpH'+i).value=p?p[1]:'';
+    }
+    const result=requiredHzForDuty(flow,head);
+    for(let i=0;i<9;i++){
+      byId('pumpQ'+i).value=originalPoints[i][0];
+      byId('pumpH'+i).value=originalPoints[i][1];
+    }
+    byId('pumpBaseHz').value=oldBase;
+
+    if(!result || result.diff>3 || result.hz>maxHz || result.hz>model.ratedHz){
+      return {
+        key:key,label:model.label,hp:model.hp,capable:false,status:'Not capable',
+        requiredHz:null,speedPct:null,reserve:null,powerPct:null,savings:null
+      };
+    }
+
+    const speedPct=result.hz/model.ratedHz*100;
+    const reserve=maxHz-result.hz;
+    const powerPct=Math.pow(result.hz/baselineHz,3)*100;
+    const savings=100-powerPct;
+    let status='Capable';
+    if(result.hz<minHz)status='Below minimum Hz';
+    else if(reserve>=reserveHz)status='Preferred';
+
+    return {
+      key:key,label:model.label,hp:model.hp,capable:true,status:status,
+      requiredHz:result.hz,speedPct:speedPct,reserve:reserve,
+      powerPct:powerPct,savings:savings,headError:result.diff
+    };
+  });
+}
+
+function updatePumpSizing(){
+  const flow=parseFloat(byId('sizingFlow').value);
+  const head=parseFloat(byId('sizingHead').value);
+  const minHz=parseFloat(byId('sizingMinHz').value);
+  const maxHz=parseFloat(byId('sizingMaxHz').value);
+  const baselineHz=parseFloat(byId('sizingBaselineHz').value);
+  const reserveHz=parseFloat(byId('sizingMargin').value);
+
+  if(![flow,head,minHz,maxHz,baselineHz,reserveHz].every(Number.isFinite) ||
+     flow<=0 || head<0 || minHz<=0 || maxHz<=0 || baselineHz<=0 ||
+     maxHz<minHz || reserveHz<0){
+    showError('sizingError','Enter valid flow, TDH, frequency limits, baseline, and reserve.');
+    return;
+  }
+  showError('sizingError','');
+
+  const rows=sizingModelRows(flow,head,minHz,maxHz,baselineHz,reserveHz);
+  const capable=rows.filter(function(r){return r.capable && r.status!=='Below minimum Hz';});
+  const preferred=capable
+    .filter(function(r){return r.status==='Preferred';})
+    .sort(function(a,b){return a.requiredHz-b.requiredHz;})[0] ||
+    capable.sort(function(a,b){return a.requiredHz-b.requiredHz;})[0] ||
+    null;
+
+  setText('sizingDuty',Math.round(flow).toLocaleString()+' GPM');
+  setText('sizingDutyHead',head.toFixed(1)+' ft TDH');
+  setText('sizingWaterHp',(flow*head/3960).toFixed(2)+' HP');
+  setText('sizingCapableCount',capable.length+' of 6');
+  setText('sizingPreferred',preferred?preferred.label:'None');
+
+  byId('sizingTableBody').innerHTML=rows.map(function(r){
+    let rowClass='not-capable',pill='status-not-capable';
+    if(r.status==='Preferred'){rowClass='preferred';pill='status-preferred';}
+    else if(r.status==='Capable'){rowClass='capable';pill='status-capable';}
+    else if(r.status==='Below minimum Hz'){rowClass='capable';pill='status-low-speed';}
+    return '<tr class="'+rowClass+'">'+
+      '<td><strong>'+r.label+'</strong></td>'+
+      '<td>'+r.hp+'</td>'+
+      '<td>'+(r.requiredHz===null?'—':r.requiredHz.toFixed(1))+'</td>'+
+      '<td>'+(r.speedPct===null?'—':r.speedPct.toFixed(1)+'%')+'</td>'+
+      '<td>'+(r.reserve===null?'—':r.reserve.toFixed(1)+' Hz')+'</td>'+
+      '<td>'+(r.powerPct===null?'—':r.powerPct.toFixed(1)+'%')+'</td>'+
+      '<td>'+(r.savings===null?'—':r.savings.toFixed(1)+'%')+'</td>'+
+      '<td><span class="status-pill '+pill+'">'+r.status+'</span></td>'+
+      '</tr>';
+  }).join('');
+}
+
+bind(
+  ['sizingFlow','sizingHead','sizingMinHz','sizingMaxHz','sizingBaselineHz','sizingMargin'],
+  ['input','change'],
+  updatePumpSizing
+);
+updatePumpSizing();
+
 function updateTDH(){
   const discharge=parseFloat(byId('tdhDischargePsi').value),suction=parseFloat(byId('tdhSuctionValue').value),sg=parseFloat(byId('tdhSpecificGravity').value),elev=parseFloat(byId('tdhElevation').value),mode=byId('tdhSuctionMode').value;
   if(![discharge,suction,sg,elev].every(Number.isFinite)||sg<=0){showError('tdhError','Enter valid pressure, specific gravity and elevation values.');return;}
@@ -2548,7 +2759,7 @@ loadIncidentDraft();updateIncidentTimer();setInterval(updateIncidentTimer,1000);
 
 if('serviceWorker' in navigator && location.protocol.indexOf('http')===0){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('./service-worker.js?build=v12',{updateViaCache:'none'})
+    navigator.serviceWorker.register('./service-worker.js?build=v13',{updateViaCache:'none'})
       .then(function(registration){return registration.update();})
       .catch(function(){});
   });
