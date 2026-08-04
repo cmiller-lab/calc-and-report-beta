@@ -6,7 +6,7 @@
   "display": "standalone",
   "background_color": "#020b16",
   "theme_color": "#041b3d",
-  "description": "Pool chemical dosing, pump curve calculations and incident PDF reporting.",
+  "description": "Chemical dosing, Pentair EQ pump curves, VFD estimates, hydraulics and incident PDF reporting.",
   "icons": [
     {
       "src": "icon-192.png",
