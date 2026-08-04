@@ -1,24 +1,22 @@
 {
-  "name": "SeaWorld Dosage Calculators",
-  "short_name": "SW Dosage",
-  "description": "Soda ash, chlorine feed, and CYA dosing calculators for SeaWorld aquatic systems.",
-  "start_url": "./",
+  "name": "SeaWorld Water Chemistry Console",
+  "short_name": "SW Chemistry",
+  "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#eef5fb",
-  "theme_color": "#0b4f8a",
+  "background_color": "#020b16",
+  "theme_color": "#041b3d",
+  "description": "Pool chemical dosing, pump curve calculations and incident PDF reporting.",
   "icons": [
     {
       "src": "icon-192.png",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     },
     {
       "src": "icon-512.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     }
   ]
 }

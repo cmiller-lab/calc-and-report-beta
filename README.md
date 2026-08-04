@@ -1,15 +1,22 @@
-# SeaWorld Dosage Calculators PWA v10
+# SeaWorld Water Chemistry Console v11
 
-Key fixes:
-- Uses the current CYA selector's selectedIndex directly.
-- CYA calculations refresh on change, input, blur, keyup, touchend, focus, pageshow, and polling.
-- Current CYA and selected pool persist in localStorage.
-- Visible footer shows Build v10.
-- Service worker uses network-first loading for HTML to prevent stale calculator code.
-- Cache name updated to seaworld-dosage-v10.
+New modules:
+- Pump Curve Calculator
+  - Five editable manufacturer flow/head points
+  - System curve from a known flow and TDH
+  - VFD speed scaling
+  - Live pump/system graph
+  - Predicted operating point
+  - Field TDH calculator
+  - VFD affinity-law predictor
+- Incident Report
+  - Three-step workflow
+  - Local draft storage
+  - Automatic timestamps and elapsed time
+  - PDF generation entirely on-device
+  - iPhone share sheet for manual email
+  - PDF download fallback
 
-After uploading:
-1. Open the GitHub Pages URL in Safari.
-2. Confirm the footer says Build v10.
-3. Refresh once if needed.
-4. Remove and re-add the Home Screen shortcut if it still shows an older build.
+No Google Sheets or email backend is required. Photos are not embedded in the PDF; the selected file name is recorded so the original photo can be attached separately.
+
+Upload all files to the same GitHub Pages repository directory.

@@ -1,16 +1,17 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0b4f8a">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="SeaWorld Dose">
-<link rel="manifest" href="manifest.webmanifest">
-<link rel="apple-touch-icon" href="icon-192.png">
-<link rel="icon" href="icon-192.png">
-<title>SeaWorld Dosage Calculators</title>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/>
+<meta content="#0b4f8a" name="theme-color"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="default" name="apple-mobile-web-app-status-bar-style"/>
+<meta content="SeaWorld Dose" name="apple-mobile-web-app-title"/>
+<link href="manifest.webmanifest" rel="manifest"/>
+<link href="icon-192.png" rel="apple-touch-icon"/>
+<link href="icon-192.png" rel="icon"/>
+<title>SeaWorld Water Chemistry Console</title>
 <style>
 :root{--navy:#17365d;--blue:#d9eaf7;--green:#e2f0d9;--red:#fce4d6;--ink:#1f2937;--muted:#667085;--border:#cfd8e3;--white:#fff;--light:#f7fafc;--error:#b42318;--errorbg:#fef3f2}
 *{box-sizing:border-box}
@@ -45,7 +46,7 @@ content:"🌊 ";
 .hero{background:var(--navy);color:#fff;border-radius:18px 18px 0 0;padding:22px}
 .hero h1{margin:0 0 6px;font-size:clamp(25px,5vw,38px)}
 .hero p{margin:0;opacity:.9}
-.tabs{display:grid;grid-template-columns:repeat(3,1fr);background:#fff;border-left:1px solid var(--border);border-right:1px solid var(--border)}
+.tabs{display:none;grid-template-columns:repeat(3,1fr);background:#fff;border-left:1px solid var(--border);border-right:1px solid var(--border)}
 .tab{padding:15px;border:0;background:#edf2f7;color:var(--navy);font-weight:800;font-size:16px;cursor:pointer}
 .tab.active{background:#fff;box-shadow:inset 0 -4px 0 var(--navy)}
 .panel{display:none;background:#fff;border:1px solid var(--border);border-top:0;border-radius:0 0 18px 18px;padding:18px;box-shadow:0 14px 35px rgba(23,54,93,.12)}
@@ -84,29 +85,989 @@ input.invalid{border-color:var(--error);background:var(--errorbg)}
 .alert.warning{background:#fef3f2;border:1px solid #fda29b;color:#b42318}
 .alert.info{background:#eef6ff;border:1px solid #b2ccff;color:#1849a9}
 
+
+:root{
+  --bg:#0b1220;
+  --panel:#111827;
+  --panel2:#172033;
+  --panel3:#1f2937;
+  --line:#2d3748;
+  --text:#e5e7eb;
+  --muted2:#94a3b8;
+  --cyan:#22d3ee;
+  --blue2:#3b82f6;
+  --green2:#22c55e;
+  --amber:#f59e0b;
+  --red2:#ef4444;
+}
+body{background:radial-gradient(circle at top,#15233b 0,#0b1220 42%,#070b12 100%);color:var(--text)}
+.wrap{width:min(1180px,calc(100% - 20px));margin:10px auto}
+.hero{
+  background:linear-gradient(135deg,#0f172a,#172554 58%,#0b4f8a);
+  border:1px solid #263756;
+  border-radius:16px;
+  box-shadow:0 16px 40px rgba(0,0,0,.35);
+}
+.hero h1{font-size:clamp(23px,4vw,36px)}
+.hero p{color:#cbd5e1}
+.ops-dashboard{display:block;margin-top:12px}
+.ops-dashboard.hidden{display:none}
+.top-grid{display:grid;grid-template-columns:1.35fr .65fr;gap:12px}
+@media(max-width:820px){.top-grid{grid-template-columns:1fr}}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:720px){.kpi-grid{grid-template-columns:1fr}}
+.kpi,.ops-panel,.tool-launch{
+  background:linear-gradient(180deg,rgba(23,32,51,.98),rgba(15,23,42,.98));
+  border:1px solid #2a3a55;
+  border-radius:14px;
+  box-shadow:0 10px 26px rgba(0,0,0,.28);
+}
+.kpi{padding:15px}
+.kpi-label{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted2);font-weight:800}
+.kpi-value{font-size:28px;font-weight:800;margin-top:8px}
+.kpi-sub{font-size:13px;color:var(--muted2);margin-top:4px}
+.kpi.blue .kpi-value{color:var(--cyan)}
+.kpi.green .kpi-value{color:var(--green2)}
+.kpi.amber .kpi-value{color:var(--amber)}
+.ops-panel{padding:16px}
+.panel-title{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#cbd5e1;font-weight:800;margin-bottom:12px}
+.status-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)}
+.status-row:last-child{border-bottom:0}
+.status-left{display:flex;align-items:center;gap:9px}
+.dot{width:10px;height:10px;border-radius:50%}
+.dot.green{background:var(--green2);box-shadow:0 0 12px rgba(34,197,94,.7)}
+.dot.amber{background:var(--amber);box-shadow:0 0 12px rgba(245,158,11,.65)}
+.dot.blue{background:var(--cyan);box-shadow:0 0 12px rgba(34,211,238,.65)}
+.status-value{font-weight:800}
+.launch-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
+@media(max-width:720px){.launch-grid{grid-template-columns:1fr}}
+.tool-launch{padding:16px;text-align:left;cursor:pointer;color:var(--text)}
+.tool-launch:hover{border-color:#4f6b99;transform:translateY(-1px)}
+.tool-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.tool-name{font-size:19px;font-weight:800}
+.tool-badge{font-size:11px;padding:5px 8px;border-radius:999px;background:#0f2741;color:#7dd3fc;border:1px solid #24547a}
+.tool-launch p{color:var(--muted2);margin:10px 0 0;line-height:1.4}
+.mini-chart{height:42px;margin-top:14px;display:flex;align-items:flex-end;gap:5px}
+.bar{flex:1;border-radius:3px 3px 0 0;background:linear-gradient(180deg,#22d3ee,#2563eb)}
+.bar.g{background:linear-gradient(180deg,#4ade80,#15803d)}
+.bar.a{background:linear-gradient(180deg,#fbbf24,#d97706)}
+.bar.r{background:linear-gradient(180deg,#fb7185,#b91c1c)}
+.calculator-shell{margin-top:12px}
+.panel{
+  background:linear-gradient(180deg,rgba(17,24,39,.98),rgba(11,18,32,.98));
+  border:1px solid #2a3a55;
+  color:var(--text);
+  box-shadow:0 14px 35px rgba(0,0,0,.34);
+}
+.card{background:#121a2a;border-color:#2a3a55}
+.card h2{background:#18243a;color:#dbeafe;border-bottom:1px solid #2a3a55}
+select,input{background:#0f172a;color:var(--text);border-color:#3b4a63}
+.readout{border-color:#2a3a55}
+.readout span:first-child{color:var(--muted2)}
+.result{background:linear-gradient(180deg,#143322,#10261a);border-color:#275c3d}
+.result .big{color:#86efac}
+.result small,.result .sub{color:#bbf7d0}
+.tile{background:#121a2a;border-color:#2a3a55}
+.formula{background:#0f172a;border-left-color:var(--cyan);color:#cbd5e1}
+.note{background:#2a1b0e;border-color:#6b3f12;color:#fde68a}
+.calculator-topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.back-button{border:1px solid #3b4a63;background:#172033;color:#e2e8f0;border-radius:9px;padding:10px 13px;font-weight:800}
+.calc-title{font-size:18px;font-weight:800;color:#dbeafe}
+
+.reference-section{margin-top:12px;background:linear-gradient(180deg,rgba(23,32,51,.98),rgba(15,23,42,.98));border:1px solid #2a3a55;border-radius:14px;overflow:hidden;box-shadow:0 10px 26px rgba(0,0,0,.28)}
+.reference-header{padding:14px 16px;background:#18243a;border-bottom:1px solid #2a3a55}
+.reference-header h3{margin:0;color:#dbeafe;font-size:16px}
+.reference-header p{margin:5px 0 0;color:var(--muted2);font-size:12px}
+.table-wrap{overflow-x:hidden}
+.ref-table{width:100%;border-collapse:collapse;table-layout:fixed}
+.ref-table th,.ref-table td{padding:12px 14px;border-bottom:1px solid #243047;text-align:left}
+.ref-table th{background:#101827;color:#94a3b8;font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+.ref-table td{color:#e2e8f0;font-size:14px;vertical-align:middle}
+.ref-table th:first-child,.ref-table td:first-child{width:72%;white-space:normal;overflow-wrap:anywhere}
+.ref-table th:last-child,.ref-table td:last-child{width:28%;text-align:right;white-space:nowrap}
+.ref-table td:last-child{font-weight:800;color:#7dd3fc}
+.dashboard-simple{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:12px}
+@media(max-width:680px){.dashboard-simple{grid-template-columns:1fr}}
+.launch-tile{min-height:150px;border:1px solid #2a3a55;border-radius:16px;padding:18px;text-align:left;color:var(--text);cursor:pointer;background:linear-gradient(180deg,rgba(23,32,51,.98),rgba(15,23,42,.98));box-shadow:0 10px 26px rgba(0,0,0,.28)}
+.launch-icon{font-size:36px;margin-bottom:14px}
+.launch-title{font-size:22px;font-weight:850;margin-bottom:6px}
+.launch-desc{color:var(--muted2);line-height:1.4}
+
+.footer{color:#64748b}
+
 .footer{text-align:center;color:var(--muted);font-size:13px;margin-top:14px}
+
+:root{
+ --page:#020b18;--surface:#071427;--surface2:#0b1c34;--line:#17365c;
+ --text:#f4f8ff;--muted:#aab9cc;--cyan:#38d7ff;--green:#52ef6e;
+ --amber:#ffb51c;--red:#ff4654;--blue:#22b6ff;
+}
+html{background:var(--page)}
+body{
+ margin:0;color:var(--text);
+ background:
+ radial-gradient(circle at 50% -8%,#102f58 0,#061426 29%,#020b18 62%,#010711 100%);
+}
+.wrap{width:min(1120px,calc(100% - 18px));margin:10px auto 24px}
+
+/* Reference-inspired hero */
+.hero{
+ min-height:236px;border-radius:28px;overflow:hidden;position:relative;padding:28px 30px;
+ border:1px solid rgba(39,131,231,.78);
+ background:
+ linear-gradient(90deg,rgba(0,25,70,.98) 0%,rgba(4,57,124,.90) 48%,rgba(0,23,59,.68) 100%),
+ radial-gradient(circle at 90% 20%,rgba(42,190,255,.25),transparent 32%);
+ box-shadow:0 22px 52px rgba(0,0,0,.45),inset 0 1px rgba(255,255,255,.08);
+}
+.hero-wave{
+ position:absolute;right:-4%;top:-12%;width:64%;height:126%;opacity:.96;pointer-events:none;
+}
+.hero-inner{position:relative;z-index:2;display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;height:100%}
+.hero-brand{display:flex;gap:22px;align-items:center;min-width:0}
+.hero-logo{width:120px;height:120px;flex:0 0 auto}
+.hero-copy h1{margin:0;font-size:clamp(34px,6vw,58px);line-height:.95;letter-spacing:.015em;text-transform:uppercase}
+.hero-copy .subtitle{margin-top:9px;color:#45d7ff;font-size:clamp(17px,3vw,27px);font-weight:850;letter-spacing:.055em;text-transform:uppercase}
+.hero-copy p{margin:20px 0 0;font-size:clamp(15px,2.2vw,20px);line-height:1.4;color:#e7effb;max-width:580px}
+.hero-meta{align-self:end;display:grid;gap:13px;min-width:265px;padding-bottom:8px}
+.meta-line{display:flex;align-items:center;justify-content:flex-end;gap:10px;font-size:16px;color:#f2f6fb}
+.online-dot{width:13px;height:13px;border-radius:50%;background:#39dc4c;box-shadow:0 0 18px rgba(57,220,76,.85)}
+@media(max-width:760px){
+ .hero{min-height:250px;padding:22px 20px}
+ .hero-inner{display:block}
+ .hero-brand{gap:14px}
+ .hero-logo{width:82px;height:82px}
+ .hero-copy h1{font-size:clamp(27px,9vw,42px)}
+ .hero-copy .subtitle{font-size:clamp(13px,4vw,20px)}
+ .hero-copy p{margin-top:14px;font-size:15px;max-width:78%}
+ .hero-meta{position:absolute;right:16px;bottom:14px;min-width:auto;gap:7px}
+ .meta-line{font-size:12px}
+ .hero-wave{width:76%;right:-20%;opacity:.72}
+}
+
+/* 2 x 2 premium calculator cards */
+.ops-dashboard{margin-top:22px}
+.dashboard-simple{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:22px!important}
+.launch-tile{
+ min-height:340px!important;padding:24px!important;border-radius:26px!important;
+ position:relative;overflow:hidden;text-align:center!important;
+ display:flex;flex-direction:column;align-items:center;justify-content:center;
+ border:1px solid currentColor!important;
+ box-shadow:0 18px 36px rgba(0,0,0,.40),inset 0 1px rgba(255,255,255,.08)!important;
+ background:#071427!important;
+}
+.launch-tile::before{
+ content:"";position:absolute;inset:0;opacity:.72;pointer-events:none;
+ background:
+ radial-gradient(ellipse at 50% 0%,rgba(255,255,255,.12),transparent 38%),
+ repeating-radial-gradient(ellipse at 50% -20%,transparent 0 31px,rgba(255,255,255,.04) 32px 33px);
+}
+.launch-tile::after{
+ content:"›";position:absolute;right:22px;bottom:20px;font-size:54px;line-height:1;color:currentColor;
+}
+.launch-tile:nth-child(1){color:var(--green);background:linear-gradient(150deg,#084c27,#021b18 75%)!important}
+.launch-tile:nth-child(2){color:var(--blue);background:linear-gradient(150deg,#07558b,#03182f 75%)!important}
+.launch-tile:nth-child(3){color:var(--amber);background:linear-gradient(150deg,#6b4509,#201304 75%)!important}
+.launch-tile:nth-child(4){color:var(--red);background:linear-gradient(150deg,#651523,#21050d 75%)!important}
+.launch-art{position:relative;z-index:2;width:min(50%,180px);aspect-ratio:1;margin-bottom:14px}
+.launch-title{position:relative;z-index:2;font-size:clamp(22px,4vw,38px)!important;font-weight:900!important;color:currentColor!important;margin:0 0 8px!important}
+.launch-desc{position:relative;z-index:2;color:#f5f8fd!important;font-size:clamp(14px,2.2vw,20px);max-width:90%;line-height:1.35}
+@media(max-width:620px){
+ .dashboard-simple{gap:12px!important}
+ .launch-tile{min-height:230px!important;padding:15px 10px!important;border-radius:19px!important}
+ .launch-art{width:52%;margin-bottom:6px}
+ .launch-title{font-size:clamp(17px,5vw,24px)!important}
+ .launch-desc{font-size:12px;max-width:96%}
+ .launch-tile::after{font-size:38px;right:11px;bottom:8px}
+}
+
+/* Calculator theme */
+.panel.calculator-shell{
+ margin-top:18px;border-radius:24px!important;border:1px solid #163b69!important;
+ background:linear-gradient(180deg,#07172c,#030c1b)!important;padding:18px!important;
+ box-shadow:0 20px 42px rgba(0,0,0,.42)!important;
+}
+.calculator-topbar{
+ margin:-18px -18px 16px!important;padding:14px 16px!important;border-radius:23px 23px 0 0;
+ background:linear-gradient(90deg,#07356c,#08689b,#062247)!important;border-bottom:1px solid rgba(78,191,255,.3)!important;
+}
+.back-button{background:#031329!important;border:1px solid #2a78ab!important;color:#e9f8ff!important}
+.calc-title{color:#69dfff!important;text-transform:uppercase;letter-spacing:.04em}
+.calc-visual{
+ margin-bottom:16px;border-radius:20px;min-height:180px;padding:20px;
+ display:grid;grid-template-columns:170px 1fr;align-items:center;gap:22px;overflow:hidden;position:relative;
+ border:1px solid currentColor;background:#061426;
+}
+.calc-visual::after{
+ content:"";position:absolute;inset:0;pointer-events:none;opacity:.35;
+ background:repeating-radial-gradient(ellipse at 70% 0%,transparent 0 30px,rgba(255,255,255,.06) 31px 32px);
+}
+.calc-visual-icon{position:relative;z-index:2;width:150px;height:150px}
+.calc-visual-copy{position:relative;z-index:2}
+.calc-visual h2{margin:0 0 8px;font-size:clamp(24px,4vw,38px);color:currentColor}
+.calc-visual p{margin:0;color:#e5edf8;line-height:1.45;font-size:16px}
+.calc-visual.soda{color:var(--green);background:linear-gradient(120deg,#094224,#031c1b)}
+.calc-visual.fc{color:var(--blue);background:linear-gradient(120deg,#064d80,#031a34)}
+.calc-visual.cya{color:var(--amber);background:linear-gradient(120deg,#624006,#251506)}
+.calc-visual.dechlor{color:var(--red);background:linear-gradient(120deg,#5e1420,#23060d)}
+@media(max-width:600px){
+ .calc-visual{grid-template-columns:105px 1fr;min-height:130px;padding:13px;gap:12px}
+ .calc-visual-icon{width:100px;height:100px}
+ .calc-visual p{font-size:13px}
+}
+.card{background:linear-gradient(180deg,#0c1c34,#061123)!important;border:1px solid #1b406d!important}
+.card h2{background:linear-gradient(90deg,#0f3765,#092647)!important;color:#eaf8ff!important}
+select,input{background:#061226!important;border-color:#29527d!important;color:#fff!important}
+.readout{border-color:#193653!important}.readout span:first-child{color:#a9bad0!important}
+.tile{background:#09192d!important;border-color:#214464!important}
+.reference-section{background:linear-gradient(180deg,#0c1c34,#061123)!important;border-color:#1b406d!important}
+.reference-header{background:linear-gradient(90deg,#0f3765,#092647)!important}
+.formula{background:#051020!important}
+.footer{color:#7190af!important}
+
+
+/* ===== Six Calculator Header Test operational refinement ===== */
+.hero{min-height:220px}
+.hero-layout{
+  position:relative;z-index:2;display:grid;
+  grid-template-columns:minmax(0,1fr) 260px;
+  grid-template-areas:"brand status" "description status";
+  column-gap:28px;align-items:center;height:100%;
+}
+.hero-brand-block{grid-area:brand;display:flex;align-items:center;gap:18px;min-width:0}
+.hero-title-block h1{margin:0;font-size:clamp(33px,5vw,56px);line-height:.95;text-transform:uppercase;letter-spacing:.025em}
+.hero-subtitle{margin-top:8px;color:#4bdcff;font-size:clamp(16px,2.7vw,25px);font-weight:850;letter-spacing:.055em;text-transform:uppercase}
+.hero-description{grid-area:description;margin:16px 0 0 138px;max-width:550px;color:#e7effb;font-size:17px;line-height:1.42}
+.hero-status-block{
+  grid-area:status;align-self:stretch;display:flex;flex-direction:column;justify-content:center;
+  gap:12px;padding:18px;border-left:1px solid rgba(132,211,255,.22);
+  background:linear-gradient(90deg,rgba(2,18,43,.08),rgba(2,18,43,.42));border-radius:0 20px 20px 0
+}
+.status-label{font-size:11px;letter-spacing:.14em;color:#89cfff;font-weight:850}
+.status-online,.status-date,.status-time{display:flex;align-items:center;gap:9px;color:#f5f8fd}
+.status-online{font-size:17px}.status-date,.status-time{font-size:14px;color:#d4dfed}
+@media(max-width:720px){
+  .hero{min-height:300px}
+  .hero-layout{display:grid;grid-template-columns:1fr;grid-template-areas:"brand" "description" "status";gap:10px}
+  .hero-logo{width:76px;height:76px}
+  .hero-title-block h1{font-size:clamp(27px,9vw,40px)}
+  .hero-subtitle{font-size:clamp(13px,4.4vw,18px)}
+  .hero-description{margin:3px 0 0;max-width:72%;font-size:14px}
+  .hero-status-block{
+    margin-top:4px;padding:10px 12px;border-left:0;border-top:1px solid rgba(132,211,255,.22);
+    border-radius:12px;display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:7px;background:rgba(1,17,39,.56)
+  }
+  .status-label{display:none}
+  .status-online,.status-date,.status-time{font-size:11px;justify-content:center;white-space:nowrap}
+}
+
+/* Dashboard action hierarchy */
+.launch-action{position:relative;z-index:2;font-size:14px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px}
+.launch-desc{font-size:14px!important;color:rgba(255,255,255,.80)!important}
+@media(max-width:620px){
+  .launch-action{font-size:10px}
+  .launch-desc{font-size:11px!important}
+}
+
+/* Calculator breadcrumb */
+.calculator-breadcrumb{
+  display:flex;align-items:center;gap:10px;margin-bottom:12px;padding:10px 12px;
+  border:1px solid rgba(96,177,232,.24);border-radius:12px;background:rgba(3,17,36,.74);
+  color:#a7dfff;font-size:14px
+}
+.breadcrumb-separator{color:#55789c}.calculator-breadcrumb strong{color:#eef9ff}
+
+/* Operational calculator hero: 60% text / 40% art */
+.calc-visual{
+  grid-template-columns:minmax(0,1.4fr) minmax(150px,.75fr)!important;
+  min-height:230px!important;padding:24px 28px!important;gap:22px!important
+}
+.calc-visual-copy{text-align:left}
+.calc-kicker{font-size:12px;font-weight:850;letter-spacing:.14em;color:currentColor;opacity:.88}
+.calc-visual h2{font-size:clamp(30px,5vw,48px)!important;margin:7px 0 10px!important}
+.calc-visual p{font-size:17px!important;max-width:560px}
+.calc-visual-icon{width:190px!important;height:190px!important;justify-self:end}
+@media(max-width:600px){
+  .calc-visual{grid-template-columns:minmax(0,1fr) 125px!important;min-height:170px!important;padding:17px!important}
+  .calc-visual h2{font-size:clamp(23px,7vw,34px)!important}
+  .calc-visual p{font-size:13px!important}
+  .calc-visual-icon{width:125px!important;height:125px!important}
+}
+
+/* Per-calculator page tint */
+#sodaPanel{--accent:#52ef6e;background:radial-gradient(circle at 80% 0,rgba(41,180,88,.12),transparent 30%),linear-gradient(180deg,#061b19,#030c15)!important}
+#fcPanel{--accent:#27bfff;background:radial-gradient(circle at 80% 0,rgba(24,153,230,.14),transparent 30%),linear-gradient(180deg,#061a2c,#030c18)!important}
+#cyaPanel{--accent:#ffb51c;background:radial-gradient(circle at 80% 0,rgba(230,156,19,.13),transparent 30%),linear-gradient(180deg,#211707,#080d14)!important}
+#dechlorPanel{--accent:#ff4654;background:radial-gradient(circle at 80% 0,rgba(222,43,63,.13),transparent 30%),linear-gradient(180deg,#20080e,#080b13)!important}
+
+/* Inputs: clear SCADA-like grouping */
+.input-section-label{
+  margin:14px 0 7px;padding-top:12px;border-top:1px solid #1d3b5a;
+  color:var(--accent,#6bdcff);font-size:10px;font-weight:900;letter-spacing:.15em
+}
+.input-section-label:first-child{margin-top:0;padding-top:0;border-top:0}
+.field{padding:10px 11px;border:1px solid #1d3b5a;border-radius:12px;background:rgba(4,15,31,.44)}
+.field label{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:#bcd0e5}
+.field input,.field select{font-weight:700}
+
+/* Readouts become compact metric cards */
+.metric-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
+.metric-grid .readout{
+  display:block;padding:12px;border:1px solid #224766;border-radius:12px;
+  background:linear-gradient(180deg,rgba(14,36,63,.86),rgba(5,18,35,.90))
+}
+.metric-grid .readout span{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#8fa9c2!important}
+.metric-grid .readout strong{display:block;margin-top:6px;text-align:left;font-size:18px;color:#f4f8ff}
+
+/* Results: primary result plus four equally prominent metric cards */
+.result{padding:22px!important;border-width:1px!important}
+.result .big{font-size:clamp(42px,8vw,68px)!important}
+.tiles{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}
+.tile{min-height:92px;display:flex;flex-direction:column;justify-content:center;padding:14px!important}
+.tile span{font-size:11px!important;text-transform:uppercase;letter-spacing:.055em}
+.tile b{font-size:21px!important}
+
+/* Quick-reference intensity cues */
+.ref-table tr.level-low td:last-child{color:#72f394!important}
+.ref-table tr.level-medium td:last-child{color:#f7dc63!important}
+.ref-table tr.level-high td:last-child{color:#ff9e45!important}
+.ref-table tr.level-critical td:last-child{color:#ff6874!important}
+.ref-table tr.level-low{background:linear-gradient(90deg,transparent,rgba(61,203,105,.035))}
+.ref-table tr.level-medium{background:linear-gradient(90deg,transparent,rgba(247,196,44,.045))}
+.ref-table tr.level-high{background:linear-gradient(90deg,transparent,rgba(247,125,44,.052))}
+.ref-table tr.level-critical{background:linear-gradient(90deg,transparent,rgba(236,57,74,.060))}
+
+
+.header-clean{min-height:230px}.clean-header-layout{position:relative;z-index:2;display:grid;grid-template-columns:1fr 270px;gap:28px;align-items:center;height:100%}.eyebrow{font-size:11px;letter-spacing:.18em;color:#7bdfff;font-weight:900;margin-bottom:8px}.clean-brand h1{margin:0;font-size:clamp(40px,7vw,68px);line-height:.9;text-transform:uppercase}.product-title{margin-top:10px;font-size:clamp(18px,3vw,29px);font-weight:850;color:#4bdcff;text-transform:uppercase;letter-spacing:.06em}.clean-brand p{max-width:560px;color:#dfeaf6;font-size:17px;line-height:1.45}.clean-status{padding:18px;border:1px solid rgba(116,207,255,.25);border-radius:17px;background:rgba(2,18,43,.68)}.status-head{font-size:10px;letter-spacing:.16em;color:#77d8ff;font-weight:900;margin-bottom:12px}.online-row{display:flex;align-items:center;gap:9px;padding-bottom:12px;border-bottom:1px solid rgba(126,191,229,.16)}.status-row2{display:flex;justify-content:space-between;padding-top:10px;color:#a9bed2;font-size:13px}.status-row2 strong{color:#fff}@media(max-width:720px){.header-clean{min-height:295px}.clean-header-layout{grid-template-columns:1fr;gap:12px}.clean-brand h1{font-size:clamp(36px,12vw,52px)}.clean-brand p{font-size:14px;max-width:80%}.clean-status{display:grid;grid-template-columns:1.2fr 1fr 1fr;padding:10px;gap:8px}.status-head,.status-row2:last-child{display:none}.online-row{border:0;padding:0;font-size:11px}.status-row2{display:block;padding:0;text-align:center;font-size:10px}.status-row2 span,.status-row2 strong{display:block}}.dashboard-simple{grid-template-columns:repeat(2,minmax(0,1fr))!important}.tile-cal{color:#66dcff!important;background:linear-gradient(150deg,#07547c,#031b2e 75%)!important}.tile-alk{color:#f3d65d!important;background:linear-gradient(150deg,#695514,#241b05 75%)!important}.simple-icon{font-size:72px}.hero-icon{font-size:100px}.extra-panel{display:none}.extra-panel.active{display:block}.calc-visual.calhypo{color:#66dcff;background:linear-gradient(120deg,#07547c,#031b2e)}.calc-visual.alkalinity{color:#f3d65d;background:linear-gradient(120deg,#695514,#241b05)}#calhypoPanel{--accent:#66dcff}#alkPanel{--accent:#f3d65d}.cal-ref{table-layout:auto}.cal-ref th:first-child,.cal-ref td:first-child{width:54%}.cal-ref th:not(:first-child),.cal-ref td:not(:first-child){text-align:right;white-space:nowrap}@media(max-width:620px){.cal-ref th,.cal-ref td{padding:9px 5px;font-size:11px}.simple-icon{font-size:50px}.hero-icon{font-size:72px}}
+
+/* ===== Dashboard grid correction and theme switcher ===== */
+.dashboard-simple{
+  display:grid !important;
+  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  grid-auto-flow:row !important;
+  gap:14px !important;
+  align-items:stretch !important;
+}
+.dashboard-simple > .launch-tile{
+  width:100% !important;
+  min-width:0 !important;
+  grid-column:auto !important;
+  grid-row:auto !important;
+  min-height:260px !important;
+}
+@media(max-width:620px){
+  .dashboard-simple{
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:10px !important;
+  }
+  .dashboard-simple > .launch-tile{
+    min-height:225px !important;
+    padding:14px 8px !important;
+  }
+  .launch-title{font-size:clamp(16px,4.8vw,22px)!important}
+  .launch-action{font-size:9px!important}
+  .launch-desc{font-size:10px!important}
+  .launch-art{width:56%!important}
+}
+
+/* Theme controls */
+.theme-panel{
+  margin:18px 0 0;
+  padding:15px;
+  border:1px solid #1c3f68;
+  border-radius:16px;
+  background:linear-gradient(180deg,#0b1b32,#061123);
+  box-shadow:0 12px 25px rgba(0,0,0,.28);
+}
+.theme-panel-title{
+  margin-bottom:11px;
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:#92b8d8;
+}
+.theme-options{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+}
+.theme-option{
+  position:relative;
+}
+.theme-option input{
+  position:absolute;
+  opacity:0;
+  pointer-events:none;
+}
+.theme-option label{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:9px;
+  min-height:46px;
+  margin:0;
+  border:1px solid #294e72;
+  border-radius:12px;
+  background:#07162a;
+  color:#dcecff;
+  font-weight:800;
+  cursor:pointer;
+  transition:.15s ease;
+}
+.theme-option input:checked + label{
+  border-color:#4bdcff;
+  box-shadow:0 0 0 2px rgba(75,220,255,.16);
+  background:#0b3152;
+  color:#fff;
+}
+.theme-note{
+  margin-top:9px;
+  font-size:11px;
+  color:#7e9bb7;
+  text-align:center;
+}
+
+/* Complete light mode */
+body.light-mode{
+  --page:#edf4f9;
+  --surface:#ffffff;
+  --surface2:#f3f8fc;
+  --line:#c7d8e7;
+  --text:#10233a;
+  --muted:#5f7489;
+  background:
+    radial-gradient(circle at 50% -8%,#d8ecf8 0,#edf5fa 35%,#f7fafc 75%,#ffffff 100%) !important;
+  color:#10233a !important;
+}
+body.light-mode .wrap{color:#10233a}
+body.light-mode .hero{
+  background:
+    linear-gradient(90deg,rgba(219,239,251,.98),rgba(191,226,247,.96) 55%,rgba(232,246,253,.90)),
+    radial-gradient(circle at 88% 18%,rgba(50,163,218,.22),transparent 32%) !important;
+  border-color:#75b9df !important;
+  box-shadow:0 16px 34px rgba(50,92,128,.18),inset 0 1px rgba(255,255,255,.8) !important;
+}
+body.light-mode .header-brand-copy h1{color:#083a69}
+body.light-mode .header-product-name{color:#087bac}
+body.light-mode .header-eyebrow{color:#247ea9}
+body.light-mode .header-brand-copy p{color:#395b73}
+body.light-mode .header-command-status{
+  background:rgba(255,255,255,.72) !important;
+  border-color:#9bcce6 !important;
+  box-shadow:0 8px 20px rgba(51,95,128,.12) !important;
+}
+body.light-mode .header-status-title{color:#247ea9}
+body.light-mode .header-online,
+body.light-mode .header-status-row strong{color:#17354f}
+body.light-mode .header-status-row{color:#5f7588}
+
+body.light-mode .launch-tile{
+  box-shadow:0 12px 25px rgba(55,85,110,.16),inset 0 1px rgba(255,255,255,.74) !important;
+}
+body.light-mode .launch-tile:nth-child(1){
+  background:linear-gradient(150deg,#dff6e4,#bde8c8 72%) !important;
+  color:#16833d !important;
+  border-color:#5aba75 !important;
+}
+body.light-mode .launch-tile:nth-child(2){
+  background:linear-gradient(150deg,#ddf2ff,#b7dff6 72%) !important;
+  color:#087ebd !important;
+  border-color:#58abd8 !important;
+}
+body.light-mode .launch-tile:nth-child(3){
+  background:linear-gradient(150deg,#fff4cf,#f5dfa0 72%) !important;
+  color:#a46a00 !important;
+  border-color:#dcad36 !important;
+}
+body.light-mode .launch-tile:nth-child(4){
+  background:linear-gradient(150deg,#ffe3e6,#f3bec5 72%) !important;
+  color:#b82638 !important;
+  border-color:#dd6f7c !important;
+}
+body.light-mode .calhypo-tile{
+  background:linear-gradient(150deg,#dcf4fb,#b9e2ef 72%) !important;
+  color:#167ca2 !important;
+  border-color:#57abc9 !important;
+}
+body.light-mode .alkalinity-tile{
+  background:linear-gradient(150deg,#fff4cf,#ead99a 72%) !important;
+  color:#8b6a0a !important;
+  border-color:#c8a838 !important;
+}
+body.light-mode .launch-action{color:#263b4d !important}
+body.light-mode .launch-desc{color:#415b70 !important}
+body.light-mode .launch-tile::before{opacity:.18}
+body.light-mode .launch-art{
+  filter:drop-shadow(0 7px 10px rgba(52,79,99,.20));
+}
+
+body.light-mode .panel.calculator-shell,
+body.light-mode .new-calculator{
+  background:linear-gradient(180deg,#f8fbfd,#edf4f8) !important;
+  border-color:#a9c7dc !important;
+  box-shadow:0 16px 34px rgba(55,87,111,.15) !important;
+}
+body.light-mode .calculator-breadcrumb{
+  background:#e9f4fa !important;
+  border-color:#acd0e5 !important;
+  color:#2a688b !important;
+}
+body.light-mode .calculator-breadcrumb strong{color:#143d57}
+body.light-mode .back-button{
+  background:#ffffff !important;
+  border-color:#91bfd7 !important;
+  color:#164d70 !important;
+}
+body.light-mode .card{
+  background:linear-gradient(180deg,#ffffff,#f3f8fb) !important;
+  border-color:#bad0df !important;
+  color:#173148 !important;
+}
+body.light-mode .card h2,
+body.light-mode .reference-header{
+  background:linear-gradient(90deg,#dceef8,#cce4f2) !important;
+  color:#153f5b !important;
+}
+body.light-mode .field{
+  background:#f7fbfd !important;
+  border-color:#bfd5e3 !important;
+}
+body.light-mode .field label{color:#425f73 !important}
+body.light-mode select,
+body.light-mode input{
+  background:#ffffff !important;
+  color:#142c40 !important;
+  border-color:#abc6d8 !important;
+}
+body.light-mode .metric-grid .readout,
+body.light-mode .tile{
+  background:linear-gradient(180deg,#ffffff,#eef5f9) !important;
+  border-color:#bfd2df !important;
+}
+body.light-mode .metric-grid .readout span,
+body.light-mode .tile span{color:#60798d !important}
+body.light-mode .metric-grid .readout strong,
+body.light-mode .tile b{color:#173148 !important}
+body.light-mode .result{
+  box-shadow:0 10px 22px rgba(57,92,118,.14) !important;
+}
+body.light-mode .recommend-card,
+body.light-mode .formula-card,
+body.light-mode .reference-section{
+  background:linear-gradient(180deg,#ffffff,#f1f7fa) !important;
+  border-color:#bfd3e1 !important;
+  color:#233f55 !important;
+}
+body.light-mode .recommend-card h3,
+body.light-mode .formula-card h3,
+body.light-mode .reference-header h3{color:#194b6a !important}
+body.light-mode .recommend-card li,
+body.light-mode .formula-card,
+body.light-mode .reference-header p{color:#526d80 !important}
+body.light-mode .ref-table th{
+  background:#e5f0f6 !important;
+  color:#496478 !important;
+}
+body.light-mode .ref-table td{
+  color:#203b50 !important;
+  border-color:#d6e3ec !important;
+}
+body.light-mode .theme-panel{
+  background:linear-gradient(180deg,#ffffff,#edf5f9);
+  border-color:#bad0df;
+  box-shadow:0 12px 25px rgba(55,87,111,.13);
+}
+body.light-mode .theme-panel-title{color:#48687f}
+body.light-mode .theme-option label{
+  background:#f6fafc;
+  border-color:#b8d0df;
+  color:#27465d;
+}
+body.light-mode .theme-option input:checked + label{
+  background:#dceff8;
+  border-color:#5aa9cf;
+  color:#153e58;
+  box-shadow:0 0 0 2px rgba(55,147,190,.12);
+}
+body.light-mode .theme-note{color:#6f8799}
+body.light-mode .footer{color:#71889a !important}
+
+
+/* ===== v7 dashboard and utilities ===== */
+.primary-calculator-grid{
+  display:grid !important;
+  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  grid-template-rows:repeat(3,minmax(0,1fr)) !important;
+  grid-auto-flow:row !important;
+  gap:12px !important;
+}
+.primary-calculator-grid > .launch-tile{
+  grid-column:auto !important;
+  grid-row:auto !important;
+  width:100% !important;
+  min-width:0 !important;
+  min-height:0 !important;
+  height:clamp(250px,38vw,390px) !important;
+  margin:0 !important;
+}
+.primary-calculator-grid .launch-art{
+  width:min(58%,190px) !important;
+  margin:0 auto 10px !important;
+}
+@media(max-width:620px){
+  .primary-calculator-grid{gap:9px !important}
+  .primary-calculator-grid > .launch-tile{
+    height:clamp(218px,58vw,300px) !important;
+    padding:12px 8px !important;
+  }
+  .primary-calculator-grid .launch-art{width:min(54%,120px) !important}
+  .primary-calculator-grid .launch-title{font-size:clamp(15px,4.8vw,21px) !important;line-height:1.08}
+  .primary-calculator-grid .launch-action{font-size:8.5px !important}
+  .primary-calculator-grid .launch-desc{font-size:10px !important}
+}
+
+.utilities-launcher{
+  width:100%;margin-top:12px;padding:16px 18px;display:grid;
+  grid-template-columns:54px minmax(0,1fr) 24px;align-items:center;gap:14px;
+  text-align:left;border:1px solid #566de8;border-radius:18px;
+  background:linear-gradient(115deg,#172b68,#16204a 52%,#281c58);
+  color:#fff;box-shadow:0 14px 28px rgba(0,0,0,.28);cursor:pointer
+}
+.utilities-launcher-icon{
+  width:54px;height:54px;display:grid;place-items:center;border-radius:16px;
+  background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.22);
+  font-size:34px;color:#91dfff
+}
+.utilities-launcher-copy{display:flex;flex-direction:column;gap:4px}
+.utilities-kicker{font-size:9px;letter-spacing:.14em;font-weight:900;color:#91dfff}
+.utilities-launcher-copy strong{font-size:17px}
+.utilities-launcher-copy small{font-size:12px;color:#c7d1ee}
+.utilities-arrow{font-size:34px;color:#91dfff}
+
+.theme-options-three{grid-template-columns:repeat(3,1fr) !important}
+@media(max-width:520px){
+  .theme-options-three label{font-size:12px;padding:0 4px}
+}
+
+.utilities-panel{display:none}
+.utilities-panel.active{display:block}
+.utilities-hero{
+  min-height:190px;padding:28px;display:grid;grid-template-columns:1fr 130px;
+  align-items:center;gap:20px;border:1px solid #5c6fe6;border-radius:18px;
+  background:
+    radial-gradient(circle at 80% 20%,rgba(118,220,255,.23),transparent 28%),
+    linear-gradient(120deg,#172b68,#141e46 58%,#261b56);
+  color:#fff
+}
+.utilities-hero h2{font-size:clamp(30px,5vw,48px);margin:7px 0 9px}
+.utilities-hero p{margin:0;color:#d2d9f1}
+.utilities-hero-mark{
+  width:120px;height:120px;display:grid;place-items:center;border-radius:28px;
+  border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);
+  font-size:76px;color:#90ddff
+}
+.utility-tabs{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0;
+  padding:7px;border:1px solid #243f65;border-radius:15px;background:#07162a
+}
+.utility-tab{
+  min-height:44px;border:1px solid transparent;border-radius:10px;
+  background:transparent;color:#91aac2;font-weight:850;cursor:pointer
+}
+.utility-tab.active{background:#153b64;border-color:#48b8e7;color:#fff}
+.utility-workspace{display:none}
+.utility-workspace.active{display:block}
+.utility-result .big{font-variant-numeric:tabular-nums}
+@media(max-width:620px){
+  .utilities-hero{grid-template-columns:1fr 82px;min-height:160px;padding:19px}
+  .utilities-hero-mark{width:78px;height:78px;font-size:48px;border-radius:21px}
+  .utility-tabs{gap:5px}
+  .utility-tab{font-size:11px}
+}
+
+/* Light utilities theme */
+body.light-mode .utilities-launcher{
+  background:linear-gradient(115deg,#e6ecff,#d7e5fb 52%,#eee6ff);
+  border-color:#8b9dde;color:#243552;box-shadow:0 12px 25px rgba(55,87,111,.14)
+}
+body.light-mode .utilities-launcher-icon{
+  background:#fff;border-color:#aebce8;color:#247ca6
+}
+body.light-mode .utilities-kicker,
+body.light-mode .utilities-arrow{color:#3b73a8}
+body.light-mode .utilities-launcher-copy small{color:#60728d}
+body.light-mode .utilities-hero{
+  background:
+    radial-gradient(circle at 80% 20%,rgba(97,190,229,.18),transparent 28%),
+    linear-gradient(120deg,#e8efff,#dce9f8 58%,#ece6fb);
+  border-color:#a9b8e7;color:#1d3351
+}
+body.light-mode .utilities-hero p{color:#526981}
+body.light-mode .utilities-hero-mark{
+  background:#fff;border-color:#afbee4;color:#287fa7
+}
+body.light-mode .utility-tabs{
+  background:#e8f1f7;border-color:#b9cedd
+}
+body.light-mode .utility-tab{color:#5f7587}
+body.light-mode .utility-tab.active{
+  background:#fff;border-color:#61a9cf;color:#174b6b
+}
+
+
+/* ===== v8 interaction reliability fixes ===== */
+.utility-tab,
+.theme-option label{
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+  user-select:none;
+}
+.utility-tab{
+  position:relative;
+  z-index:3;
+  pointer-events:auto !important;
+}
+.utility-workspace{
+  pointer-events:none;
+}
+.utility-workspace.active{
+  pointer-events:auto;
+}
+.theme-option{
+  position:relative;
+  z-index:3;
+  pointer-events:auto !important;
+}
+.theme-option label{
+  pointer-events:auto !important;
+}
+.footer{
+  padding-bottom:max(26px,env(safe-area-inset-bottom));
+}
+
+
+/* ===== v9 fixes ===== */
+.theme-options-two{
+  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+}
+
+/* Explicit light-mode styling for the final two calculator tiles. */
+body.light-mode .primary-calculator-grid > .calhypo-tile,
+html.light-mode body .primary-calculator-grid > .calhypo-tile{
+  background:
+    radial-gradient(circle at 50% 22%,rgba(86,199,235,.24),transparent 29%),
+    linear-gradient(150deg,#ddf6fc 0%,#c7eaf4 56%,#b1dce9 100%) !important;
+  border-color:#52aeca !important;
+  color:#11799d !important;
+  box-shadow:0 12px 25px rgba(55,87,111,.15),inset 0 1px rgba(255,255,255,.88) !important;
+}
+body.light-mode .primary-calculator-grid > .alkalinity-tile,
+html.light-mode body .primary-calculator-grid > .alkalinity-tile{
+  background:
+    radial-gradient(circle at 50% 22%,rgba(244,214,98,.25),transparent 29%),
+    linear-gradient(150deg,#fff5ce 0%,#f2e2a6 57%,#e3cf7b 100%) !important;
+  border-color:#c7a83a !important;
+  color:#806107 !important;
+  box-shadow:0 12px 25px rgba(55,87,111,.15),inset 0 1px rgba(255,255,255,.88) !important;
+}
+body.light-mode .calhypo-tile .launch-title,
+body.light-mode .calhypo-tile .launch-action,
+body.light-mode .calhypo-tile .launch-desc{
+  color:#176d89 !important;
+  opacity:1 !important;
+}
+body.light-mode .alkalinity-tile .launch-title,
+body.light-mode .alkalinity-tile .launch-action,
+body.light-mode .alkalinity-tile .launch-desc{
+  color:#725605 !important;
+  opacity:1 !important;
+}
+body.light-mode .calhypo-tile::before,
+body.light-mode .alkalinity-tile::before{
+  opacity:.10 !important;
+}
+
+
+/* v11 dark-only build */
+html{color-scheme:dark}
+body{background:#020b16!important;color:#eef6ff!important}
+.footer{padding-bottom:max(28px,env(safe-area-inset-bottom))}
+.utility-workspace[hidden]{display:none!important}
+
+
+/* ===== v11 Pump Curve + Incident PDF ===== */
+.pump-launcher,.incident-launcher{
+  width:100%;margin-top:12px;padding:16px 18px;display:grid;
+  grid-template-columns:54px minmax(0,1fr) 24px;align-items:center;gap:14px;
+  text-align:left;border-radius:18px;color:#fff;box-shadow:0 14px 28px rgba(0,0,0,.28);cursor:pointer
+}
+.pump-launcher{border:1px solid #54a8ff;background:linear-gradient(115deg,#0d3d6e,#0a294c 55%,#161f4a)}
+.incident-launcher{border:1px solid #34c881;background:linear-gradient(115deg,#0d513e,#0a2f2a 55%,#102f42)}
+.module-launcher-icon{width:54px;height:54px;display:grid;place-items:center;border-radius:16px;background:rgba(255,255,255,.10);font-size:28px}
+.module-launcher-copy{display:flex;flex-direction:column;gap:4px}
+.module-kicker{font-size:9px;letter-spacing:.14em;font-weight:900;color:#8bdcff}
+.incident-launcher .module-kicker{color:#82efbd}
+.module-launcher-copy strong{font-size:18px}.module-launcher-copy small{font-size:12px;color:#c8d7e7}.module-arrow{font-size:34px;color:#91dfff}
+.pump-panel,.incident-panel{display:none}.pump-panel.active,.incident-panel.active{display:block}
+.pump-hero,.incident-hero{display:grid;grid-template-columns:minmax(0,1fr) 125px;align-items:center;gap:18px;padding:25px;border-radius:18px}
+.pump-hero{border:1px solid #4ca7ff;background:linear-gradient(120deg,#0b3d70,#092a4d 62%,#161f4d)}
+.incident-hero{border:1px solid #34c881;background:linear-gradient(120deg,#0b4938,#092a2b 62%,#102a45)}
+.pump-hero h2,.incident-hero h2{font-size:clamp(30px,5vw,46px);margin:6px 0}.pump-hero p,.incident-hero p{margin:0;color:#cce1ef}
+.pump-hero-icon{width:110px;height:110px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.2);border-radius:24px;background:rgba(0,0,0,.15);font-size:55px}
+.pump-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:13px 0;padding:7px;border:1px solid #234767;border-radius:14px;background:#07172a}
+.pump-tab{min-height:43px;border:1px solid transparent;border-radius:9px;background:transparent;color:#829db5;font-weight:850}.pump-tab.active{background:#123e68;border-color:#48b8e7;color:#fff}
+.pump-workspace{display:none}.pump-workspace.active{display:block}
+.curve-point-header,.curve-point-row{display:grid;grid-template-columns:48px 1fr 1fr;gap:8px;align-items:center}
+.curve-point-header{padding:0 4px 6px;color:#819db4;font-size:10px;font-weight:900;text-transform:uppercase}
+.curve-point-row{margin-bottom:7px}.curve-point-row span{display:grid;place-items:center;height:42px;border:1px solid #244866;border-radius:9px;background:#071729;color:#7fa0b8;font-weight:800}.curve-point-row input{padding:10px}
+.pump-chart-card{padding:12px;border:1px solid #224a6e;border-radius:16px;background:#051528}
+#pumpCurveCanvas{display:block;width:100%;height:auto;border-radius:11px;background:#03101f}
+.chart-legend{display:flex;flex-wrap:wrap;gap:13px;padding:10px 3px 0;color:#91a9bd;font-size:11px}.chart-legend span{display:flex;align-items:center;gap:6px}.chart-legend i{width:17px;height:3px;border-radius:3px}.legend-pump{background:#4ec3ff}.legend-system{background:#ffb34c}.legend-point{background:#69ed9f}
+.pump-result{margin-top:12px}
+.incident-timer{height:95px;border:1px solid rgba(255,255,255,.18);border-radius:18px;background:rgba(0,0,0,.18);display:flex;flex-direction:column;align-items:center;justify-content:center}.incident-timer span{font-size:10px;color:#94c8b5;text-transform:uppercase}.incident-timer strong{font-size:24px;margin-top:5px}
+.incident-progress{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:13px 0}.incident-progress div{padding:10px;border:1px solid #244567;border-radius:11px;text-align:center;color:#7894ad;font-size:12px;font-weight:800}.incident-progress .active{border-color:#42d690;background:#0d3a31;color:white}
+.incident-step{display:none}.incident-step.active{display:block}
+.incident-pool-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;max-height:265px;overflow:auto;margin-top:9px}.incident-pool-chip{min-height:42px;padding:8px;border:1px solid #294d6c;border-radius:10px;background:#06172a;color:#c5d7e7;text-align:left;font-size:11px;font-weight:700}.incident-pool-chip.selected{background:#0e4a39;border-color:#42d690;color:#fff}.incident-selection{margin-top:10px;color:#75ddb0;font-size:12px}
+.incident-choice-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.incident-choice-grid.three{grid-template-columns:repeat(3,1fr)}.incident-choice-grid button{min-height:47px;border:1px solid #2b506f;border-radius:11px;background:#07182b;color:#d1dfeb;font-weight:800}.incident-choice-grid button.selected{border-color:#42d690;background:#0d4535;color:#fff}
+.incident-toggle{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:15px;border:1px solid #1d3b5a;border-radius:12px;background:rgba(4,15,31,.44)}.incident-toggle small{display:block;color:#829bb2;margin-top:4px}.incident-switch input{display:none}.incident-switch span{display:block;width:55px;height:31px;border-radius:20px;background:#29445d;position:relative}.incident-switch span:after{content:"";position:absolute;width:25px;height:25px;border-radius:50%;background:#fff;top:3px;left:3px;transition:.2s}.incident-switch input:checked+span{background:#24b56e}.incident-switch input:checked+span:after{left:27px}
+.incident-conditional{display:none}.incident-conditional.show{display:block}.incident-error{min-height:18px;color:#ff7f89;font-size:12px}.incident-actions{display:grid;grid-template-columns:.7fr 1.3fr;gap:9px}.primary-action,.secondary-action{min-height:48px;border-radius:12px;padding:0 16px;font-weight:850}.primary-action{width:100%;border:1px solid #42d690;background:#15784f;color:#fff}.secondary-action{border:1px solid #315576;background:#08182a;color:#d8e7f3}.secondary-action.full{width:100%;margin-top:9px}.secondary-action.compact{min-height:39px}
+.incident-review{display:grid;gap:8px}.incident-review-row{display:grid;grid-template-columns:145px 1fr;gap:11px;padding:11px;border:1px solid #1d3f5d;border-radius:10px;background:#061629}.incident-review-row span{color:#7f9ab1;font-size:10px;text-transform:uppercase}.incident-review-row strong{font-size:13px;word-break:break-word}
+.pdf-notice{display:flex;flex-direction:column;gap:4px;margin:14px 0;padding:13px;border:1px solid #705e20;border-radius:11px;background:#2d260b;color:#f4dd7a}.pdf-notice span{font-size:12px;color:#d7c78c}.incident-status{min-height:24px;margin-top:9px;color:#79e6b5;text-align:center;font-size:12px}.incident-draft{margin-top:13px;padding:13px;border:1px solid #244567;border-radius:14px;background:#07172a;display:flex;align-items:center;justify-content:space-between;gap:10px}.incident-draft span{display:block;color:#7894ad;font-size:12px;margin-top:3px}
+@media(max-width:600px){.pump-hero,.incident-hero{grid-template-columns:1fr 84px;padding:18px}.pump-hero-icon{width:78px;height:78px;font-size:39px}.incident-timer{height:80px}.incident-review-row{grid-template-columns:105px 1fr}.incident-pool-grid{grid-template-columns:1fr 1fr}.pump-tab{font-size:11px}}
+
 </style>
 </head>
 <body>
 <div class="wrap">
-<section class="hero"><h1>SeaWorld Dosage Calculators</h1><p>Water chemistry calculators for SeaWorld aquatic systems.</p></section>
-
+<section class="hero header-clean">
+<svg aria-hidden="true" class="hero-wave" preserveaspectratio="none" viewbox="0 0 700 330"><defs><lineargradient id="h2" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#36c6ff" stop-opacity=".12"></stop><stop offset=".5" stop-color="#0d83d9" stop-opacity=".58"></stop><stop offset="1" stop-color="#002b68" stop-opacity=".86"></stop></lineargradient></defs><path d="M0 210C110 150 180 225 280 162c90-58 170-82 270-28 52 28 99 28 150 5v191H0z" fill="url(#h2)"></path><path d="M15 198c85-38 130-2 185 7 76 13 119-74 203-72 84 2 126 61 202 52 35-4 66-15 95-34" fill="none" opacity=".58" stroke="#baf1ff" stroke-width="6"></path></svg>
+<div class="clean-header-layout"><div class="clean-brand"><div class="eyebrow">AQUATIC OPERATIONS</div><h1>SeaWorld</h1><div class="product-title">Water Chemistry Console</div><p>Chemical dosing tools and pool-specific operational references.</p></div><aside class="clean-status"><div class="status-head">SYSTEM</div><div class="online-row"><span class="online-dot"></span><strong id="onlineStatus">System Online</strong></div><div class="status-row2"><span>Date</span><strong id="headerDate">—</strong></div><div class="status-row2"><span>Time</span><strong id="headerTime">—</strong></div><div class="status-row2"><span>Calculators</span><strong>6 Active</strong></div></aside></div></section>
 <div class="tabs">
 <button class="tab active" id="tabSoda" onclick="showTab('soda')">Soda Ash</button>
 <button class="tab" id="tabFC" onclick="showTab('fc')">Chlorine Feed</button>
 <button class="tab" id="tabCYA" onclick="showTab('cya')">CYA Dosing</button>
 </div>
+<section class="ops-dashboard" id="opsDashboard">
+<div class="dashboard-simple primary-calculator-grid">
+<button aria-label="Open Soda Ash calculator" class="launch-tile" onclick="showTab('soda')">
+<div class="launch-art">
+<svg aria-hidden="true" viewbox="0 0 160 160">
+<defs>
+<lineargradient id="sg" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#f4fff6"></stop><stop offset="1" stop-color="#9fe7aa"></stop></lineargradient>
+<filter id="sd"><fedropshadow dx="0" dy="6" flood-opacity=".4" stddeviation="6"></fedropshadow></filter>
+</defs>
+<circle cx="80" cy="80" fill="#0b5327" r="67" stroke="#59e477" stroke-width="3"></circle>
+<g filter="url(#sd)">
+<path d="M48 47h55l-4 14H52z" fill="#e9fff0"></path>
+<rect fill="url(#sg)" height="56" rx="8" stroke="#d9ffe2" stroke-width="2" width="50" x="51" y="59"></rect>
+<path d="M94 98c20 2 35 10 42 28H55c8-19 21-28 39-28z" fill="#f5fff7"></path>
+<circle cx="76" cy="83" fill="#2faf52" r="12"></circle>
+<path d="M76 72l7 9-7 9-7-9z" fill="#e8ffed"></path>
+</g>
+</svg>
+</div>
+<div class="launch-title">Dose Soda Ash</div><div class="launch-action">Raise pH</div><div class="launch-desc">Target pH 7.6</div>
+</button><button aria-label="Open Chlorine Feed calculator" class="launch-tile" onclick="showTab('fc')">
+<div class="launch-art">
+<svg aria-hidden="true" viewbox="0 0 160 160">
+<defs><lineargradient id="cg" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#bff4ff"></stop><stop offset=".55" stop-color="#21b9ff"></stop><stop offset="1" stop-color="#0766d9"></stop></lineargradient>
+<filter id="cd"><fedropshadow dx="0" dy="7" flood-opacity=".45" stddeviation="6"></fedropshadow></filter></defs>
+<circle cx="80" cy="80" fill="#063865" r="67" stroke="#20afff" stroke-width="3"></circle>
+<path d="M80 31c-17 27-35 46-35 69 0 20 16 35 35 35s35-15 35-35c0-23-18-42-35-69z" fill="url(#cg)" filter="url(#cd)" stroke="#caf5ff" stroke-width="2"></path>
+<path d="M67 102c2 10 10 16 20 17-15 6-30-4-31-19-1-12 7-24 17-38-6 19-9 30-6 40z" fill="#e8fbff" opacity=".72"></path>
+</svg>
+</div>
+<div class="launch-title">Increase Chlorine</div><div class="launch-action">Manual Feed</div><div class="launch-desc">Calculated runtime</div>
+</button><button aria-label="Open CYA Dosing calculator" class="launch-tile" onclick="showTab('cya')">
+<div class="launch-art">
+<svg aria-hidden="true" viewbox="0 0 160 160">
+<defs><lineargradient id="yg" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#fff6c7"></stop><stop offset=".45" stop-color="#fdbb24"></stop><stop offset="1" stop-color="#a85b00"></stop></lineargradient>
+<filter id="yd"><fedropshadow dx="0" dy="7" flood-opacity=".45" stddeviation="6"></fedropshadow></filter></defs>
+<circle cx="80" cy="80" fill="#65400a" r="67" stroke="#f2a900" stroke-width="3"></circle>
+<path d="M80 34l39 14v30c0 27-17 42-39 51-22-9-39-24-39-51V48z" fill="url(#yg)" filter="url(#yd)" stroke="#fff3bb" stroke-width="3"></path>
+<path d="M59 79l13 14 29-31" fill="none" stroke="#6d4500" stroke-linecap="round" stroke-linejoin="round" stroke-width="11"></path>
+</svg>
+</div>
+<div class="launch-title">Dose Stabilizer</div><div class="launch-action">Increase CYA</div><div class="launch-desc">Target 14 ppm</div>
+</button><button aria-label="Open Dechlorination calculator" class="launch-tile" onclick="showTab('dechlor')">
+<div class="launch-art">
+<svg aria-hidden="true" viewbox="0 0 160 160">
+<defs><lineargradient id="dg" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#ff8a8f"></stop><stop offset=".45" stop-color="#ff3c49"></stop><stop offset="1" stop-color="#b80022"></stop></lineargradient>
+<filter id="dd"><fedropshadow dx="0" dy="7" flood-opacity=".45" stddeviation="6"></fedropshadow></filter></defs>
+<circle cx="80" cy="80" fill="#5c1420" r="67" stroke="#ff3c49" stroke-width="3"></circle>
+<path d="M64 33h32v55h24l-40 43-40-43h24z" fill="url(#dg)" filter="url(#dd)" stroke="#ffc6c9" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<div class="launch-title">Neutralize Chlorine</div><div class="launch-action">Lower FC</div><div class="launch-desc">Sodium thiosulfate</div>
+</button><button class="launch-tile tile-cal" onclick="showTab('calhypo')"><div class="launch-art"><div class="simple-icon">🪣</div></div><div class="launch-title">Manual Chlorination</div><div class="launch-action">Granular Cal Hypo</div><div class="launch-desc">Pulsar® products</div></button><button class="launch-tile tile-alk" onclick="showTab('alk')"><div class="launch-art"><div class="simple-icon">⚖️</div></div><div class="launch-title">Alkalinity</div><div class="launch-action">Sodium Bicarbonate</div><div class="launch-desc">Raise total alkalinity</div></button>
+</div>
+<button aria-label="Open utility calculators" class="utilities-launcher" onclick="showTab('utilities')">
+<div class="utilities-launcher-icon">⌁</div>
+<div class="utilities-launcher-copy">
+<span class="utilities-kicker">FIELD UTILITIES</span>
+<strong>LSI, Unit Conversion &amp; Dilution</strong>
+<small>Three supporting tools in one workspace</small>
+</div>
+<span class="utilities-arrow">›</span>
+</button>
 
-<section class="panel active" id="sodaPanel">
+<button class="pump-launcher" onclick="showTab('pump')" aria-label="Open pump curve calculator">
+  <div class="module-launcher-icon">📈</div>
+  <div class="module-launcher-copy">
+    <span class="module-kicker">HYDRAULICS</span>
+    <strong>Pump Curve Calculator</strong>
+    <small>Operating point, TDH, VFD prediction and live graph</small>
+  </div>
+  <span class="module-arrow">›</span>
+</button>
+
+<button class="incident-launcher" onclick="showTab('incident')" aria-label="Open incident report">
+  <div class="module-launcher-icon">📞</div>
+  <div class="module-launcher-copy">
+    <span class="module-kicker">HOTLINE & OPERATIONS</span>
+    <strong>Incident Report</strong>
+    <small>Create a PDF and share it by email</small>
+  </div>
+  <span class="module-arrow">›</span>
+</button>
+
+</section>
+<section class="panel calculator-shell" id="sodaPanel">
+<div class="calculator-breadcrumb">
+<button class="back-button" onclick="showTab('home')">← Dashboard</button>
+<span class="breadcrumb-separator">/</span>
+<strong>Soda Ash</strong>
+</div>
+<div class="calc-visual soda">
+<div class="calc-visual-copy">
+<span class="calc-kicker">SODA ASH</span>
+<h2>Raise pH</h2>
+<p>Staged sodium carbonate dosing • Target pH 7.6</p>
+</div>
+<div class="calc-visual-icon"><svg aria-hidden="true" viewbox="0 0 160 160">
+<defs>
+<lineargradient id="sg" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#f4fff6"></stop><stop offset="1" stop-color="#9fe7aa"></stop></lineargradient>
+<filter id="sd"><fedropshadow dx="0" dy="6" flood-opacity=".4" stddeviation="6"></fedropshadow></filter>
+</defs>
+<circle cx="80" cy="80" fill="#0b5327" r="67" stroke="#59e477" stroke-width="3"></circle>
+<g filter="url(#sd)">
+<path d="M48 47h55l-4 14H52z" fill="#e9fff0"></path>
+<rect fill="url(#sg)" height="56" rx="8" stroke="#d9ffe2" stroke-width="2" width="50" x="51" y="59"></rect>
+<path d="M94 98c20 2 35 10 42 28H55c8-19 21-28 39-28z" fill="#f5fff7"></path>
+<circle cx="76" cy="83" fill="#2faf52" r="12"></circle>
+<path d="M76 72l7 9-7 9-7-9z" fill="#e8ffed"></path>
+</g>
+</svg></div>
+</div>
 <div class="grid">
 <div class="card">
 <h2>Soda Ash Inputs</h2>
 <div class="card-body">
-<div class="field"><label for="sodaPool">Body of Water</label><select id="sodaPool"><option value="0" selected>501 — Cutback Cove</option>
+<div class="field"><label for="sodaPool">Body of Water</label><select id="sodaPool"><option selected="" value="0">501 — Cutback Cove</option>
 <option value="1">502 — Big Surf Shores</option>
 <option value="2">503 — Omaka Rocka</option>
 <option value="3">504 — Katas Kookaburra</option>
-<option value="4">505 — Roa&#x27;s Rapids</option>
+<option value="4">505 — Roa's Rapids</option>
 <option value="5">506 — Whanau Way</option>
 <option value="6">507 — Walkabout Waters</option>
 <option value="7">508 — Ray Rush/Whahalla Wave</option>
@@ -128,18 +1089,17 @@ input.invalid{border-color:var(--error);background:var(--errorbg)}
 <option value="23">Freshwater Oasis</option></select></div>
 <div class="field">
 <label for="currentPH">Current pH</label>
-<input id="currentPH" type="number" min="4.0" max="7.6" step="0.1" value="6.0" inputmode="decimal">
+<input id="currentPH" inputmode="decimal" max="7.6" min="4.0" step="0.1" type="number" value="6.0"/>
 <div class="help">Supported calculation range: pH 4.0–7.6</div>
 <div class="error" id="phError">Enter a pH between 4.0 and 7.6.</div>
 </div>
-<div class="field"><label>Goal pH</label><input value="7.6" readonly></div>
+<div class="field"><label>Goal pH</label><input readonly="" value="7.6"/></div>
 <div class="readout"><span>Pool number</span><strong id="sodaId">501</strong></div>
 <div class="readout"><span>Volume</span><strong id="sodaVolume">511,740 gal</strong></div>
 <div class="readout"><span>pH increase</span><strong id="phShift">1.6 units</strong></div>
 <div class="readout"><span>Calculated rate</span><strong id="sodaRate">3.00 lb/10k gal</strong></div>
 </div>
 </div>
-
 <div class="card">
 <h2>Estimated Soda Ash Dose</h2>
 <div class="card-body">
@@ -153,20 +1113,44 @@ input.invalid{border-color:var(--error);background:var(--errorbg)}
 </div>
 </div>
 </div>
+<div class="reference-section">
+<div class="reference-header"><h3>Quick Reference — Soda Ash for +0.5 pH</h3><p>Same proportional model as the calculator.</p></div>
+<div class="table-wrap"><table class="ref-table">
+<thead><tr><th>Body of Water</th><th>Dose</th></tr></thead>
+<tbody><tr><td>501 - Cutback Cove</td><td>48.0 lb</td></tr><tr><td>502 - Big Surf Shores</td><td>47.6 lb</td></tr><tr><td>503 - Omaka Rocka</td><td>2.1 lb</td></tr><tr><td>504 - Katas Kookaburra</td><td>7.4 lb</td></tr><tr><td>505 - Roa's Rapids</td><td>87.9 lb</td></tr><tr><td>506 - Whanau Way</td><td>8.9 lb</td></tr><tr><td>507 - Walkabout Waters</td><td>15.9 lb</td></tr><tr><td>508 - Ray Rush/Whahalla Wave</td><td>8.7 lb</td></tr><tr><td>509 - Loggerhead/Tassie</td><td>37.3 lb</td></tr><tr><td>510 - Dolphin Plunge</td><td>2.1 lb</td></tr><tr><td>520 - Ihu Breakaway Falls</td><td>1.5 lb</td></tr><tr><td>530 - Taumata Racer</td><td>1.2 lb</td></tr><tr><td>540 - KareKareKurl</td><td>1.4 lb</td></tr><tr><td>550 - Riptide</td><td>2.0 lb</td></tr><tr><td>Infinity Falls 1</td><td>56.2 lb</td></tr><tr><td>Infinity Falls 2</td><td>28.1 lb</td></tr><tr><td>Kraken</td><td>4.5 lb</td></tr><tr><td>Manta Pond</td><td>28.1 lb</td></tr><tr><td>Main Gate</td><td>75.0 lb</td></tr><tr><td>Journey to Atlantis</td><td>75.0 lb</td></tr><tr><td>Sesame</td><td>0.8 lb</td></tr><tr><td>Pearl</td><td>4.7 lb</td></tr><tr><td>Tropical River/Resort Pool</td><td>112.5 lb</td></tr><tr><td>Freshwater Oasis</td><td>87.4 lb</td></tr></tbody></table></div>
+</div>
 <div class="formula" id="sodaFormula"></div>
 <div class="note"><strong>Model limitation:</strong> Soda ash is scaled from 3.0 lb per 10,000 gallons for pH 6.0 → 7.6. Values below pH 6.0 are extrapolated from that same proportional model. Verify very low readings with a calibrated meter and use staged additions.</div>
 </section>
-
-<section class="panel" id="fcPanel">
+<section class="panel calculator-shell" id="fcPanel">
+<div class="calculator-breadcrumb">
+<button class="back-button" onclick="showTab('home')">← Dashboard</button>
+<span class="breadcrumb-separator">/</span>
+<strong>Chlorine Feed</strong>
+</div>
+<div class="calc-visual fc">
+<div class="calc-visual-copy">
+<span class="calc-kicker">CHLORINE FEED</span>
+<h2>Increase Free Chlorine</h2>
+<p>Manual chemical-feed duration calculator</p>
+</div>
+<div class="calc-visual-icon"><svg aria-hidden="true" viewbox="0 0 160 160">
+<defs><lineargradient id="cg" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#bff4ff"></stop><stop offset=".55" stop-color="#21b9ff"></stop><stop offset="1" stop-color="#0766d9"></stop></lineargradient>
+<filter id="cd"><fedropshadow dx="0" dy="7" flood-opacity=".45" stddeviation="6"></fedropshadow></filter></defs>
+<circle cx="80" cy="80" fill="#063865" r="67" stroke="#20afff" stroke-width="3"></circle>
+<path d="M80 31c-17 27-35 46-35 69 0 20 16 35 35 35s35-15 35-35c0-23-18-42-35-69z" fill="url(#cg)" filter="url(#cd)" stroke="#caf5ff" stroke-width="2"></path>
+<path d="M67 102c2 10 10 16 20 17-15 6-30-4-31-19-1-12 7-24 17-38-6 19-9 30-6 40z" fill="#e8fbff" opacity=".72"></path>
+</svg></div>
+</div>
 <div class="grid">
 <div class="card">
 <h2>Chlorine Feed Inputs</h2>
 <div class="card-body">
-<div class="field"><label for="fcPool">Body of Water</label><select id="fcPool"><option value="0" selected>501 — Cutback Cove</option>
+<div class="field"><label for="fcPool">Body of Water</label><select id="fcPool"><option selected="" value="0">501 — Cutback Cove</option>
 <option value="1">502 — Big Surf Shores</option>
 <option value="2">503 — Omaka Rocka</option>
 <option value="3">504 — Katas Kookaburra</option>
-<option value="4">505 — Roa&#x27;s Rapids</option>
+<option value="4">505 — Roa's Rapids</option>
 <option value="5">506 — Whanau Way</option>
 <option value="6">507 — Walkabout Waters</option>
 <option value="7">508 — Ray Rush/Whahalla Wave</option>
@@ -188,7 +1172,7 @@ input.invalid{border-color:var(--error);background:var(--errorbg)}
 <option value="23">Freshwater Oasis</option></select></div>
 <div class="field">
 <label for="desiredFC">Desired FC Increase (ppm)</label>
-<input id="desiredFC" type="number" min="0.1" max="60" step="0.1" value="3.0" inputmode="decimal">
+<input id="desiredFC" inputmode="decimal" max="60" min="0.1" step="0.1" type="number" value="3.0"/>
 <div class="help">Supported calculation range: 0.1–60.0 ppm</div>
 <div class="error" id="fcError">Enter an FC increase between 0.1 and 60.0 ppm.</div>
 </div>
@@ -198,7 +1182,6 @@ input.invalid{border-color:var(--error);background:var(--errorbg)}
 <div class="readout"><span>Feed rate basis</span><strong>5 minutes</strong></div>
 </div>
 </div>
-
 <div class="card">
 <h2>Required Manual Feed</h2>
 <div class="card-body">
@@ -212,21 +1195,44 @@ input.invalid{border-color:var(--error);background:var(--errorbg)}
 </div>
 </div>
 </div>
+<div class="reference-section">
+<div class="reference-header"><h3>Quick Reference — FC Rise from 5-Minute Feed</h3><p>Expected FC increase from one 5-minute feed.</p></div>
+<div class="table-wrap"><table class="ref-table">
+<thead><tr><th>Body of Water</th><th>FC Rise</th></tr></thead>
+<tbody><tr><td>501 - Cutback Cove</td><td>0.42 ppm</td></tr><tr><td>502 - Big Surf Shores</td><td>0.42 ppm</td></tr><tr><td>503 - Omaka Rocka</td><td>0.50 ppm</td></tr><tr><td>504 - Katas Kookaburra</td><td>1.35 ppm</td></tr><tr><td>505 - Roa's Rapids</td><td>0.34 ppm</td></tr><tr><td>506 - Whanau Way</td><td>1.12 ppm</td></tr><tr><td>507 - Walkabout Waters</td><td>1.25 ppm</td></tr><tr><td>508 - Ray Rush/Whahalla Wave</td><td>0.58 ppm</td></tr><tr><td>509 - Loggerhead/Tassie</td><td>0.54 ppm</td></tr><tr><td>510 - Dolphin Plunge</td><td>0.72 ppm</td></tr><tr><td>520 - Ihu Breakaway Falls</td><td>1.00 ppm</td></tr><tr><td>530 - Taumata Racer</td><td>1.31 ppm</td></tr><tr><td>540 - KareKareKurl</td><td>3.56 ppm</td></tr><tr><td>550 - Riptide</td><td>0.77 ppm</td></tr><tr><td>Infinity Falls 1</td><td>0.18 ppm</td></tr><tr><td>Infinity Falls 2</td><td>0.36 ppm</td></tr><tr><td>Kraken</td><td>1.89 ppm</td></tr><tr><td>Manta Pond</td><td>0.30 ppm</td></tr><tr><td>Main Gate</td><td>0.34 ppm</td></tr><tr><td>Journey to Atlantis</td><td>0.27 ppm</td></tr><tr><td>Sesame</td><td>1.83 ppm</td></tr><tr><td>Pearl</td><td>0.32 ppm</td></tr><tr><td>Tropical River/Resort Pool</td><td>0.36 ppm</td></tr><tr><td>Freshwater Oasis</td><td>0.34 ppm</td></tr></tbody></table></div>
+</div>
 <div class="formula" id="fcFormula"></div>
 <div class="note"><strong>Assumption:</strong> FC gain scales linearly with feed duration and feed rate remains constant. Actual FC rise may be reduced by chlorine demand, sunlight, mixing, or concurrent chemical feed. High-target calculations should be staged and verified.</div>
 </section>
-
-
-<section class="panel" id="cyaPanel">
+<section class="panel calculator-shell" id="cyaPanel">
+<div class="calculator-breadcrumb">
+<button class="back-button" onclick="showTab('home')">← Dashboard</button>
+<span class="breadcrumb-separator">/</span>
+<strong>CYA Dosing</strong>
+</div>
+<div class="calc-visual cya">
+<div class="calc-visual-copy">
+<span class="calc-kicker">CYA DOSING</span>
+<h2>Dose Stabilizer</h2>
+<p>Cyanuric acid dosing • Target CYA 14 ppm</p>
+</div>
+<div class="calc-visual-icon"><svg aria-hidden="true" viewbox="0 0 160 160">
+<defs><lineargradient id="yg" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#fff6c7"></stop><stop offset=".45" stop-color="#fdbb24"></stop><stop offset="1" stop-color="#a85b00"></stop></lineargradient>
+<filter id="yd"><fedropshadow dx="0" dy="7" flood-opacity=".45" stddeviation="6"></fedropshadow></filter></defs>
+<circle cx="80" cy="80" fill="#65400a" r="67" stroke="#f2a900" stroke-width="3"></circle>
+<path d="M80 34l39 14v30c0 27-17 42-39 51-22-9-39-24-39-51V48z" fill="url(#yg)" filter="url(#yd)" stroke="#fff3bb" stroke-width="3"></path>
+<path d="M59 79l13 14 29-31" fill="none" stroke="#6d4500" stroke-linecap="round" stroke-linejoin="round" stroke-width="11"></path>
+</svg></div>
+</div>
 <div class="grid">
 <div class="card">
 <h2>CYA Dosing Inputs</h2>
 <div class="card-body">
-<div class="field"><label for="cyaPool">Body of Water</label><select id="cyaPool" onchange="updateCYA()" oninput="updateCYA()"><option value="0" selected>501 — Cutback Cove</option>
+<div class="field"><label for="cyaPool">Body of Water</label><select id="cyaPool" onchange="updateCYA()" oninput="updateCYA()"><option selected="" value="0">501 — Cutback Cove</option>
 <option value="1">502 — Big Surf Shores</option>
 <option value="2">503 — Omaka Rocka</option>
 <option value="3">504 — Katas Kookaburra</option>
-<option value="4">505 — Roa&#x27;s Rapids</option>
+<option value="4">505 — Roa's Rapids</option>
 <option value="5">506 — Whanau Way</option>
 <option value="6">507 — Walkabout Waters</option>
 <option value="7">508 — Ray Rush/Whahalla Wave</option>
@@ -248,18 +1254,17 @@ input.invalid{border-color:var(--error);background:var(--errorbg)}
 <option value="23">Freshwater Oasis</option></select></div>
 <div class="field">
 <label for="currentCYA">Current CYA (ppm)</label>
-<input id="currentCYA" type="number" oninput="updateCYA()" onchange="updateCYA()" min="0" max="200" step="0.1" value="7.0" inputmode="decimal">
+<input id="currentCYA" inputmode="decimal" max="200" min="0" onchange="updateCYA()" oninput="updateCYA()" step="0.1" type="number" value="7.0"/>
 <div class="help">Supported calculation range: 0–200 ppm</div>
 <div class="error" id="cyaError">Enter a CYA value between 0 and 200 ppm.</div>
 </div>
-<div class="field"><label>Goal CYA</label><input value="14 ppm" readonly></div>
+<div class="field"><label>Goal CYA</label><input readonly="" value="14 ppm"/></div>
 <div class="readout"><span>Pool number</span><strong id="cyaId">501</strong></div>
 <div class="readout"><span>Volume</span><strong id="cyaVolume">511,740 gal</strong></div>
 <div class="readout"><span>CYA increase needed</span><strong id="cyaIncrease">7.0 ppm</strong></div>
 <div class="readout"><span>Product per 1 ppm</span><strong id="cyaPerPpm">4.26 lb</strong></div>
 </div>
 </div>
-
 <div class="card">
 <h2>Estimated CYA Dose</h2>
 <div class="card-body">
@@ -280,288 +1285,1164 @@ input.invalid{border-color:var(--error);background:var(--errorbg)}
 </div>
 </div>
 </div>
+<div class="reference-section">
+<div class="reference-header"><h3>Quick Reference — CYA for +1 ppm</h3><p>Pure cyanuric acid required for a 1 ppm increase.</p></div>
+<div class="table-wrap"><table class="ref-table">
+<thead><tr><th>Body of Water</th><th>Dose</th></tr></thead>
+<tbody><tr><td>501 - Cutback Cove</td><td>4.26 lb</td></tr><tr><td>502 - Big Surf Shores</td><td>4.23 lb</td></tr><tr><td>503 - Omaka Rocka</td><td>0.19 lb</td></tr><tr><td>504 - Katas Kookaburra</td><td>0.66 lb</td></tr><tr><td>505 - Roa's Rapids</td><td>7.81 lb</td></tr><tr><td>506 - Whanau Way</td><td>0.79 lb</td></tr><tr><td>507 - Walkabout Waters</td><td>1.42 lb</td></tr><tr><td>508 - Ray Rush/Whahalla Wave</td><td>0.77 lb</td></tr><tr><td>509 - Loggerhead/Tassie</td><td>3.31 lb</td></tr><tr><td>510 - Dolphin Plunge</td><td>0.19 lb</td></tr><tr><td>520 - Ihu Breakaway Falls</td><td>0.13 lb</td></tr><tr><td>530 - Taumata Racer</td><td>0.10 lb</td></tr><tr><td>540 - KareKareKurl</td><td>0.12 lb</td></tr><tr><td>550 - Riptide</td><td>0.17 lb</td></tr><tr><td>Infinity Falls 1</td><td>5.00 lb</td></tr><tr><td>Infinity Falls 2</td><td>2.50 lb</td></tr><tr><td>Kraken</td><td>0.40 lb</td></tr><tr><td>Manta Pond</td><td>2.50 lb</td></tr><tr><td>Main Gate</td><td>6.67 lb</td></tr><tr><td>Journey to Atlantis</td><td>6.67 lb</td></tr><tr><td>Sesame</td><td>0.07 lb</td></tr><tr><td>Pearl</td><td>0.42 lb</td></tr><tr><td>Tropical River/Resort Pool</td><td>10.00 lb</td></tr><tr><td>Freshwater Oasis</td><td>7.77 lb</td></tr></tbody></table></div>
+</div>
 <div class="formula" id="cyaFormula"></div>
 <div class="note"><strong>Dosing basis:</strong> Pure cyanuric acid is calculated at approximately 0.0833 lb per 10,000 gallons for each 1 ppm increase. Product purity and application method may require adjustment.</div>
 </section>
-
-<div class="footer">Offline-capable PWA • Build v10 • Add to Home Screen from Safari</div>
+<section class="panel calculator-shell" id="dechlorPanel">
+<div class="calculator-breadcrumb">
+<button class="back-button" onclick="showTab('home')">← Dashboard</button>
+<span class="breadcrumb-separator">/</span>
+<strong>Dechlorination</strong>
 </div>
+<div class="calc-visual dechlor">
+<div class="calc-visual-copy">
+<span class="calc-kicker">DECHLORINATION</span>
+<h2>Neutralize Chlorine</h2>
+<p>Sodium thiosulfate pentahydrate dosing</p>
+</div>
+<div class="calc-visual-icon"><svg aria-hidden="true" viewbox="0 0 160 160">
+<defs><lineargradient id="dg" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#ff8a8f"></stop><stop offset=".45" stop-color="#ff3c49"></stop><stop offset="1" stop-color="#b80022"></stop></lineargradient>
+<filter id="dd"><fedropshadow dx="0" dy="7" flood-opacity=".45" stddeviation="6"></fedropshadow></filter></defs>
+<circle cx="80" cy="80" fill="#5c1420" r="67" stroke="#ff3c49" stroke-width="3"></circle>
+<path d="M64 33h32v55h24l-40 43-40-43h24z" fill="url(#dg)" filter="url(#dd)" stroke="#ffc6c9" stroke-linejoin="round" stroke-width="2"></path>
+</svg></div>
+</div>
+<div class="grid">
+<div class="card">
+<h2>Dechlorination Inputs</h2>
+<div class="card-body">
+<div class="field"><label for="dechlorPool">Body of Water</label><select id="dechlorPool"><option selected="" value="0">501 — Cutback Cove</option>
+<option value="1">502 — Big Surf Shores</option>
+<option value="2">503 — Omaka Rocka</option>
+<option value="3">504 — Katas Kookaburra</option>
+<option value="4">505 — Roa's Rapids</option>
+<option value="5">506 — Whanau Way</option>
+<option value="6">507 — Walkabout Waters</option>
+<option value="7">508 — Ray Rush/Whahalla Wave</option>
+<option value="8">509 — Loggerhead/Tassie</option>
+<option value="9">510 — Dolphin Plunge</option>
+<option value="10">520 — Ihu Breakaway Falls</option>
+<option value="11">530 — Taumata Racer</option>
+<option value="12">540 — KareKareKurl</option>
+<option value="13">550 — Riptide</option>
+<option value="14">Infinity Falls 1</option>
+<option value="15">Infinity Falls 2</option>
+<option value="16">Kraken</option>
+<option value="17">Manta Pond</option>
+<option value="18">Main Gate</option>
+<option value="19">Journey to Atlantis</option>
+<option value="20">Sesame</option>
+<option value="21">Pearl</option>
+<option value="22">Tropical River/Resort Pool</option>
+<option value="23">Freshwater Oasis</option></select></div>
+<div class="field"><label for="dechlorCurrent">Current FC (ppm)</label><input id="dechlorCurrent" inputmode="decimal" max="60" min="0" step="0.1" type="number" value="12.0"/><div class="help">Supported range: 0–60 ppm</div><div class="error" id="dechlorCurrentError"></div></div>
+<div class="field"><label for="dechlorGoal">Goal FC (ppm)</label><input id="dechlorGoal" inputmode="decimal" max="60" min="0" step="0.1" type="number" value="3.0"/><div class="help">Goal cannot exceed current FC.</div><div class="error" id="dechlorGoalError"></div></div>
+<div class="readout"><span>Pool number</span><strong id="dechlorId">501</strong></div>
+<div class="readout"><span>Volume</span><strong id="dechlorVolume">511,740 gal</strong></div>
+<div class="readout"><span>FC reduction needed</span><strong id="dechlorReduction">9.0 ppm</strong></div>
+<div class="readout"><span>Dosing factor</span><strong>1.36 oz/10k/ppm</strong></div>
+</div></div>
+<div class="card"><h2>Required Dechlorination Dose</h2><div class="card-body">
+<div class="result" id="dechlorResult"><small>Sodium thiosulfate pentahydrate</small><div class="big" id="dechlorDose">39.1 lb</div><div class="sub" id="dechlorMixed">39 lb 1.8 oz</div></div>
+<div class="tiles">
+<div class="tile"><span>Initial 50%</span><b id="dechlor50">19.6 lb</b></div>
+<div class="tile"><span>25% stage</span><b id="dechlor25">9.8 lb</b></div>
+<div class="tile"><span>50-lb bags</span><b id="dechlorBags">0.78</b></div>
+<div class="tile"><span>Status</span><b id="dechlorStatus">High Reduction</b></div>
+</div>
+<div class="alert caution show" id="dechlorAlert">Large chlorine reduction: add 50% initially, circulate 15–30 minutes, and retest before additional dosing.</div>
+</div></div>
+</div>
+<div class="reference-section">
+<div class="reference-header"><h3>Quick Reference — Thiosulfate for −1 ppm FC</h3><p>Sodium thiosulfate pentahydrate required for a 1 ppm FC reduction.</p></div>
+<div class="table-wrap"><table class="ref-table">
+<thead><tr><th>Body of Water</th><th>Dose</th></tr></thead>
+<tbody><tr><td>501 - Cutback Cove</td><td>4.35 lb</td></tr><tr><td>502 - Big Surf Shores</td><td>4.31 lb</td></tr><tr><td>503 - Omaka Rocka</td><td>0.19 lb</td></tr><tr><td>504 - Katas Kookaburra</td><td>0.67 lb</td></tr><tr><td>505 - Roa's Rapids</td><td>7.97 lb</td></tr><tr><td>506 - Whanau Way</td><td>0.81 lb</td></tr><tr><td>507 - Walkabout Waters</td><td>1.45 lb</td></tr><tr><td>508 - Ray Rush/Whahalla Wave</td><td>0.79 lb</td></tr><tr><td>509 - Loggerhead/Tassie</td><td>3.38 lb</td></tr><tr><td>510 - Dolphin Plunge</td><td>0.19 lb</td></tr><tr><td>520 - Ihu Breakaway Falls</td><td>0.14 lb</td></tr><tr><td>530 - Taumata Racer</td><td>0.10 lb</td></tr><tr><td>540 - KareKareKurl</td><td>0.13 lb</td></tr><tr><td>550 - Riptide</td><td>0.18 lb</td></tr><tr><td>Infinity Falls 1</td><td>5.10 lb</td></tr><tr><td>Infinity Falls 2</td><td>2.55 lb</td></tr><tr><td>Kraken</td><td>0.41 lb</td></tr><tr><td>Manta Pond</td><td>2.55 lb</td></tr><tr><td>Main Gate</td><td>6.80 lb</td></tr><tr><td>Journey to Atlantis</td><td>6.80 lb</td></tr><tr><td>Sesame</td><td>0.07 lb</td></tr><tr><td>Pearl</td><td>0.43 lb</td></tr><tr><td>Tropical River/Resort Pool</td><td>10.20 lb</td></tr><tr><td>Freshwater Oasis</td><td>7.92 lb</td></tr></tbody></table></div>
+</div>
+<div class="formula" id="dechlorFormula"></div>
+<div class="note"><strong>Dosing basis:</strong> 1.36 oz sodium thiosulfate pentahydrate crystals per 10,000 gallons per 1 ppm FC reduction. Add in stages and retest to avoid creating continuing chlorine demand.</div>
+</section>
+<section class="panel calculator-shell extra-panel" id="calhypoPanel"><div class="calculator-breadcrumb"><button class="back-button" onclick="showTab('home')">← Dashboard</button><span>/</span><strong>Manual Chlorination</strong></div><div class="calc-visual calhypo"><div class="calc-visual-copy"><span class="calc-kicker">MANUAL CHLORINATION</span><h2>Granular Cal Hypo</h2><p>Calculate Pulsar® Briquettes or Pulsar® Power Shock required to raise free chlorine.</p></div><div class="calc-visual-icon"><div class="simple-icon hero-icon">🪣</div></div></div><div class="grid"><div class="card"><h2>Inputs</h2><div class="card-body"><div class="input-section-label">POOL</div><div class="field"><label>Body of Water</label><select id="calPool"><option value="0">501 - Cutback Cove</option><option value="1">502 - Big Surf Shores</option><option value="2">503 - Omaka Rocka</option><option value="3">504 - Katas Kookaburra</option><option value="4">505 - Roa's Rapids</option><option value="5">506 - Whanau Way</option><option value="6">507 - Walkabout Waters</option><option value="7">508 - Ray Rush/Whahalla Wave</option><option value="8">509 - Loggerhead/Tassie</option><option value="9">510 - Dolphin Plunge</option><option value="10">520 - Ihu Breakaway Falls</option><option value="11">530 - Taumata Racer</option><option value="12">540 - KareKareKurl</option><option value="13">550 - Riptide</option><option value="14">Infinity Falls 1</option><option value="15">Infinity Falls 2</option><option value="16">Kraken</option><option value="17">Manta Pond</option><option value="18">Main Gate</option><option value="19">Journey to Atlantis</option><option value="20">Sesame</option><option value="21">Pearl</option><option value="22">Tropical River/Resort Pool</option><option value="23">Freshwater Oasis</option></select></div><div class="input-section-label">CURRENT</div><div class="field"><label>Current FC (ppm)</label><input id="calCurrent" max="60" min="0" step="0.1" type="number" value="1"/></div><div class="input-section-label">TARGET</div><div class="field"><label>Goal FC (ppm)</label><input id="calGoal" max="60" min="0" step="0.1" type="number" value="3"/></div><div class="input-section-label">PRODUCT</div><div class="field"><label>Product</label><select id="calProduct"><option value="0.65">65% - Pulsar® Briquettes</option><option value="0.68">68% - Pulsar® Power Shock</option></select></div><div class="error" id="calError"></div><div class="metric-grid"><div class="readout"><span>Pool</span><strong id="calId">501</strong></div><div class="readout"><span>Volume</span><strong id="calVol">511,740 gal</strong></div><div class="readout"><span>FC increase</span><strong id="calRise">2.0 ppm</strong></div><div class="readout"><span>Strength</span><strong id="calStrength">65%</strong></div></div></div></div><div><div class="result"><small>Cal Hypo Required</small><div class="big" id="calDose">26.3 lb</div><div class="sub" id="calMixed"></div></div><div class="tiles"><div class="tile"><span>Initial 50%</span><b id="calHalf"></b></div><div class="tile"><span>25% Stage</span><b id="calQuarter"></b></div><div class="tile"><span>50-lb Containers</span><b id="calBags"></b></div><div class="tile"><span>Product</span><b id="calProductTile"></b></div></div></div></div><div class="reference-section"><div class="reference-header"><h3>Quick Reference — +1 ppm FC</h3><p>Cal hypo required by product.</p></div><div class="table-wrap"><table class="ref-table cal-ref"><thead><tr><th>Body of Water</th><th>65%</th><th>68%</th></tr></thead><tbody><tr><td>501 - Cutback Cove</td><td>6.57 lb</td><td>6.28 lb</td></tr><tr><td>502 - Big Surf Shores</td><td>6.52 lb</td><td>6.23 lb</td></tr><tr><td>503 - Omaka Rocka</td><td>0.29 lb</td><td>0.28 lb</td></tr><tr><td>504 - Katas Kookaburra</td><td>1.02 lb</td><td>0.97 lb</td></tr><tr><td>505 - Roa's Rapids</td><td>12.03 lb</td><td>11.50 lb</td></tr><tr><td>506 - Whanau Way</td><td>1.22 lb</td><td>1.16 lb</td></tr><tr><td>507 - Walkabout Waters</td><td>2.18 lb</td><td>2.09 lb</td></tr><tr><td>508 - Ray Rush/Whahalla Wave</td><td>1.19 lb</td><td>1.14 lb</td></tr><tr><td>509 - Loggerhead/Tassie</td><td>5.11 lb</td><td>4.88 lb</td></tr><tr><td>510 - Dolphin Plunge</td><td>0.29 lb</td><td>0.27 lb</td></tr><tr><td>520 - Ihu Breakaway Falls</td><td>0.21 lb</td><td>0.20 lb</td></tr><tr><td>530 - Taumata Racer</td><td>0.16 lb</td><td>0.15 lb</td></tr><tr><td>540 - KareKareKurl</td><td>0.19 lb</td><td>0.18 lb</td></tr><tr><td>550 - Riptide</td><td>0.27 lb</td><td>0.26 lb</td></tr><tr><td>Infinity Falls 1</td><td>7.70 lb</td><td>7.36 lb</td></tr><tr><td>Infinity Falls 2</td><td>3.85 lb</td><td>3.68 lb</td></tr><tr><td>Kraken</td><td>0.62 lb</td><td>0.59 lb</td></tr><tr><td>Manta Pond</td><td>3.85 lb</td><td>3.68 lb</td></tr><tr><td>Main Gate</td><td>10.27 lb</td><td>9.82 lb</td></tr><tr><td>Journey to Atlantis</td><td>10.27 lb</td><td>9.82 lb</td></tr><tr><td>Sesame</td><td>0.11 lb</td><td>0.11 lb</td></tr><tr><td>Pearl</td><td>0.64 lb</td><td>0.61 lb</td></tr><tr><td>Tropical River/Resort Pool</td><td>15.41 lb</td><td>14.73 lb</td></tr><tr><td>Freshwater Oasis</td><td>11.97 lb</td><td>11.44 lb</td></tr></tbody></table></div></div><div class="formula-card"><h3>Formula</h3><div id="calFormula"></div></div></section><section class="panel calculator-shell extra-panel" id="alkPanel"><div class="calculator-breadcrumb"><button class="back-button" onclick="showTab('home')">← Dashboard</button><span>/</span><strong>Alkalinity</strong></div><div class="calc-visual alkalinity"><div class="calc-visual-copy"><span class="calc-kicker">TOTAL ALKALINITY</span><h2>Sodium Bicarbonate</h2><p>Calculate sodium bicarbonate required to raise measured total alkalinity.</p></div><div class="calc-visual-icon"><div class="simple-icon hero-icon">⚖️</div></div></div><div class="grid"><div class="card"><h2>Inputs</h2><div class="card-body"><div class="input-section-label">POOL</div><div class="field"><label>Body of Water</label><select id="alkPool"><option value="0">501 - Cutback Cove</option><option value="1">502 - Big Surf Shores</option><option value="2">503 - Omaka Rocka</option><option value="3">504 - Katas Kookaburra</option><option value="4">505 - Roa's Rapids</option><option value="5">506 - Whanau Way</option><option value="6">507 - Walkabout Waters</option><option value="7">508 - Ray Rush/Whahalla Wave</option><option value="8">509 - Loggerhead/Tassie</option><option value="9">510 - Dolphin Plunge</option><option value="10">520 - Ihu Breakaway Falls</option><option value="11">530 - Taumata Racer</option><option value="12">540 - KareKareKurl</option><option value="13">550 - Riptide</option><option value="14">Infinity Falls 1</option><option value="15">Infinity Falls 2</option><option value="16">Kraken</option><option value="17">Manta Pond</option><option value="18">Main Gate</option><option value="19">Journey to Atlantis</option><option value="20">Sesame</option><option value="21">Pearl</option><option value="22">Tropical River/Resort Pool</option><option value="23">Freshwater Oasis</option></select></div><div class="input-section-label">CURRENT</div><div class="field"><label>Current Total Alkalinity</label><input id="alkCurrent" max="300" min="0" type="number" value="40"/></div><div class="input-section-label">TARGET</div><div class="field"><label>Goal Total Alkalinity</label><input id="alkGoal" max="300" min="0" type="number" value="80"/></div><div class="error" id="alkError"></div><div class="metric-grid"><div class="readout"><span>Pool</span><strong id="alkId">501</strong></div><div class="readout"><span>Volume</span><strong id="alkVol">511,740 gal</strong></div><div class="readout"><span>TA increase</span><strong id="alkRise">40 ppm</strong></div><div class="readout"><span>Basis</span><strong>1.5 lb / 10 ppm / 10k</strong></div></div></div></div><div><div class="result"><small>Sodium Bicarbonate Required</small><div class="big" id="alkDose">307.0 lb</div><div class="sub" id="alkMixed"></div></div><div class="tiles"><div class="tile"><span>Initial 50%</span><b id="alkHalf"></b></div><div class="tile"><span>25% Stage</span><b id="alkQuarter"></b></div><div class="tile"><span>50-lb Bags</span><b id="alkBags"></b></div><div class="tile"><span>Status</span><b id="alkStatus"></b></div></div></div></div><div class="reference-section"><div class="reference-header"><h3>Quick Reference — +10 ppm TA</h3><p>Sodium bicarbonate required.</p></div><div class="table-wrap"><table class="ref-table"><thead><tr><th>Body of Water</th><th>Dose</th></tr></thead><tbody><tr><td>501 - Cutback Cove</td><td>76.8 lb</td></tr><tr><td>502 - Big Surf Shores</td><td>76.1 lb</td></tr><tr><td>503 - Omaka Rocka</td><td>3.4 lb</td></tr><tr><td>504 - Katas Kookaburra</td><td>11.9 lb</td></tr><tr><td>505 - Roa's Rapids</td><td>140.6 lb</td></tr><tr><td>506 - Whanau Way</td><td>14.2 lb</td></tr><tr><td>507 - Walkabout Waters</td><td>25.5 lb</td></tr><tr><td>508 - Ray Rush/Whahalla Wave</td><td>13.9 lb</td></tr><tr><td>509 - Loggerhead/Tassie</td><td>59.7 lb</td></tr><tr><td>510 - Dolphin Plunge</td><td>3.3 lb</td></tr><tr><td>520 - Ihu Breakaway Falls</td><td>2.4 lb</td></tr><tr><td>530 - Taumata Racer</td><td>1.9 lb</td></tr><tr><td>540 - KareKareKurl</td><td>2.2 lb</td></tr><tr><td>550 - Riptide</td><td>3.2 lb</td></tr><tr><td>Infinity Falls 1</td><td>90.0 lb</td></tr><tr><td>Infinity Falls 2</td><td>45.0 lb</td></tr><tr><td>Kraken</td><td>7.2 lb</td></tr><tr><td>Manta Pond</td><td>45.0 lb</td></tr><tr><td>Main Gate</td><td>120.0 lb</td></tr><tr><td>Journey to Atlantis</td><td>120.0 lb</td></tr><tr><td>Sesame</td><td>1.3 lb</td></tr><tr><td>Pearl</td><td>7.5 lb</td></tr><tr><td>Tropical River/Resort Pool</td><td>180.0 lb</td></tr><tr><td>Freshwater Oasis</td><td>139.8 lb</td></tr></tbody></table></div></div><div class="formula-card"><h3>Formula</h3><div id="alkFormula"></div></div></section>
+<section class="panel calculator-shell utilities-panel" id="utilitiesPanel">
+<div class="calculator-breadcrumb">
+<button class="back-button" onclick="showTab('home')">← Dashboard</button>
+<span class="breadcrumb-separator">/</span>
+<strong>Field Utilities</strong>
+</div>
+<div class="utilities-hero">
+<div>
+<span class="calc-kicker">SUPPORTING CALCULATORS</span>
+<h2>Field Utilities</h2>
+<p>Water-balance, conversion, and dilution tools for daily operations.</p>
+</div>
+<div class="utilities-hero-mark">⌁</div>
+</div>
+<div class="utility-tabs" role="tablist">
+<button aria-selected="true" class="utility-tab active" data-utility="lsi" type="button">LSI</button>
+<button aria-selected="false" class="utility-tab" data-utility="units" type="button">Unit Converter</button>
+<button aria-selected="false" class="utility-tab" data-utility="dilution" type="button">Dilution</button>
+</div>
+<div class="utility-workspace active" id="lsiUtility">
+<div class="grid">
+<div class="card">
+<h2>LSI Inputs</h2>
+<div class="card-body">
+<div class="field"><label for="lsiTemp">Water Temperature (°F)</label><input id="lsiTemp" max="120" min="32" step="0.1" type="number" value="82"/></div>
+<div class="field"><label for="lsiPH">pH</label><input id="lsiPH" max="10" min="4" step="0.01" type="number" value="7.6"/></div>
+<div class="field"><label for="lsiTA">Total Alkalinity (ppm)</label><input id="lsiTA" max="500" min="1" step="1" type="number" value="80"/></div>
+<div class="field"><label for="lsiCYA">CYA (ppm)</label><input id="lsiCYA" max="300" min="0" step="1" type="number" value="14"/></div>
+<div class="field"><label for="lsiCH">Calcium Hardness (ppm)</label><input id="lsiCH" max="1500" min="1" step="1" type="number" value="250"/></div>
+<div class="field"><label for="lsiTDS">TDS (ppm)</label><input id="lsiTDS" max="10000" min="0" step="1" type="number" value="1000"/></div>
+<div class="error" id="lsiError"></div>
+</div>
+</div>
+<div>
+<div class="result utility-result">
+<small>Langelier Saturation Index</small>
+<div class="big" id="lsiValue">0.00</div>
+<div class="sub" id="lsiCondition">Balanced</div>
+</div>
+<div class="tiles">
+<div class="tile"><span>Corrected Alkalinity</span><b id="lsiCorrectedTA">75 ppm</b></div>
+<div class="tile"><span>Saturation pH</span><b id="lsiSaturationPH">7.60</b></div>
+<div class="tile"><span>Water Tendency</span><b id="lsiTendency">Balanced</b></div>
+<div class="tile"><span>Recommended Range</span><b>-0.3 to +0.3</b></div>
+</div>
+<div class="recommend-card">
+<h3>Interpretation</h3>
+<ul>
+<li>Below -0.3 indicates increasingly corrosive water.</li>
+<li>Above +0.3 indicates increasing scale-forming tendency.</li>
+<li>LSI is an equilibrium indicator, not a complete corrosion assessment.</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="formula-card"><h3>Method</h3><div>LSI = measured pH − saturation pH. CYA correction uses one-third of measured CYA as an operational approximation.</div></div>
+</div>
+<div class="utility-workspace" id="unitsUtility">
+<div class="grid">
+<div class="card">
+<h2>Unit Conversion</h2>
+<div class="card-body">
+<div class="field">
+<label for="unitCategory">Measurement Type</label>
+<select id="unitCategory">
+<option value="volume">Volume</option>
+<option value="mass">Mass</option>
+<option value="flow">Flow Rate</option>
+<option value="temperature">Temperature</option>
+<option value="pressure">Pressure</option>
+</select>
+</div>
+<div class="field"><label for="unitInput">Value</label><input id="unitInput" step="any" type="number" value="1"/></div>
+<div class="field"><label for="unitFrom">From</label><select id="unitFrom"></select></div>
+<div class="field"><label for="unitTo">To</label><select id="unitTo"></select></div>
+<div class="error" id="unitError"></div>
+</div>
+</div>
+<div>
+<div class="result utility-result">
+<small>Converted Value</small>
+<div class="big" id="unitResult">1.000</div>
+<div class="sub" id="unitResultLabel">US gallon</div>
+</div>
+<div class="tiles">
+<div class="tile"><span>Input</span><b id="unitInputTile">1 gal</b></div>
+<div class="tile"><span>Output</span><b id="unitOutputTile">1 gal</b></div>
+<div class="tile"><span>Category</span><b id="unitCategoryTile">Volume</b></div>
+<div class="tile"><span>Precision</span><b>6 significant digits</b></div>
+</div>
+</div>
+</div>
+</div>
+<div class="utility-workspace" id="dilutionUtility">
+<div class="grid">
+<div class="card">
+<h2>Dilution Inputs</h2>
+<div class="card-body">
+<div class="field"><label for="dilStock">Stock Concentration</label><input id="dilStock" min="0.000001" step="any" type="number" value="12.5"/></div>
+<div class="field"><label for="dilTarget">Target Concentration</label><input id="dilTarget" min="0" step="any" type="number" value="1"/></div>
+<div class="field"><label for="dilFinal">Desired Final Volume</label><input id="dilFinal" min="0" step="any" type="number" value="10"/></div>
+<div class="field">
+<label for="dilUnit">Volume Unit</label>
+<select id="dilUnit">
+<option value="gal">gallons</option>
+<option value="L">liters</option>
+<option value="fl oz">fluid ounces</option>
+<option value="mL">milliliters</option>
+</select>
+</div>
+<div class="error" id="dilError"></div>
+</div>
+</div>
+<div>
+<div class="result utility-result">
+<small>Stock Product Required</small>
+<div class="big" id="dilStockVolume">0.80 gal</div>
+<div class="sub" id="dilWaterVolume">Add 9.20 gal water</div>
+</div>
+<div class="tiles">
+<div class="tile"><span>Stock</span><b id="dilStockTile">0.80 gal</b></div>
+<div class="tile"><span>Water / Diluent</span><b id="dilWaterTile">9.20 gal</b></div>
+<div class="tile"><span>Final Volume</span><b id="dilFinalTile">10.00 gal</b></div>
+<div class="tile"><span>Dilution Ratio</span><b id="dilRatioTile">1 : 11.5</b></div>
+</div>
+<div class="recommend-card">
+<h3>Use Notes</h3>
+<ul>
+<li>Both concentration entries must use the same basis, such as percent or ppm.</li>
+<li>Target concentration must be lower than stock concentration.</li>
+<li>Add chemical to water according to the product SDS and site procedure.</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="formula-card"><h3>Formula</h3><div>M₁V₁ = M₂V₂</div></div>
+</div>
+</section>
+
+
+<section class="panel calculator-shell pump-panel" id="pumpPanel">
+  <div class="calculator-breadcrumb">
+    <button class="back-button" onclick="showTab('home')">← Dashboard</button>
+    <span class="breadcrumb-separator">/</span>
+    <strong>Pump Curve Calculator</strong>
+  </div>
+
+  <div class="pump-hero">
+    <div>
+      <span class="calc-kicker">HYDRAULIC PERFORMANCE</span>
+      <h2>Pump & System Curves</h2>
+      <p>Enter manufacturer pump points and one known system condition to predict the operating point.</p>
+    </div>
+    <div class="pump-hero-icon">📈</div>
+  </div>
+
+  <div class="pump-tabs">
+    <button type="button" class="pump-tab active" data-pump-tab="curve">Curve</button>
+    <button type="button" class="pump-tab" data-pump-tab="tdh">Field TDH</button>
+    <button type="button" class="pump-tab" data-pump-tab="vfd">VFD</button>
+  </div>
+
+  <section class="pump-workspace active" id="pumpCurveWorkspace">
+    <div class="grid">
+      <div class="card">
+        <h2>Pump Curve Inputs</h2>
+        <div class="card-body">
+          <div class="field">
+            <label for="pumpName">Pump / Curve Name</label>
+            <input id="pumpName" value="Custom Pump Curve">
+          </div>
+          <div class="curve-point-header"><span>Point</span><span>Flow (GPM)</span><span>Head (ft)</span></div>
+          <div class="curve-point-list"><div class="curve-point-row">
+      <span>1</span>
+      <input id="pumpQ0" type="number" min="0" step="1" value="0" aria-label="Point 1 flow">
+      <input id="pumpH0" type="number" min="0" step="0.1" value="95" aria-label="Point 1 head">
+    </div>
+<div class="curve-point-row">
+      <span>2</span>
+      <input id="pumpQ1" type="number" min="0" step="1" value="200" aria-label="Point 2 flow">
+      <input id="pumpH1" type="number" min="0" step="0.1" value="89" aria-label="Point 2 head">
+    </div>
+<div class="curve-point-row">
+      <span>3</span>
+      <input id="pumpQ2" type="number" min="0" step="1" value="400" aria-label="Point 3 flow">
+      <input id="pumpH2" type="number" min="0" step="0.1" value="74" aria-label="Point 3 head">
+    </div>
+<div class="curve-point-row">
+      <span>4</span>
+      <input id="pumpQ3" type="number" min="0" step="1" value="600" aria-label="Point 4 flow">
+      <input id="pumpH3" type="number" min="0" step="0.1" value="49" aria-label="Point 4 head">
+    </div>
+<div class="curve-point-row">
+      <span>5</span>
+      <input id="pumpQ4" type="number" min="0" step="1" value="700" aria-label="Point 5 flow">
+      <input id="pumpH4" type="number" min="0" step="0.1" value="30" aria-label="Point 5 head">
+    </div></div>
+
+          <div class="input-section-label">SYSTEM CURVE</div>
+          <div class="field"><label for="systemKnownFlow">Known Flow (GPM)</label><input id="systemKnownFlow" type="number" min="1" step="1" value="500"></div>
+          <div class="field"><label for="systemKnownHead">Known TDH (ft)</label><input id="systemKnownHead" type="number" min="0" step="0.1" value="60"></div>
+          <div class="field"><label for="systemStaticHead">Static Head (ft)</label><input id="systemStaticHead" type="number" min="0" step="0.1" value="0"></div>
+
+          <div class="input-section-label">SPEED</div>
+          <div class="field"><label for="pumpBaseHz">Curve Frequency (Hz)</label><input id="pumpBaseHz" type="number" min="1" step="1" value="60"></div>
+          <div class="field"><label for="pumpActualHz">Operating Frequency (Hz)</label><input id="pumpActualHz" type="number" min="1" step="1" value="60"></div>
+          <div class="error" id="pumpCurveError"></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="pump-chart-card">
+          <canvas id="pumpCurveCanvas" width="720" height="470"></canvas>
+          <div class="chart-legend"><span><i class="legend-pump"></i>Pump curve</span><span><i class="legend-system"></i>System curve</span><span><i class="legend-point"></i>Operating point</span></div>
+        </div>
+
+        <div class="result pump-result">
+          <small>Predicted Operating Point</small>
+          <div class="big" id="pumpOperatingFlow">— GPM</div>
+          <div class="sub" id="pumpOperatingHead">— ft TDH</div>
+        </div>
+        <div class="tiles">
+          <div class="tile"><span>System K</span><b id="pumpSystemK">—</b></div>
+          <div class="tile"><span>Speed Ratio</span><b id="pumpSpeedRatio">1.000</b></div>
+          <div class="tile"><span>Curve Range</span><b id="pumpCurveRange">—</b></div>
+          <div class="tile"><span>Status</span><b id="pumpCurveStatus">Ready</b></div>
+        </div>
+        <div class="formula-card"><h3>Model</h3><div id="pumpCurveFormula">System head = static head + K × flow²</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pump-workspace" id="pumpTdhWorkspace">
+    <div class="grid">
+      <div class="card"><h2>Field TDH Inputs</h2><div class="card-body">
+        <div class="field"><label for="tdhDischargePsi">Discharge Pressure (psi)</label><input id="tdhDischargePsi" type="number" step="0.1" value="25"></div>
+        <div class="field"><label for="tdhSuctionMode">Suction Reading Type</label><select id="tdhSuctionMode"><option value="psi">Pressure / Negative PSI</option><option value="inhg">Vacuum (inHg)</option></select></div>
+        <div class="field"><label for="tdhSuctionValue">Suction Reading</label><input id="tdhSuctionValue" type="number" step="0.1" value="-4"></div>
+        <div class="field"><label for="tdhSpecificGravity">Specific Gravity</label><input id="tdhSpecificGravity" type="number" min="0.1" step="0.01" value="1.00"></div>
+        <div class="field"><label for="tdhElevation">Discharge Gauge Elevation minus Suction Gauge (ft)</label><input id="tdhElevation" type="number" step="0.1" value="0"></div>
+        <div class="error" id="tdhError"></div>
+      </div></div>
+      <div>
+        <div class="result pump-result"><small>Total Dynamic Head</small><div class="big" id="tdhResult">67.0 ft</div><div class="sub" id="tdhBreakdown">Discharge + suction + elevation</div></div>
+        <div class="tiles">
+          <div class="tile"><span>Discharge Head</span><b id="tdhDischargeHead">57.8 ft</b></div>
+          <div class="tile"><span>Suction Contribution</span><b id="tdhSuctionHead">9.2 ft</b></div>
+          <div class="tile"><span>Elevation</span><b id="tdhElevationTile">0.0 ft</b></div>
+          <div class="tile"><span>Conversion</span><b>2.31 ft/psi</b></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pump-workspace" id="pumpVfdWorkspace">
+    <div class="grid">
+      <div class="card"><h2>VFD Prediction Inputs</h2><div class="card-body">
+        <div class="field"><label for="vfdCurrentHz">Current Frequency (Hz)</label><input id="vfdCurrentHz" type="number" min="1" value="60"></div>
+        <div class="field"><label for="vfdNewHz">Proposed Frequency (Hz)</label><input id="vfdNewHz" type="number" min="1" value="45"></div>
+        <div class="field"><label for="vfdCurrentFlow">Current Flow (GPM)</label><input id="vfdCurrentFlow" type="number" min="0" value="500"></div>
+        <div class="field"><label for="vfdCurrentHead">Current Head (ft)</label><input id="vfdCurrentHead" type="number" min="0" value="60"></div>
+        <div class="field"><label for="vfdCurrentHp">Current Brake HP</label><input id="vfdCurrentHp" type="number" min="0" step="0.1" value="15"></div>
+        <div class="error" id="vfdError"></div>
+      </div></div>
+      <div>
+        <div class="result pump-result"><small>Predicted New Flow</small><div class="big" id="vfdNewFlow">375 GPM</div><div class="sub" id="vfdRatio">Speed ratio 0.750</div></div>
+        <div class="tiles">
+          <div class="tile"><span>Predicted Head</span><b id="vfdNewHead">33.8 ft</b></div>
+          <div class="tile"><span>Predicted BHP</span><b id="vfdNewHp">6.3 HP</b></div>
+          <div class="tile"><span>Power Fraction</span><b id="vfdPowerPercent">42.2%</b></div>
+          <div class="tile"><span>Ideal Savings</span><b id="vfdSavings">57.8%</b></div>
+        </div>
+        <div class="recommend-card"><h3>Affinity-Law Note</h3><ul><li>Flow follows speed.</li><li>Head follows speed squared.</li><li>Power follows speed cubed.</li><li>Actual values may differ with efficiency and system behavior.</li></ul></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+
+<section class="panel calculator-shell incident-panel" id="incidentPanel">
+  <div class="calculator-breadcrumb">
+    <button class="back-button" onclick="showTab('home')">← Dashboard</button>
+    <span class="breadcrumb-separator">/</span>
+    <strong>Incident Report</strong>
+  </div>
+
+  <div class="incident-hero">
+    <div><span class="calc-kicker">HOTLINE & OPERATIONS</span><h2>Fast Incident Report</h2><p>Complete the report, generate a PDF, then use the iPhone share sheet to email it.</p></div>
+    <div class="incident-timer"><span>Elapsed</span><strong id="incidentElapsed">00:00</strong></div>
+  </div>
+
+  <div class="incident-progress"><div class="active" data-incident-step="1">1. Issue</div><div data-incident-step="2">2. Resolution</div><div data-incident-step="3">3. PDF</div></div>
+
+  <form id="incidentForm" novalidate>
+    <section class="incident-step active" id="incidentStep1">
+      <div class="card"><h2>Who & Where</h2><div class="card-body">
+        <div class="field"><label for="incidentTech">Technician</label><select id="incidentTech"><option value="">Select technician</option><option>Steven Alicea</option><option>Lucas Erdelt</option><option>Calvin Webb</option><option>Christopher Cindric</option><option>David Kraft</option><option>Nick Morse</option><option>Kimberly Holtz</option><option>Cassie Kahant</option><option>Michael Pinta</option><option>Terry Grisham</option><option>Cory Miller</option></select><small>Saved on this device.</small></div>
+        <div class="field"><label>Body of Water</label><input id="incidentPoolSearch" type="search" placeholder="Search pools"><div class="incident-pool-grid" id="incidentPoolGrid"><button type="button" class="incident-pool-chip" data-pool="501 - Cutback Cove">501 - Cutback Cove</button><button type="button" class="incident-pool-chip" data-pool="502 - Big Surf Shores">502 - Big Surf Shores</button><button type="button" class="incident-pool-chip" data-pool="503 - Omaka Rocka">503 - Omaka Rocka</button><button type="button" class="incident-pool-chip" data-pool="504 - Katas Kookaburra">504 - Katas Kookaburra</button><button type="button" class="incident-pool-chip" data-pool="505 - Roa's Rapids">505 - Roa's Rapids</button><button type="button" class="incident-pool-chip" data-pool="506 - Whanau Way">506 - Whanau Way</button><button type="button" class="incident-pool-chip" data-pool="507 - Walkabout Waters">507 - Walkabout Waters</button><button type="button" class="incident-pool-chip" data-pool="508 - Ray Rush/Whahalla Wave">508 - Ray Rush/Whahalla Wave</button><button type="button" class="incident-pool-chip" data-pool="509 - Loggerhead/Tassie">509 - Loggerhead/Tassie</button><button type="button" class="incident-pool-chip" data-pool="510 - Dolphin Plunge">510 - Dolphin Plunge</button><button type="button" class="incident-pool-chip" data-pool="520 - Ihu Breakaway Falls">520 - Ihu Breakaway Falls</button><button type="button" class="incident-pool-chip" data-pool="530 - Taumata Racer">530 - Taumata Racer</button><button type="button" class="incident-pool-chip" data-pool="540 - KareKareKurl">540 - KareKareKurl</button><button type="button" class="incident-pool-chip" data-pool="550 - Riptide">550 - Riptide</button><button type="button" class="incident-pool-chip" data-pool="Infinity Falls 1">Infinity Falls 1</button><button type="button" class="incident-pool-chip" data-pool="Infinity Falls 2">Infinity Falls 2</button><button type="button" class="incident-pool-chip" data-pool="Kraken">Kraken</button><button type="button" class="incident-pool-chip" data-pool="Manta Pond">Manta Pond</button><button type="button" class="incident-pool-chip" data-pool="Main Gate">Main Gate</button><button type="button" class="incident-pool-chip" data-pool="Journey to Atlantis">Journey to Atlantis</button><button type="button" class="incident-pool-chip" data-pool="Sesame">Sesame</button><button type="button" class="incident-pool-chip" data-pool="Pearl">Pearl</button><button type="button" class="incident-pool-chip" data-pool="Tropical River/Resort Pool">Tropical River/Resort Pool</button><button type="button" class="incident-pool-chip" data-pool="Freshwater Oasis">Freshwater Oasis</button></div><div class="incident-selection" id="incidentSelectedPools">No pool selected</div></div>
+        <div class="field"><label for="incidentReportedBy">Reported By</label><input id="incidentReportedBy" placeholder="Name or department"></div>
+      </div></div>
+
+      <div class="card"><h2>Issue</h2><div class="card-body">
+        <div class="field"><label for="incidentCategory">Issue Category</label><select id="incidentCategory"><option value="">Select category</option><option>Low chlorine</option><option>High chlorine</option><option>Low pH</option><option>High pH</option><option>Low ORP</option><option>Controller alarm</option><option>Chemical feeder</option><option>Pump failure</option><option>Flow issue</option><option>Sensor</option><option>Heater</option><option>UV/Ozone</option><option>Leak</option><option>Water quality</option><option>Guest complaint</option><option>Other</option></select></div>
+        <div class="field"><label>How Was It Reported?</label><div class="incident-choice-grid" id="incidentContactChoices"><button type="button" data-value="Voicemail">📩 Voicemail</button><button type="button" data-value="Direct Phone Call">📞 Phone</button><button type="button" data-value="In-Person / Onsite">👤 Onsite</button><button type="button" data-value="CES Found Issue">🔎 CES Found</button></div></div>
+        <div class="field"><label for="incidentDescription">Issue Description</label><textarea id="incidentDescription" rows="4" placeholder="What was reported?"></textarea></div>
+        <div class="incident-toggle"><div><strong>Pool Closed</strong><small>Enable closure details only when needed.</small></div><label class="incident-switch"><input id="incidentClosed" type="checkbox"><span></span></label></div>
+        <div class="incident-conditional" id="incidentClosureBlock"><div class="field"><label for="incidentClosureNotes">Closure Details</label><textarea id="incidentClosureNotes" rows="3" placeholder="Cause, closure time, reopen time and duration"></textarea></div></div>
+        <div class="incident-error" id="incidentError1"></div>
+        <button type="button" class="primary-action" id="incidentNext1">Continue to Resolution</button>
+      </div></div>
+    </section>
+
+    <section class="incident-step" id="incidentStep2">
+      <div class="card"><h2>Resolution</h2><div class="card-body">
+        <div class="field"><label for="incidentAction">Primary Action Taken</label><select id="incidentAction"><option value="">Select action</option><option>Adjusted controller</option><option>Chemical added</option><option>Remote adjustment</option><option>Sensor cleaned</option><option>Sensor calibrated</option><option>Backwashed</option><option>Pump reset</option><option>Pump repaired</option><option>Valve adjusted</option><option>Programming changed</option><option>Parts ordered</option><option>Escalated</option><option>Other</option></select></div>
+        <div class="field"><label>Resolution Method</label><div class="incident-choice-grid three" id="incidentResolutionChoices"><button type="button" data-value="Already Onsite">Already Onsite</button><button type="button" data-value="Site Visit">Site Visit</button><button type="button" data-value="Remotely Managed">Remote</button></div></div>
+        <div class="field"><label for="incidentResolutionNotes">Resolution Notes</label><textarea id="incidentResolutionNotes" rows="4" placeholder="What was done to resolve the issue?"></textarea></div>
+        <div class="field"><label for="incidentCommunicatedTo">Resolution Communicated To</label><input id="incidentCommunicatedTo" placeholder="Name or department"></div>
+        <div class="field"><label>Follow-Up Required?</label><div class="incident-choice-grid three" id="incidentFollowChoices"><button type="button" data-value="No">No</button><button type="button" data-value="Yes">Yes</button><button type="button" data-value="Monitor">Monitor</button></div></div>
+        <div class="incident-conditional" id="incidentFollowBlock"><div class="field"><label for="incidentFollowNotes">Follow-Up Notes</label><textarea id="incidentFollowNotes" rows="3" placeholder="What still needs to happen?"></textarea></div></div>
+        <div class="field"><label for="incidentPhoto">Optional Photo</label><input id="incidentPhoto" type="file" accept="image/*" capture="environment"><small>The PDF records the file name. Attach the original image separately when emailing if needed.</small></div>
+        <div class="incident-error" id="incidentError2"></div>
+        <div class="incident-actions"><button type="button" class="secondary-action" id="incidentBack2">Back</button><button type="button" class="primary-action" id="incidentNext2">Review & PDF</button></div>
+      </div></div>
+    </section>
+
+    <section class="incident-step" id="incidentStep3">
+      <div class="card"><h2>Review Report</h2><div class="card-body">
+        <div class="incident-review" id="incidentReview"></div>
+        <div class="pdf-notice"><strong>Manual Email Workflow</strong><span>Generate the PDF, then select Mail from the iPhone share sheet. If sharing is unavailable, the PDF downloads to Files.</span></div>
+        <div class="incident-actions"><button type="button" class="secondary-action" id="incidentBack3">Back</button><button type="button" class="primary-action pdf-action" id="incidentPdfButton">Create & Share PDF</button></div>
+        <button type="button" class="secondary-action full" id="incidentDownloadButton">Download PDF Only</button>
+        <div class="incident-status" id="incidentPdfStatus"></div>
+      </div></div>
+    </section>
+  </form>
+
+  <div class="incident-draft"><div><strong>Local Draft</strong><span id="incidentDraftStatus">No saved draft</span></div><button type="button" class="secondary-action compact" id="incidentClearDraft">Clear Draft</button></div>
+</section>
+
+<div class="footer">Offline-capable PWA • Pump Curve + Incident PDF</div>
+</div>
+
+
+
 
 <script>
 (function(){
+'use strict';
+
 const pools=[{"id": "501", "name": "Cutback Cove", "volume": 511740, "fc5": 0.42}, {"id": "502", "name": "Big Surf Shores", "volume": 507477, "fc5": 0.42}, {"id": "503", "name": "Omaka Rocka", "volume": 22709, "fc5": 0.5}, {"id": "504", "name": "Katas Kookaburra", "volume": 79215, "fc5": 1.35}, {"id": "505", "name": "Roa's Rapids", "volume": 937210, "fc5": 0.34}, {"id": "506", "name": "Whanau Way", "volume": 94930, "fc5": 1.12}, {"id": "507", "name": "Walkabout Waters", "volume": 170000, "fc5": 1.25}, {"id": "508", "name": "Ray Rush/Whahalla Wave", "volume": 92500, "fc5": 0.58}, {"id": "509", "name": "Loggerhead/Tassie", "volume": 397700, "fc5": 0.54}, {"id": "510", "name": "Dolphin Plunge", "volume": 22326, "fc5": 0.72}, {"id": "520", "name": "Ihu Breakaway Falls", "volume": 16128, "fc5": 1.0}, {"id": "530", "name": "Taumata Racer", "volume": 12342, "fc5": 1.31}, {"id": "540", "name": "KareKareKurl", "volume": 15000, "fc5": 3.56}, {"id": "550", "name": "Riptide", "volume": 21000, "fc5": 0.77}, {"id": "\u2014", "name": "Infinity Falls 1", "volume": 600000, "fc5": 0.18}, {"id": "\u2014", "name": "Infinity Falls 2", "volume": 300000, "fc5": 0.36}, {"id": "\u2014", "name": "Kraken", "volume": 48000, "fc5": 1.89}, {"id": "\u2014", "name": "Manta Pond", "volume": 300000, "fc5": 0.3}, {"id": "\u2014", "name": "Main Gate", "volume": 800000, "fc5": 0.34}, {"id": "\u2014", "name": "Journey to Atlantis", "volume": 800000, "fc5": 0.27}, {"id": "\u2014", "name": "Sesame", "volume": 8800, "fc5": 1.83}, {"id": "\u2014", "name": "Pearl", "volume": 50000, "fc5": 0.32}, {"id": "\u2014", "name": "Tropical River/Resort Pool", "volume": 1200000, "fc5": 0.36}, {"id": "\u2014", "name": "Freshwater Oasis", "volume": 932000, "fc5": 0.34}];
 
-function fmtTime(mins){
-  let total=Math.max(0,Math.round(mins*60));
-  let h=Math.floor(total/3600), m=Math.floor((total%3600)/60), s=total%60;
-  return (h?h+' hr ':'')+m+' min '+s+' sec';
+function byId(id){ return document.getElementById(id); }
+function numberValue(id){ return parseFloat(byId(id).value); }
+function selectedPool(id){
+  const select=byId(id);
+  const index=Math.max(0,select.selectedIndex);
+  return pools[index] || pools[0];
+}
+function setText(id,value){
+  const node=byId(id);
+  if(node) node.textContent=value;
+}
+function showError(id,message){
+  const node=byId(id);
+  if(!node)return;
+  node.textContent=message || '';
+  node.classList.toggle('show',Boolean(message));
+}
+function fmtLb(value){
+  return value.toLocaleString(undefined,{minimumFractionDigits:1,maximumFractionDigits:1})+' lb';
+}
+function fmtMixed(value){
+  const pounds=Math.floor(Math.max(0,value));
+  const ounces=(Math.max(0,value)-pounds)*16;
+  return pounds.toLocaleString()+' lb '+ounces.toFixed(1)+' oz';
+}
+function fmtTime(minutes){
+  const seconds=Math.max(0,Math.round(minutes*60));
+  const hours=Math.floor(seconds/3600);
+  const mins=Math.floor((seconds%3600)/60);
+  const secs=seconds%60;
+  return (hours?hours+' hr ':'')+mins+' min '+secs+' sec';
 }
 
 window.showTab=function(name){
-  document.getElementById('sodaPanel').classList.toggle('active',name==='soda');
-  document.getElementById('fcPanel').classList.toggle('active',name==='fc');
-  document.getElementById('cyaPanel').classList.toggle('active',name==='cya');
-  document.getElementById('tabSoda').classList.toggle('active',name==='soda');
-  document.getElementById('tabFC').classList.toggle('active',name==='fc');
-  document.getElementById('tabCYA').classList.toggle('active',name==='cya');
-  localStorage.setItem('poolToolsTab',name);
+  const dashboard=byId('opsDashboard');
+  if(dashboard)dashboard.classList.toggle('hidden',name!=='home');
+  ['soda','fc','cya','dechlor','calhypo','alk','utilities','pump','incident'].forEach(function(key){
+    const panel=byId(key+'Panel');
+    if(panel)panel.classList.toggle('active',name===key);
+  });
+  try{localStorage.setItem('poolToolsTab',name);}catch(error){}
+  window.scrollTo({top:0,behavior:'smooth'});
 };
 
-function selectedPool(selectId){
-  const sel=document.getElementById(selectId);
-  let i=parseInt(sel.value,10);
-  return pools[i]||pools[0];
-}
-
-function setInvalidSoda(message){
-  document.getElementById('currentPH').classList.add('invalid');
-  document.getElementById('phError').textContent=message;
-  document.getElementById('phError').classList.add('show');
-  document.getElementById('sodaResult').classList.add('invalid');
-  document.getElementById('phShift').textContent='—';
-  document.getElementById('sodaRate').textContent='—';
-  document.getElementById('sodaDose').textContent='Invalid pH';
-  document.getElementById('sodaMixed').textContent='No dose calculated';
-  document.getElementById('soda25').textContent='—';
-  document.getElementById('soda50').textContent='—';
-  document.getElementById('sodaBags').textContent='—';
-  document.getElementById('sodaFormula').textContent='Enter a valid current pH to calculate a dose.';
-}
-
-function clearInvalidSoda(){
-  document.getElementById('currentPH').classList.remove('invalid');
-  document.getElementById('phError').classList.remove('show');
-  document.getElementById('sodaResult').classList.remove('invalid');
-}
+window.showUtility=function(name){
+  document.querySelectorAll('.utility-workspace').forEach(function(node){
+    const active=node.id===name+'Utility';
+    node.classList.toggle('active',active);
+    node.hidden=!active;
+  });
+  document.querySelectorAll('.utility-tab').forEach(function(button){
+    const active=button.dataset.utility===name;
+    button.classList.toggle('active',active);
+    button.setAttribute('aria-selected',active?'true':'false');
+  });
+};
 
 function updateSoda(){
-  const p=selectedPool('sodaPool');
-  const raw=document.getElementById('currentPH').value.trim();
-  const ph=parseFloat(raw);
+  const pool=selectedPool('sodaPool');
+  const current=numberValue('currentPH');
+  const goal=7.6;
 
-  document.getElementById('sodaId').textContent=p.id;
-  document.getElementById('sodaVolume').textContent=p.volume.toLocaleString()+' gal';
+  setText('sodaId',pool.id);
+  setText('sodaVolume',pool.volume.toLocaleString()+' gal');
 
-  if(raw==='' || !isFinite(ph)){
-    setInvalidSoda('Enter a numeric pH between 4.0 and 7.6.');
+  if(!Number.isFinite(current) || current<4 || current>7.6){
+    showError('phError','Enter a current pH between 4.0 and 7.6.');
+    setText('sodaDose','Invalid pH');
     return;
   }
-  if(ph<4.0 || ph>7.6){
-    setInvalidSoda('Supported range is pH 4.0–7.6.');
-    return;
-  }
+  showError('phError','');
 
-  clearInvalidSoda();
-  const shift=7.6-ph;
-  const rate=3.0*(shift/1.6);
-  const dose=(p.volume/10000)*rate;
-  const whole=Math.floor(dose),oz=(dose-whole)*16;
+  const increase=Math.max(0,goal-current);
+  const rate=3*(increase/1.6);
+  const dose=(pool.volume/10000)*rate;
 
-  document.getElementById('phShift').textContent=shift.toFixed(1)+' units';
-  document.getElementById('sodaRate').textContent=rate.toFixed(2)+' lb/10k gal';
-  document.getElementById('sodaDose').textContent=dose.toLocaleString(undefined,{minimumFractionDigits:1,maximumFractionDigits:1})+' lb';
-  document.getElementById('sodaMixed').textContent=whole.toLocaleString()+' lb '+oz.toFixed(1)+' oz';
-  document.getElementById('soda25').textContent=(dose*.25).toLocaleString(undefined,{minimumFractionDigits:1,maximumFractionDigits:1})+' lb';
-  document.getElementById('soda50').textContent=(dose*.5).toLocaleString(undefined,{minimumFractionDigits:1,maximumFractionDigits:1})+' lb';
-  document.getElementById('sodaBags').textContent=(dose/50).toFixed(2);
-  document.getElementById('sodaFormula').textContent='Dose = ('+p.volume.toLocaleString()+' ÷ 10,000) × 3.0 × ((7.6 − '+ph.toFixed(1)+') ÷ 1.6) = '+dose.toFixed(2)+' lb';
-}
-
-function setInvalidFC(message){
-  document.getElementById('desiredFC').classList.add('invalid');
-  document.getElementById('fcError').textContent=message;
-  document.getElementById('fcError').classList.add('show');
-  document.getElementById('fcResult').classList.add('invalid');
-  document.getElementById('fcTime').textContent='Invalid FC';
-  document.getElementById('fcDecimal').textContent='No feed time calculated';
-  document.getElementById('fcDesiredTile').textContent='—';
-  document.getElementById('fcCycles').textContent='—';
-  document.getElementById('fcHalf').textContent='—';
-  document.getElementById('fcFormula').textContent='Enter a valid FC increase to calculate feed time.';
-}
-
-function clearInvalidFC(){
-  document.getElementById('desiredFC').classList.remove('invalid');
-  document.getElementById('fcError').classList.remove('show');
-  document.getElementById('fcResult').classList.remove('invalid');
+  setText('phShift',increase.toFixed(1)+' units');
+  setText('sodaRate',rate.toFixed(2)+' lb/10k gal');
+  setText('sodaDose',fmtLb(dose));
+  setText('sodaMixed',fmtMixed(dose));
+  setText('soda25',fmtLb(dose*.25));
+  setText('soda50',fmtLb(dose*.50));
+  setText('sodaBags',(dose/50).toFixed(2));
+  setText('sodaFormula','Dose = ('+pool.volume.toLocaleString()+' ÷ 10,000) × 3 × ('+increase.toFixed(2)+' ÷ 1.6) = '+dose.toFixed(2)+' lb');
 }
 
 function updateFC(){
-  const p=selectedPool('fcPool');
-  const raw=document.getElementById('desiredFC').value.trim();
-  const desired=parseFloat(raw);
+  const pool=selectedPool('fcPool');
+  const desired=numberValue('desiredFC');
 
-  document.getElementById('fcId').textContent=p.id;
-  document.getElementById('fcVolume').textContent=p.volume.toLocaleString()+' gal';
-  document.getElementById('fcRate').textContent=p.fc5.toFixed(2)+' ppm';
+  setText('fcId',pool.id);
+  setText('fcVolume',pool.volume.toLocaleString()+' gal');
+  setText('fcRate',pool.fc5.toFixed(2)+' ppm per 5 min');
 
-  if(raw==='' || !isFinite(desired)){
-    setInvalidFC('Enter a numeric FC increase between 0.1 and 60.0 ppm.');
+  if(!Number.isFinite(desired) || desired<0.1 || desired>60){
+    showError('fcError','Enter a desired FC increase between 0.1 and 60 ppm.');
+    setText('fcTime','Invalid input');
     return;
   }
-  if(desired<0.1 || desired>60){
-    setInvalidFC('Supported range is 0.1–60.0 ppm.');
-    return;
-  }
+  showError('fcError','');
 
-  clearInvalidFC();
-  const cycles=desired/p.fc5;
-  const mins=cycles*5;
-  document.getElementById('fcTime').textContent=fmtTime(mins);
-  document.getElementById('fcDecimal').textContent=mins.toFixed(2)+' minutes';
-  document.getElementById('fcDesiredTile').textContent=desired.toFixed(1)+' ppm';
-  document.getElementById('fcCycles').textContent=cycles.toFixed(2);
-  document.getElementById('fcHalf').textContent=fmtTime(mins/2);
-  document.getElementById('fcFormula').textContent='Feed time = ('+desired.toFixed(2)+' ÷ '+p.fc5.toFixed(2)+') × 5 = '+mins.toFixed(2)+' minutes';
+  const minutes=(desired/pool.fc5)*5;
+  setText('fcTime',fmtTime(minutes));
+  setText('fcDecimal',minutes.toFixed(1)+' min');
+  setText('fcDesiredTile',desired.toFixed(1)+' ppm');
+  setText('fcCycles',(minutes/5).toFixed(2));
+  setText('fcHalf',fmtTime(minutes*.5));
+  setText('fcFormula','Feed time = ('+desired.toFixed(2)+' ÷ '+pool.fc5.toFixed(2)+') × 5 = '+minutes.toFixed(2)+' minutes');
 }
 
+function updateCYA(){
+  const pool=selectedPool('cyaPool');
+  const current=numberValue('currentCYA');
+  const goal=14;
 
-function hideCYAAlerts(){
+  setText('cyaId',pool.id);
+  setText('cyaVolume',pool.volume.toLocaleString()+' gal');
+  setText('cyaPerPpm',(pool.volume/120000).toFixed(2)+' lb per ppm');
+
   ['cyaWarning','cyaCaution','cyaInfo'].forEach(function(id){
-    document.getElementById(id).classList.remove('show');
+    const node=byId(id);
+    if(node)node.classList.remove('show');
   });
-}
 
-function setInvalidCYA(message){
-  document.getElementById('currentCYA').classList.add('invalid');
-  document.getElementById('cyaError').textContent=message;
-  document.getElementById('cyaError').classList.add('show');
-  document.getElementById('cyaResult').classList.add('invalid');
-  document.getElementById('cyaIncrease').textContent='—';
-  document.getElementById('cyaPerPpm').textContent='—';
-  document.getElementById('cyaDose').textContent='Invalid CYA';
-  document.getElementById('cyaMixed').textContent='No dose calculated';
-  document.getElementById('cyaNeededTile').textContent='—';
-  document.getElementById('cya25').textContent='—';
-  document.getElementById('cyaBags').textContent='—';
-  document.getElementById('cyaFormula').textContent='Enter a valid CYA test result to calculate a dose.';
-  hideCYAAlerts();
-}
-
-function clearInvalidCYA(){
-  document.getElementById('currentCYA').classList.remove('invalid');
-  document.getElementById('cyaError').classList.remove('show');
-  document.getElementById('cyaResult').classList.remove('invalid');
-}
-
-window.updateCYA=function(){
-  const cyaSelect=document.getElementById('cyaPool');
-  let cyaIndex=cyaSelect.selectedIndex;
-  if(cyaIndex<0 || !pools[cyaIndex]) cyaIndex=0;
-  const p=pools[cyaIndex];
-  const raw=document.getElementById('currentCYA').value.trim();
-  const current=parseFloat(raw);
-  const goal=14.0;
-
-  document.getElementById('cyaId').textContent=p.id;
-  document.getElementById('cyaVolume').textContent=p.volume.toLocaleString()+' gal';
-
-  if(raw==='' || !isFinite(current)){
-    setInvalidCYA('Enter a numeric CYA value between 0 and 200 ppm.');
+  if(!Number.isFinite(current) || current<0 || current>300){
+    showError('cyaError','Enter current CYA between 0 and 300 ppm.');
+    setText('cyaDose','Invalid CYA');
     return;
   }
-  if(current<0 || current>200){
-    setInvalidCYA('Supported range is 0–200 ppm.');
-    return;
-  }
+  showError('cyaError','');
 
-  clearInvalidCYA();
-  hideCYAAlerts();
-
-  const perPpm=p.volume/120000;
   const increase=Math.max(0,goal-current);
-  const dose=perPpm*increase;
-  const whole=Math.floor(dose);
-  const oz=(dose-whole)*16;
+  const dose=(pool.volume/120000)*increase;
 
-  document.getElementById('cyaIncrease').textContent=increase.toFixed(1)+' ppm';
-  document.getElementById('cyaPerPpm').textContent=perPpm.toFixed(2)+' lb';
-  document.getElementById('cyaDose').textContent=dose.toLocaleString(undefined,{minimumFractionDigits:1,maximumFractionDigits:1})+' lb';
-  document.getElementById('cyaMixed').textContent=whole.toLocaleString()+' lb '+oz.toFixed(1)+' oz';
-  document.getElementById('cyaNeededTile').textContent=increase.toFixed(1)+' ppm';
-  document.getElementById('cya25').textContent=(dose*.25).toLocaleString(undefined,{minimumFractionDigits:1,maximumFractionDigits:1})+' lb';
-  document.getElementById('cyaBags').textContent=(dose/50).toFixed(2);
-  localStorage.setItem('cyaPoolIndex',String(cyaIndex));
-  localStorage.setItem('currentCYA',raw);
-  document.getElementById('cyaFormula').textContent='Dose = '+p.volume.toLocaleString()+' ÷ 120,000 × ('+goal.toFixed(1)+' − '+current.toFixed(1)+') = '+dose.toFixed(2)+' lb';
+  setText('cyaIncrease',increase.toFixed(1)+' ppm');
+  setText('cyaDose',fmtLb(dose));
+  setText('cyaMixed',fmtMixed(dose));
+  setText('cyaNeededTile',increase.toFixed(1)+' ppm');
+  setText('cya25',fmtLb(dose*.25));
+  setText('cyaBags',(dose/50).toFixed(2));
 
   if(current<=7){
-    document.getElementById('cyaWarning').classList.add('show');
-  } else if(current<=10){
-    document.getElementById('cyaCaution').classList.add('show');
-  } else if(current>=goal){
-    const info=document.getElementById('cyaInfo');
-    info.textContent='No CYA addition is required. Current CYA is at or above the 14 ppm goal.';
-    info.classList.add('show');
-  } else {
-    const info=document.getElementById('cyaInfo');
-    info.textContent='CYA is below the 14 ppm goal. Dose shown will raise the pool to the target.';
-    info.classList.add('show');
+    const node=byId('cyaWarning'); if(node)node.classList.add('show');
+  }else if(current<=10){
+    const node=byId('cyaCaution'); if(node)node.classList.add('show');
+  }else if(current>=14){
+    const node=byId('cyaInfo'); if(node)node.classList.add('show');
   }
+
+  setText('cyaFormula','Dose = ('+pool.volume.toLocaleString()+' ÷ 120,000) × '+increase.toFixed(2)+' = '+dose.toFixed(2)+' lb');
+}
+
+function updateDechlor(){
+  const pool=selectedPool('dechlorPool');
+  const current=numberValue('dechlorCurrent');
+  const goal=numberValue('dechlorGoal');
+
+  setText('dechlorId',pool.id);
+  setText('dechlorVolume',pool.volume.toLocaleString()+' gal');
+
+  let error='';
+  if(!Number.isFinite(current)||current<0||current>60)error='Current FC must be between 0 and 60 ppm.';
+  else if(!Number.isFinite(goal)||goal<0||goal>60)error='Goal FC must be between 0 and 60 ppm.';
+  else if(goal>current)error='Goal FC cannot exceed current FC.';
+
+  showError('dechlorCurrentError',error && error.startsWith('Current')?error:'');
+  showError('dechlorGoalError',error && !error.startsWith('Current')?error:'');
+  if(error){
+    setText('dechlorDose','Invalid FC');
+    return;
+  }
+
+  const reduction=current-goal;
+  const ounces=(pool.volume/10000)*reduction*1.36;
+  const pounds=ounces/16;
+
+  setText('dechlorReduction',reduction.toFixed(1)+' ppm');
+  setText('dechlorDose',fmtLb(pounds));
+  setText('dechlorMixed',fmtMixed(pounds));
+  setText('dechlor50',fmtLb(pounds*.50));
+  setText('dechlor25',fmtLb(pounds*.25));
+  setText('dechlorBags',(pounds/50).toFixed(2));
+  setText('dechlorStatus',reduction===0?'No Action':reduction>10?'Very High':reduction>5?'High Reduction':'Retest');
+  setText('dechlorFormula','Dose = ('+pool.volume.toLocaleString()+' ÷ 10,000) × '+reduction.toFixed(2)+' × 1.36 oz = '+pounds.toFixed(2)+' lb');
+}
+
+function updateCalHypo(){
+  const pool=selectedPool('calPool');
+  const current=numberValue('calCurrent');
+  const goal=numberValue('calGoal');
+  const strength=numberValue('calProduct');
+
+  setText('calId',pool.id);
+  setText('calVol',pool.volume.toLocaleString()+' gal');
+  setText('calStrength',(strength*100).toFixed(0)+'%');
+
+  if(!Number.isFinite(current)||!Number.isFinite(goal)||current<0||goal<0||current>60||goal>60||goal<current){
+    showError('calError','Enter valid FC values; goal must be at or above current.');
+    setText('calDose','Invalid FC');
+    return;
+  }
+  showError('calError','');
+
+  const increase=goal-current;
+  const dose=pool.volume*increase*8.345e-6/strength;
+
+  setText('calRise',increase.toFixed(1)+' ppm');
+  setText('calDose',fmtLb(dose));
+  setText('calMixed',fmtMixed(dose));
+  setText('calHalf',fmtLb(dose*.50));
+  setText('calQuarter',fmtLb(dose*.25));
+  setText('calBags',(dose/50).toFixed(2));
+  setText('calProductTile',strength===0.65?'Briquettes':'Power Shock');
+  setText('calFormula','Dose = '+pool.volume.toLocaleString()+' × '+increase.toFixed(2)+' × 8.345×10⁻⁶ ÷ '+strength.toFixed(2)+' = '+dose.toFixed(2)+' lb');
+}
+
+function updateAlkalinity(){
+  const pool=selectedPool('alkPool');
+  const current=numberValue('alkCurrent');
+  const goal=numberValue('alkGoal');
+
+  setText('alkId',pool.id);
+  setText('alkVol',pool.volume.toLocaleString()+' gal');
+
+  if(!Number.isFinite(current)||!Number.isFinite(goal)||current<0||goal<0||current>300||goal>300||goal<current){
+    showError('alkError','Enter valid TA values; goal must be at or above current.');
+    setText('alkDose','Invalid TA');
+    return;
+  }
+  showError('alkError','');
+
+  const increase=goal-current;
+  const dose=(pool.volume/10000)*(increase/10)*1.5;
+
+  setText('alkRise',increase.toFixed(0)+' ppm');
+  setText('alkDose',fmtLb(dose));
+  setText('alkMixed',fmtMixed(dose));
+  setText('alkHalf',fmtLb(dose*.50));
+  setText('alkQuarter',fmtLb(dose*.25));
+  setText('alkBags',(dose/50).toFixed(2));
+  setText('alkStatus',increase>0?'Retest':'No Action');
+  setText('alkFormula','Dose = ('+pool.volume.toLocaleString()+' ÷ 10,000) × ('+increase.toFixed(0)+' ÷ 10) × 1.5 = '+dose.toFixed(2)+' lb');
+}
+
+function updateLSI(){
+  const tempF=numberValue('lsiTemp');
+  const pH=numberValue('lsiPH');
+  const ta=numberValue('lsiTA');
+  const cya=numberValue('lsiCYA');
+  const ch=numberValue('lsiCH');
+  const tds=numberValue('lsiTDS');
+
+  if([tempF,pH,ta,cya,ch,tds].some(function(v){return !Number.isFinite(v);}) || tempF<32 || tempF>120 || pH<4 || pH>10 || ta<=0 || ch<=0 || cya<0 || tds<0){
+    showError('lsiError','Enter valid values within the displayed ranges.');
+    return;
+  }
+  showError('lsiError','');
+
+  const tempC=(tempF-32)*5/9;
+  const correctedTA=Math.max(1,ta-cya/3);
+  const A=(Math.log10(Math.max(1,tds))-1)/10;
+  const B=-13.12*Math.log10(tempC+273)+34.55;
+  const C=Math.log10(ch)-0.4;
+  const D=Math.log10(correctedTA);
+  const saturationPH=(9.3+A+B)-(C+D);
+  const lsi=pH-saturationPH;
+
+  let condition='Balanced', tendency='Near equilibrium';
+  if(lsi<-0.3){condition='Corrosive tendency';tendency='Under-saturated';}
+  else if(lsi>0.3){condition='Scale tendency';tendency='Over-saturated';}
+
+  setText('lsiValue',(lsi>=0?'+':'')+lsi.toFixed(2));
+  setText('lsiCondition',condition);
+  setText('lsiCorrectedTA',correctedTA.toFixed(0)+' ppm');
+  setText('lsiSaturationPH',saturationPH.toFixed(2));
+  setText('lsiTendency',tendency);
+}
+
+const unitDefinitions={
+  volume:{label:'Volume',units:[
+    ['gal','US gallon','gal',3.785411784],['L','liter','L',1],['mL','milliliter','mL',.001],
+    ['floz','US fluid ounce','fl oz',.0295735295625],['qt','US quart','qt',.946352946],['ft3','cubic foot','ft³',28.316846592]
+  ]},
+  mass:{label:'Mass',units:[
+    ['lb','pound','lb',.45359237],['oz','ounce','oz',.028349523125],['kg','kilogram','kg',1],['g','gram','g',.001]
+  ]},
+  flow:{label:'Flow Rate',units:[
+    ['gpm','gallons per minute','gpm',3.785411784],['gph','gallons per hour','gph',.0630901964],
+    ['lpm','liters per minute','L/min',1],['lps','liters per second','L/s',60],['m3h','cubic meters per hour','m³/h',16.666666667]
+  ]},
+  temperature:{label:'Temperature',units:[
+    ['F','degrees Fahrenheit','°F',null],['C','degrees Celsius','°C',null],['K','kelvin','K',null]
+  ]},
+  pressure:{label:'Pressure',units:[
+    ['psi','pounds per square inch','psi',6.894757293],['kPa','kilopascal','kPa',1],
+    ['bar','bar','bar',100],['inHg','inch of mercury','inHg',3.386389]
+  ]}
 };
 
-['sodaPool','currentPH'].forEach(id=>{
-  const el=document.getElementById(id);
-  el.addEventListener('change',updateSoda);
-  el.addEventListener('input',updateSoda);
-});
-['fcPool','desiredFC'].forEach(id=>{
-  const el=document.getElementById(id);
-  el.addEventListener('change',updateFC);
-  el.addEventListener('input',updateFC);
-});
-['cyaPool','currentCYA'].forEach(id=>{
-  const el=document.getElementById(id);
-  ['change','input','blur','keyup','touchend'].forEach(evt=>{
-    el.addEventListener(evt,updateCYA);
+function unitRecord(category,key){
+  return unitDefinitions[category].units.find(function(unit){return unit[0]===key;});
+}
+function populateUnits(){
+  const category=byId('unitCategory').value;
+  const from=byId('unitFrom');
+  const to=byId('unitTo');
+  const list=unitDefinitions[category].units;
+  from.innerHTML='';
+  to.innerHTML='';
+  list.forEach(function(unit,index){
+    const a=document.createElement('option');
+    a.value=unit[0]; a.textContent=unit[1];
+    const b=a.cloneNode(true);
+    from.appendChild(a);
+    to.appendChild(b);
+  });
+  from.selectedIndex=0;
+  to.selectedIndex=list.length>1?1:0;
+  updateUnits();
+}
+function toCelsius(value,unit){return unit==='C'?value:unit==='F'?(value-32)*5/9:value-273.15;}
+function fromCelsius(value,unit){return unit==='C'?value:unit==='F'?value*9/5+32:value+273.15;}
+function updateUnits(){
+  const category=byId('unitCategory').value;
+  const input=numberValue('unitInput');
+  const from=unitRecord(category,byId('unitFrom').value);
+  const to=unitRecord(category,byId('unitTo').value);
+  if(!Number.isFinite(input)||!from||!to){showError('unitError','Enter a valid value and select both units.');return;}
+  showError('unitError','');
+
+  const output=category==='temperature'
+    ? fromCelsius(toCelsius(input,from[0]),to[0])
+    : input*from[3]/to[3];
+
+  const formatted=Number(output.toPrecision(7)).toLocaleString(undefined,{maximumFractionDigits:8});
+  setText('unitResult',formatted);
+  setText('unitResultLabel',to[1]);
+  setText('unitInputTile',input.toLocaleString()+' '+from[2]);
+  setText('unitOutputTile',formatted+' '+to[2]);
+  setText('unitCategoryTile',unitDefinitions[category].label);
+}
+
+function updateDilution(){
+  const stock=numberValue('dilStock');
+  const target=numberValue('dilTarget');
+  const finalVolume=numberValue('dilFinal');
+  const unit=byId('dilUnit').value;
+
+  if(!Number.isFinite(stock)||!Number.isFinite(target)||!Number.isFinite(finalVolume)||stock<=0||target<0||finalVolume<0){
+    showError('dilError','Enter valid positive concentrations and final volume.');
+    return;
+  }
+  if(target>stock){
+    showError('dilError','Target concentration cannot exceed stock concentration.');
+    return;
+  }
+  showError('dilError','');
+
+  const stockVolume=target*finalVolume/stock;
+  const water=Math.max(0,finalVolume-stockVolume);
+  const ratio=target===0?Infinity:(stock/target)-1;
+  const format=function(v){return v.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:3});};
+
+  setText('dilStockVolume',format(stockVolume)+' '+unit);
+  setText('dilWaterVolume','Add '+format(water)+' '+unit+' water');
+  setText('dilStockTile',format(stockVolume)+' '+unit);
+  setText('dilWaterTile',format(water)+' '+unit);
+  setText('dilFinalTile',format(finalVolume)+' '+unit);
+  setText('dilRatioTile',target===0?'No stock required':'1 : '+ratio.toFixed(2));
+}
+
+function refreshClock(){
+  const now=new Date();
+  setText('headerDate',now.toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'}));
+  setText('headerTime',now.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'}));
+}
+function refreshOnline(){
+  setText('onlineStatus',navigator.onLine?'System Online':'Offline Mode');
+}
+
+function bind(ids,events,handler){
+  ids.forEach(function(id){
+    const node=byId(id);
+    if(!node)return;
+    events.forEach(function(eventName){node.addEventListener(eventName,handler);});
+  });
+}
+
+bind(['sodaPool','currentPH'],['input','change'],updateSoda);
+bind(['fcPool','desiredFC'],['input','change'],updateFC);
+bind(['cyaPool','currentCYA'],['input','change'],updateCYA);
+bind(['dechlorPool','dechlorCurrent','dechlorGoal'],['input','change'],updateDechlor);
+bind(['calPool','calCurrent','calGoal','calProduct'],['input','change'],updateCalHypo);
+bind(['alkPool','alkCurrent','alkGoal'],['input','change'],updateAlkalinity);
+bind(['lsiTemp','lsiPH','lsiTA','lsiCYA','lsiCH','lsiTDS'],['input','change'],updateLSI);
+bind(['unitInput','unitFrom','unitTo'],['input','change'],updateUnits);
+bind(['dilStock','dilTarget','dilFinal','dilUnit'],['input','change'],updateDilution);
+
+byId('unitCategory').addEventListener('change',populateUnits);
+document.querySelectorAll('.utility-tab').forEach(function(button){
+  button.type='button';
+  button.addEventListener('click',function(event){
+    event.preventDefault();
+    showUtility(button.dataset.utility);
+    if(button.dataset.utility==='units')populateUnits();
   });
 });
 
-let lastCyaPool=-1;
-let lastCyaValue='';
-setInterval(function(){
-  updateSoda();
-  updateFC();
-
-  const cyaPool=document.getElementById('cyaPool');
-  const cyaInput=document.getElementById('currentCYA');
-  if(cyaPool.selectedIndex!==lastCyaPool || cyaInput.value!==lastCyaValue){
-    updateCYA();
-    lastCyaPool=cyaPool.selectedIndex;
-    lastCyaValue=cyaInput.value;
-  }
-},250);
-
-document.addEventListener('visibilitychange',function(){
-  if(!document.hidden) updateCYA();
-});
-window.addEventListener('focus',updateCYA);
-window.addEventListener('pageshow',updateCYA);
-
-const savedCyaPool=parseInt(localStorage.getItem('cyaPoolIndex'),10);
-if(Number.isFinite(savedCyaPool) && pools[savedCyaPool]){
-  document.getElementById('cyaPool').selectedIndex=savedCyaPool;
-}
-const savedCyaValue=localStorage.getItem('currentCYA');
-if(savedCyaValue!==null && savedCyaValue!==''){
-  document.getElementById('currentCYA').value=savedCyaValue;
-}
-
-const saved=localStorage.getItem('poolToolsTab');
-if(saved==='fc')showTab('fc');
-if(saved==='cya')showTab('cya');
+populateUnits();
 updateSoda();
 updateFC();
 updateCYA();
+updateDechlor();
+updateCalHypo();
+updateAlkalinity();
+updateLSI();
+updateDilution();
+showUtility('lsi');
+showTab('home');
+refreshClock();
+refreshOnline();
+
+setInterval(refreshClock,15000);
+window.addEventListener('online',refreshOnline);
+window.addEventListener('offline',refreshOnline);
+window.addEventListener('pageshow',function(){
+  refreshClock();
+  updateSoda(); updateFC(); updateCYA(); updateDechlor();
+  updateCalHypo(); updateAlkalinity(); updateLSI(); updateUnits(); updateDilution();
+});
+
+
+/* ---------------- Pump Curve Calculator ---------------- */
+function pumpTab(name){
+  document.querySelectorAll('.pump-workspace').forEach(function(el){el.classList.toggle('active',el.id==='pump'+name.charAt(0).toUpperCase()+name.slice(1)+'Workspace');});
+  document.querySelectorAll('.pump-tab').forEach(function(btn){btn.classList.toggle('active',btn.dataset.pumpTab===name);});
+}
+document.querySelectorAll('.pump-tab').forEach(function(btn){btn.addEventListener('click',function(){pumpTab(btn.dataset.pumpTab);});});
+
+function pumpPoints(){
+  const points=[];
+  for(let i=0;i<5;i++){
+    const q=parseFloat(byId('pumpQ'+i).value);
+    const h=parseFloat(byId('pumpH'+i).value);
+    if(Number.isFinite(q)&&Number.isFinite(h)&&q>=0&&h>=0)points.push({q:q,h:h});
+  }
+  points.sort(function(a,b){return a.q-b.q;});
+  return points;
+}
+function interpolate(points,q){
+  if(q<points[0].q||q>points[points.length-1].q)return null;
+  for(let i=0;i<points.length-1;i++){
+    const a=points[i],b=points[i+1];
+    if(q>=a.q&&q<=b.q){
+      if(b.q===a.q)return a.h;
+      const t=(q-a.q)/(b.q-a.q);
+      return a.h+(b.h-a.h)*t;
+    }
+  }
+  return points[points.length-1].h;
+}
+function scaledPumpPoints(){
+  const base=parseFloat(byId('pumpBaseHz').value);
+  const actual=parseFloat(byId('pumpActualHz').value);
+  const ratio=actual/base;
+  return pumpPoints().map(function(p){return {q:p.q*ratio,h:p.h*ratio*ratio};});
+}
+function findOperatingPoint(points,staticHead,k){
+  const maxQ=points[points.length-1].q;
+  let best=null;
+  const steps=2400;
+  for(let i=0;i<=steps;i++){
+    const q=maxQ*i/steps;
+    const hp=interpolate(points,q);
+    if(hp===null)continue;
+    const hs=staticHead+k*q*q;
+    const diff=Math.abs(hp-hs);
+    if(!best||diff<best.diff)best={q:q,h:(hp+hs)/2,diff:diff};
+  }
+  return best;
+}
+function drawPumpChart(points,staticHead,k,op){
+  const canvas=byId('pumpCurveCanvas');
+  const ctx=canvas.getContext('2d');
+  const w=canvas.width,h=canvas.height;
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle='#03101f';ctx.fillRect(0,0,w,h);
+  const pad={l:72,r:24,t:28,b:58};
+  const maxQ=Math.max(points[points.length-1].q,op?op.q:0)*1.08||1;
+  let maxH=Math.max.apply(null,points.map(p=>p.h));
+  maxH=Math.max(maxH,staticHead+k*maxQ*maxQ)*1.12||1;
+  const x=q=>pad.l+(q/maxQ)*(w-pad.l-pad.r);
+  const y=head=>h-pad.b-(head/maxH)*(h-pad.t-pad.b);
+  ctx.strokeStyle='#18344f';ctx.lineWidth=1;
+  ctx.fillStyle='#7897af';ctx.font='14px sans-serif';
+  for(let i=0;i<=5;i++){
+    const q=maxQ*i/5,xx=x(q);
+    ctx.beginPath();ctx.moveTo(xx,pad.t);ctx.lineTo(xx,h-pad.b);ctx.stroke();
+    ctx.fillText(Math.round(q).toString(),xx-12,h-pad.b+24);
+  }
+  for(let i=0;i<=5;i++){
+    const head=maxH*i/5,yy=y(head);
+    ctx.beginPath();ctx.moveTo(pad.l,yy);ctx.lineTo(w-pad.r,yy);ctx.stroke();
+    ctx.fillText(Math.round(head).toString(),17,yy+5);
+  }
+  ctx.fillStyle='#abc0d2';ctx.font='15px sans-serif';
+  ctx.fillText('Flow (GPM)',w/2-36,h-13);
+  ctx.save();ctx.translate(18,h/2+38);ctx.rotate(-Math.PI/2);ctx.fillText('Head (ft)',0,0);ctx.restore();
+  ctx.strokeStyle='#4ec3ff';ctx.lineWidth=4;ctx.beginPath();
+  points.forEach(function(p,i){const xx=x(p.q),yy=y(p.h);if(i===0)ctx.moveTo(xx,yy);else ctx.lineTo(xx,yy);});ctx.stroke();
+  ctx.fillStyle='#4ec3ff';points.forEach(function(p){ctx.beginPath();ctx.arc(x(p.q),y(p.h),5,0,Math.PI*2);ctx.fill();});
+  ctx.strokeStyle='#ffb34c';ctx.lineWidth=4;ctx.beginPath();
+  for(let i=0;i<=200;i++){const q=maxQ*i/200,head=staticHead+k*q*q;const xx=x(q),yy=y(head);if(i===0)ctx.moveTo(xx,yy);else ctx.lineTo(xx,yy);}ctx.stroke();
+  if(op){ctx.fillStyle='#69ed9f';ctx.beginPath();ctx.arc(x(op.q),y(op.h),8,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#d9ffe8';ctx.lineWidth=2;ctx.stroke();}
+}
+function updatePumpCurve(){
+  const points=scaledPumpPoints();
+  const knownFlow=parseFloat(byId('systemKnownFlow').value);
+  const knownHead=parseFloat(byId('systemKnownHead').value);
+  const staticHead=parseFloat(byId('systemStaticHead').value);
+  const base=parseFloat(byId('pumpBaseHz').value),actual=parseFloat(byId('pumpActualHz').value);
+  if(points.length<2||!Number.isFinite(knownFlow)||knownFlow<=0||!Number.isFinite(knownHead)||!Number.isFinite(staticHead)||knownHead<staticHead||!Number.isFinite(base)||!Number.isFinite(actual)||base<=0||actual<=0){
+    showError('pumpCurveError','Enter at least two valid curve points and valid system/speed values.');
+    return;
+  }
+  showError('pumpCurveError','');
+  const k=(knownHead-staticHead)/(knownFlow*knownFlow);
+  const op=findOperatingPoint(points,staticHead,k);
+  drawPumpChart(points,staticHead,k,op);
+  setText('pumpSystemK',k.toExponential(4));
+  setText('pumpSpeedRatio',(actual/base).toFixed(3));
+  setText('pumpCurveRange',Math.round(points[0].q)+'-'+Math.round(points[points.length-1].q)+' GPM');
+  setText('pumpCurveFormula','System head = '+staticHead.toFixed(1)+' + '+k.toExponential(4)+' × Q²');
+  if(op&&op.diff<3){
+    setText('pumpOperatingFlow',Math.round(op.q).toLocaleString()+' GPM');
+    setText('pumpOperatingHead',op.h.toFixed(1)+' ft TDH');
+    setText('pumpCurveStatus',op.q<points[points.length-1].q*.05||op.q>points[points.length-1].q*.95?'Near curve limit':'Intersection found');
+  }else{
+    setText('pumpOperatingFlow','No intersection');
+    setText('pumpOperatingHead','Within entered curve range');
+    setText('pumpCurveStatus','Check curve/system data');
+  }
+}
+function updateTDH(){
+  const discharge=parseFloat(byId('tdhDischargePsi').value),suction=parseFloat(byId('tdhSuctionValue').value),sg=parseFloat(byId('tdhSpecificGravity').value),elev=parseFloat(byId('tdhElevation').value),mode=byId('tdhSuctionMode').value;
+  if(![discharge,suction,sg,elev].every(Number.isFinite)||sg<=0){showError('tdhError','Enter valid pressure, specific gravity and elevation values.');return;}
+  showError('tdhError','');
+  const dischargeHead=discharge*2.31/sg;
+  let suctionContribution;
+  if(mode==='inhg')suctionContribution=Math.abs(suction)*1.133/sg;
+  else suctionContribution=-suction*2.31/sg;
+  const total=dischargeHead+suctionContribution+elev;
+  setText('tdhResult',total.toFixed(1)+' ft');
+  setText('tdhDischargeHead',dischargeHead.toFixed(1)+' ft');
+  setText('tdhSuctionHead',suctionContribution.toFixed(1)+' ft');
+  setText('tdhElevationTile',elev.toFixed(1)+' ft');
+  setText('tdhBreakdown','Discharge '+dischargeHead.toFixed(1)+' + suction '+suctionContribution.toFixed(1)+' + elevation '+elev.toFixed(1));
+}
+function updateVFD(){
+  const oldHz=parseFloat(byId('vfdCurrentHz').value),newHz=parseFloat(byId('vfdNewHz').value),flow=parseFloat(byId('vfdCurrentFlow').value),head=parseFloat(byId('vfdCurrentHead').value),hp=parseFloat(byId('vfdCurrentHp').value);
+  if(![oldHz,newHz,flow,head,hp].every(Number.isFinite)||oldHz<=0||newHz<=0||flow<0||head<0||hp<0){showError('vfdError','Enter valid positive speed and operating values.');return;}
+  showError('vfdError','');
+  const r=newHz/oldHz;
+  setText('vfdNewFlow',Math.round(flow*r).toLocaleString()+' GPM');
+  setText('vfdRatio','Speed ratio '+r.toFixed(3));
+  setText('vfdNewHead',(head*r*r).toFixed(1)+' ft');
+  setText('vfdNewHp',(hp*r*r*r).toFixed(1)+' HP');
+  setText('vfdPowerPercent',(r*r*r*100).toFixed(1)+'%');
+  setText('vfdSavings',((1-r*r*r)*100).toFixed(1)+'%');
+}
+bind(['pumpQ0','pumpH0','pumpQ1','pumpH1','pumpQ2','pumpH2','pumpQ3','pumpH3','pumpQ4','pumpH4','systemKnownFlow','systemKnownHead','systemStaticHead','pumpBaseHz','pumpActualHz'],['input','change'],updatePumpCurve);
+bind(['tdhDischargePsi','tdhSuctionMode','tdhSuctionValue','tdhSpecificGravity','tdhElevation'],['input','change'],updateTDH);
+bind(['vfdCurrentHz','vfdNewHz','vfdCurrentFlow','vfdCurrentHead','vfdCurrentHp'],['input','change'],updateVFD);
+updatePumpCurve();updateTDH();updateVFD();
+
+/* ---------------- Incident Report + Local PDF ---------------- */
+const incidentState={step:1,startedAt:Date.now(),pools:[],contact:'',resolution:'',follow:''};
+function incidentStep(n){
+  incidentState.step=n;
+  [1,2,3].forEach(function(i){
+    byId('incidentStep'+i).classList.toggle('active',i===n);
+    document.querySelector('[data-incident-step="'+i+'"]').classList.toggle('active',i===n);
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function selectIncidentChoice(containerId,value){
+  document.querySelectorAll('#'+containerId+' button').forEach(function(btn){btn.classList.toggle('selected',btn.dataset.value===value);});
+}
+function incidentPayload(){
+  return {
+    incidentId:'SW-'+new Date().toISOString().replace(/\D/g,'').slice(0,14),
+    startedAt:new Date(incidentState.startedAt).toISOString(),
+    completedAt:new Date().toISOString(),
+    technician:byId('incidentTech').value,
+    pools:incidentState.pools.slice(),
+    reportedBy:byId('incidentReportedBy').value.trim(),
+    category:byId('incidentCategory').value,
+    contact:incidentState.contact,
+    description:byId('incidentDescription').value.trim(),
+    closed:byId('incidentClosed').checked,
+    closureNotes:byId('incidentClosureNotes').value.trim(),
+    action:byId('incidentAction').value,
+    resolutionMethod:incidentState.resolution,
+    resolutionNotes:byId('incidentResolutionNotes').value.trim(),
+    communicatedTo:byId('incidentCommunicatedTo').value.trim(),
+    follow:incidentState.follow,
+    followNotes:byId('incidentFollowNotes').value.trim(),
+    photoName:(byId('incidentPhoto').files[0]||{}).name||''
+  };
+}
+function saveIncidentDraft(){
+  try{localStorage.setItem('swIncidentPdfDraft',JSON.stringify(incidentPayload()));setText('incidentDraftStatus','Saved '+new Date().toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'}));}catch(e){}
+}
+function loadIncidentDraft(){
+  let d=null;try{d=JSON.parse(localStorage.getItem('swIncidentPdfDraft')||'null');}catch(e){}
+  const savedTech=localStorage.getItem('swIncidentTech')||'';
+  if(savedTech)byId('incidentTech').value=savedTech;
+  if(!d)return;
+  incidentState.startedAt=Date.parse(d.startedAt)||Date.now();incidentState.pools=d.pools||[];incidentState.contact=d.contact||'';incidentState.resolution=d.resolutionMethod||'';incidentState.follow=d.follow||'';
+  byId('incidentTech').value=d.technician||savedTech;byId('incidentReportedBy').value=d.reportedBy||'';byId('incidentCategory').value=d.category||'';byId('incidentDescription').value=d.description||'';byId('incidentClosed').checked=!!d.closed;byId('incidentClosureNotes').value=d.closureNotes||'';byId('incidentAction').value=d.action||'';byId('incidentResolutionNotes').value=d.resolutionNotes||'';byId('incidentCommunicatedTo').value=d.communicatedTo||'';byId('incidentFollowNotes').value=d.followNotes||'';
+  document.querySelectorAll('.incident-pool-chip').forEach(function(btn){btn.classList.toggle('selected',incidentState.pools.includes(btn.dataset.pool));});
+  setText('incidentSelectedPools',incidentState.pools.length?incidentState.pools.join(', '):'No pool selected');
+  selectIncidentChoice('incidentContactChoices',incidentState.contact);selectIncidentChoice('incidentResolutionChoices',incidentState.resolution);selectIncidentChoice('incidentFollowChoices',incidentState.follow);
+  byId('incidentClosureBlock').classList.toggle('show',byId('incidentClosed').checked);byId('incidentFollowBlock').classList.toggle('show',incidentState.follow==='Yes'||incidentState.follow==='Monitor');
+  setText('incidentDraftStatus','Draft restored');
+}
+function clearIncidentDraft(reset){
+  try{localStorage.removeItem('swIncidentPdfDraft');}catch(e){}
+  setText('incidentDraftStatus','No saved draft');
+  if(reset){byId('incidentForm').reset();incidentState.startedAt=Date.now();incidentState.pools=[];incidentState.contact='';incidentState.resolution='';incidentState.follow='';document.querySelectorAll('.incident-pool-chip,.incident-choice-grid button').forEach(function(b){b.classList.remove('selected');});setText('incidentSelectedPools','No pool selected');byId('incidentClosureBlock').classList.remove('show');byId('incidentFollowBlock').classList.remove('show');incidentStep(1);}
+}
+function validateIncident1(){
+  let e='';if(!byId('incidentTech').value)e='Select the technician.';else if(!incidentState.pools.length)e='Select at least one body of water.';else if(!byId('incidentCategory').value)e='Select an issue category.';else if(!incidentState.contact)e='Select how the issue was reported.';else if(!byId('incidentDescription').value.trim())e='Enter an issue description.';
+  setText('incidentError1',e);return !e;
+}
+function validateIncident2(){
+  let e='';if(!byId('incidentAction').value)e='Select the primary action.';else if(!incidentState.resolution)e='Select the resolution method.';else if(!byId('incidentResolutionNotes').value.trim())e='Enter resolution notes.';else if(!incidentState.follow)e='Select follow-up status.';
+  setText('incidentError2',e);return !e;
+}
+function renderIncidentReview(){
+  const d=incidentPayload();
+  const rows=[['Incident ID',d.incidentId],['Technician',d.technician],['Pool(s)',d.pools.join(', ')],['Reported By',d.reportedBy||'Not entered'],['Issue',d.category+' - '+d.description],['Contact Method',d.contact],['Pool Closed',d.closed?'Yes':'No'],['Closure Details',d.closed?(d.closureNotes||'Not entered'):'Not applicable'],['Action',d.action],['Resolution Method',d.resolutionMethod],['Resolution',d.resolutionNotes],['Communicated To',d.communicatedTo||'Not entered'],['Follow-Up',d.follow],['Follow-Up Notes',d.followNotes||'None'],['Photo',d.photoName||'None selected'],['Started',new Date(d.startedAt).toLocaleString()],['Completed',new Date(d.completedAt).toLocaleString()]];
+  byId('incidentReview').innerHTML=rows.map(function(r){return '<div class="incident-review-row"><span>'+r[0]+'</span><strong>'+r[1]+'</strong></div>';}).join('');
+}
+function pdfEscape(text){return String(text||'').replace(/\\/g,'\\\\').replace(/\(/g,'\\(').replace(/\)/g,'\\)').replace(/\r/g,'');}
+function wrapPdfText(text,maxChars){
+  const words=String(text||'').split(/\s+/),lines=[];let line='';
+  words.forEach(function(word){const test=line?line+' '+word:word;if(test.length>maxChars&&line){lines.push(line);line=word;}else line=test;});
+  if(line)lines.push(line);return lines.length?lines:[''];
+}
+function makeIncidentPdfBlob(data){
+  const pages=[];let lines=[];
+  function add(label,value){lines.push({bold:true,text:label});wrapPdfText(value||'Not entered',84).forEach(function(t){lines.push({bold:false,text:t});});lines.push({bold:false,text:''});}
+  lines.push({title:true,text:'SeaWorld Water Chemistry Console'});lines.push({subtitle:true,text:'Incident Report'});lines.push({bold:false,text:''});
+  add('Incident ID',data.incidentId);add('Technician',data.technician);add('Body of Water',data.pools.join(', '));add('Reported By',data.reportedBy);add('Issue Category',data.category);add('Issue Description',data.description);add('Contact Method',data.contact);add('Pool Closed',data.closed?'Yes':'No');if(data.closed)add('Closure Details',data.closureNotes);add('Primary Action Taken',data.action);add('Resolution Method',data.resolutionMethod);add('Resolution Notes',data.resolutionNotes);add('Resolution Communicated To',data.communicatedTo);add('Follow-Up Status',data.follow);add('Follow-Up Notes',data.followNotes);add('Photo File Name',data.photoName);add('Incident Start',new Date(data.startedAt).toLocaleString());add('Incident End',new Date(data.completedAt).toLocaleString());add('Duration Minutes',Math.max(0,Math.round((Date.parse(data.completedAt)-Date.parse(data.startedAt))/60000)).toString());
+  while(lines.length){pages.push(lines.splice(0,47));}
+  const objects=[];const offsets=[0];let pdf='%PDF-1.4\n';
+  function obj(content){objects.push(content);return objects.length;}
+  const fontRegular=obj('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>');
+  const fontBold=obj('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>');
+  const pageIds=[],contentIds=[];
+  pages.forEach(function(page){
+    let stream='BT\n';let y=756;
+    page.forEach(function(row){
+      let size=10,font='F1';
+      if(row.title){size=18;font='F2';}
+      else if(row.subtitle){size=14;font='F2';}
+      else if(row.bold){size=10;font='F2';}
+      stream+='/'+font+' '+size+' Tf\n1 0 0 1 54 '+y+' Tm\n('+pdfEscape(row.text)+') Tj\n';
+      y-=row.title?26:row.subtitle?22:14;
+    });
+    stream+='ET';
+    const contentId=obj('<< /Length '+stream.length+' >>\nstream\n'+stream+'\nendstream');
+    contentIds.push(contentId);pageIds.push(null);
+  });
+  const pagesId=objects.length+pages.length+1;
+  pages.forEach(function(page,index){
+    const pageId=obj('<< /Type /Page /Parent '+pagesId+' 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 '+fontRegular+' 0 R /F2 '+fontBold+' 0 R >> >> /Contents '+contentIds[index]+' 0 R >>');
+    pageIds[index]=pageId;
+  });
+  obj('<< /Type /Pages /Kids ['+pageIds.map(id=>id+' 0 R').join(' ')+'] /Count '+pageIds.length+' >>');
+  const catalogId=obj('<< /Type /Catalog /Pages '+pagesId+' 0 R >>');
+  objects.forEach(function(content,i){offsets[i+1]=pdf.length;pdf+=(i+1)+' 0 obj\n'+content+'\nendobj\n';});
+  const xref=pdf.length;pdf+='xref\n0 '+(objects.length+1)+'\n0000000000 65535 f \n';for(let i=1;i<=objects.length;i++)pdf+=String(offsets[i]).padStart(10,'0')+' 00000 n \n';
+  pdf+='trailer\n<< /Size '+(objects.length+1)+' /Root '+catalogId+' 0 R >>\nstartxref\n'+xref+'\n%%EOF';
+  return new Blob([new TextEncoder().encode(pdf)],{type:'application/pdf'});
+}
+function downloadBlob(blob,name){const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url);},30000);}
+async function shareIncidentPdf(forceDownload){
+  if(!validateIncident1()||!validateIncident2())return;
+  const data=incidentPayload(),blob=makeIncidentPdfBlob(data),name=data.incidentId+'-Incident-Report.pdf';
+  setText('incidentPdfStatus','PDF created.');
+  if(!forceDownload&&navigator.share&&window.File){
+    const file=new File([blob],name,{type:'application/pdf'});
+    try{
+      if(!navigator.canShare||navigator.canShare({files:[file]})){await navigator.share({title:'Incident Report '+data.incidentId,text:'SeaWorld incident report attached.',files:[file]});setText('incidentPdfStatus','PDF shared. Select Mail to email it.');clearIncidentDraft(false);return;}
+    }catch(err){if(err&&err.name==='AbortError'){setText('incidentPdfStatus','Share canceled.');return;}}
+  }
+  downloadBlob(blob,name);setText('incidentPdfStatus','PDF downloaded. Open it from Files and share by email.');clearIncidentDraft(false);
+}
+document.querySelectorAll('.incident-pool-chip').forEach(function(btn){btn.addEventListener('click',function(){const p=btn.dataset.pool,i=incidentState.pools.indexOf(p);if(i>=0)incidentState.pools.splice(i,1);else incidentState.pools.push(p);btn.classList.toggle('selected',i<0);setText('incidentSelectedPools',incidentState.pools.length?incidentState.pools.join(', '):'No pool selected');saveIncidentDraft();});});
+byId('incidentPoolSearch').addEventListener('input',function(){const q=this.value.toLowerCase();document.querySelectorAll('.incident-pool-chip').forEach(function(btn){btn.hidden=!btn.textContent.toLowerCase().includes(q);});});
+document.querySelectorAll('#incidentContactChoices button').forEach(function(btn){btn.addEventListener('click',function(){incidentState.contact=btn.dataset.value;selectIncidentChoice('incidentContactChoices',incidentState.contact);saveIncidentDraft();});});
+document.querySelectorAll('#incidentResolutionChoices button').forEach(function(btn){btn.addEventListener('click',function(){incidentState.resolution=btn.dataset.value;selectIncidentChoice('incidentResolutionChoices',incidentState.resolution);saveIncidentDraft();});});
+document.querySelectorAll('#incidentFollowChoices button').forEach(function(btn){btn.addEventListener('click',function(){incidentState.follow=btn.dataset.value;selectIncidentChoice('incidentFollowChoices',incidentState.follow);byId('incidentFollowBlock').classList.toggle('show',incidentState.follow==='Yes'||incidentState.follow==='Monitor');saveIncidentDraft();});});
+byId('incidentClosed').addEventListener('change',function(){byId('incidentClosureBlock').classList.toggle('show',this.checked);saveIncidentDraft();});
+byId('incidentTech').addEventListener('change',function(){try{localStorage.setItem('swIncidentTech',this.value);}catch(e){}saveIncidentDraft();});
+byId('incidentForm').addEventListener('input',saveIncidentDraft);byId('incidentForm').addEventListener('change',saveIncidentDraft);
+byId('incidentNext1').addEventListener('click',function(){if(validateIncident1())incidentStep(2);});byId('incidentBack2').addEventListener('click',function(){incidentStep(1);});byId('incidentNext2').addEventListener('click',function(){if(validateIncident2()){renderIncidentReview();incidentStep(3);}});byId('incidentBack3').addEventListener('click',function(){incidentStep(2);});
+byId('incidentPdfButton').addEventListener('click',function(){shareIncidentPdf(false);});byId('incidentDownloadButton').addEventListener('click',function(){shareIncidentPdf(true);});byId('incidentClearDraft').addEventListener('click',function(){clearIncidentDraft(true);});
+function updateIncidentTimer(){const s=Math.max(0,Math.floor((Date.now()-incidentState.startedAt)/1000));setText('incidentElapsed',String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0'));}
+loadIncidentDraft();updateIncidentTimer();setInterval(updateIncidentTimer,1000);
 
 if('serviceWorker' in navigator && location.protocol.indexOf('http')===0){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('./service-worker.js?build=v10',{updateViaCache:'none'})
-      .then(function(reg){ return reg.update(); })
+    navigator.serviceWorker.register('./service-worker.js?build=v11',{updateViaCache:'none'})
+      .then(function(registration){return registration.update();})
       .catch(function(){});
   });
 }
 })();
 </script>
+
 </body>
 </html>
