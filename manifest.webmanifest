@@ -6,7 +6,7 @@
   "display": "standalone",
   "background_color": "#020b16",
   "theme_color": "#041b3d",
-  "description": "Chemical dosing, Pentair EQ pump sizing and curves, hydraulics and incident PDF reporting.",
+  "description": "Chemical dosing, pump selection and hydraulics, and incident PDF reporting.",
   "icons": [
     {
       "src": "icon-192.png",
