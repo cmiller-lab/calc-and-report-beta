@@ -888,14 +888,14 @@ body.light-mode .alkalinity-tile::before{
 }
 
 
-/* v14 dark-only build */
+/* v15 dark-only build */
 html{color-scheme:dark}
 body{background:#020b16!important;color:#eef6ff!important}
 .footer{padding-bottom:max(28px,env(safe-area-inset-bottom))}
 .utility-workspace[hidden]{display:none!important}
 
 
-/* ===== v14 Pump Workflow + Incident PDF ===== */
+/* ===== v15 Pump Workflow + Incident PDF ===== */
 .pump-launcher,.incident-launcher{
   width:100%;margin-top:12px;padding:16px 18px;display:grid;
   grid-template-columns:54px minmax(0,1fr) 24px;align-items:center;gap:14px;
@@ -978,7 +978,7 @@ body{background:#020b16!important;color:#eef6ff!important}
 }
 
 
-/* ===== v14 pump workflow redesign ===== */
+/* ===== v15 pump workflow redesign ===== */
 .pump-primary-nav{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin:13px 0;padding:7px;border:1px solid #234767;border-radius:15px;background:#07172a;position:sticky;top:6px;z-index:20}
 .pump-nav{min-height:43px;border:1px solid transparent;border-radius:9px;background:transparent;color:#829db5;font-weight:850;font-size:11px}
 .pump-nav.active{background:#123e68;border-color:#48b8e7;color:#fff}
@@ -1009,6 +1009,26 @@ body{background:#020b16!important;color:#eef6ff!important}
  .pump-sticky-summary{grid-template-columns:1.2fr 1fr 1fr}.pump-sticky-summary span:nth-child(3),.pump-sticky-summary span:nth-child(4){display:none}
  .sizing-model-detail{grid-template-columns:repeat(2,1fr)}
 }
+
+
+/* ===== v15 version and update interface ===== */
+.version-panel{margin-top:18px;padding:14px;border:1px solid #254d70;border-radius:15px;background:linear-gradient(180deg,#091d33,#061426)}
+.version-summary{display:flex;align-items:center;justify-content:space-between;gap:14px}
+.version-label{display:block;color:#7e9bb2;font-size:9px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}
+.version-summary strong{display:block;margin-top:4px;font-size:18px}.version-summary small{display:block;margin-top:4px;color:#76dfa9}
+.version-button{min-height:42px;padding:0 14px;border:1px solid #49bde9;border-radius:11px;background:#103b61;color:#fff;font-weight:850}
+.change-log-modal{position:fixed;inset:0;z-index:10000;padding:18px;background:rgba(0,0,0,.78);display:grid;place-items:center}
+.change-log-modal[hidden]{display:none}
+.change-log-card{width:min(720px,100%);max-height:90vh;display:flex;flex-direction:column;border:1px solid #49bde9;border-radius:20px;background:#061426;box-shadow:0 24px 60px rgba(0,0,0,.5);overflow:hidden}
+.change-log-header{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:18px;background:linear-gradient(120deg,#0d3c68,#092642)}
+.change-log-header span{font-size:10px;color:#8fdcff;text-transform:uppercase;letter-spacing:.1em}.change-log-header h2{margin:4px 0 0}
+.change-log-close{width:42px;height:42px;border:1px solid #5a82a4;border-radius:50%;background:#07182a;color:#fff;font-size:26px}
+.change-log-list{overflow:auto;padding:13px}
+.change-log-list details{margin-bottom:8px;border:1px solid #21435f;border-radius:12px;background:#07182a;overflow:hidden}
+.change-log-list summary{display:grid;grid-template-columns:75px 1fr;gap:10px;padding:13px;cursor:pointer}
+.change-log-list summary strong{color:#65d7ff}.change-log-list summary span{color:#dce8f1;font-weight:750}
+.change-log-list ul{margin:0;padding:0 28px 15px 45px;color:#9db2c3;font-size:13px;line-height:1.5}
+@media(max-width:520px){.version-summary{align-items:flex-start}.version-button{font-size:11px}.change-log-list summary{grid-template-columns:62px 1fr;font-size:12px}}
 
 </style>
 </head>
@@ -1843,7 +1863,172 @@ body{background:#020b16!important;color:#eef6ff!important}
   <div class="incident-draft"><div><strong>Local Draft</strong><span id="incidentDraftStatus">No saved draft</span></div><button type="button" class="secondary-action compact" id="incidentClearDraft">Clear Draft</button></div>
 </section>
 
-<div class="footer">Offline-capable PWA • Pump Workflow + Incident PDF</div>
+
+<section class="version-panel">
+  <div class="version-summary">
+    <div>
+      <span class="version-label">Installed Build</span>
+      <strong>Version 15.0</strong>
+      <small id="versionUpdateStatus">Pump workflow redesign verified</small>
+    </div>
+    <button type="button" class="version-button" id="openChangeLog">View Change Notes</button>
+  </div>
+</section>
+
+<div class="change-log-modal" id="changeLogModal" hidden>
+  <div class="change-log-card" role="dialog" aria-modal="true" aria-labelledby="changeLogTitle">
+    <div class="change-log-header">
+      <div>
+        <span>SeaWorld Water Chemistry Console</span>
+        <h2 id="changeLogTitle">Version History</h2>
+      </div>
+      <button type="button" class="change-log-close" id="closeChangeLog" aria-label="Close change log">×</button>
+    </div>
+
+    <div class="change-log-list">
+      <details open>
+        <summary><strong>v15.0</strong><span>Update reliability and version history</span></summary>
+        <ul>
+          <li>Added a visible installed-build number at the bottom of the application.</li>
+          <li>Added an in-app change log covering the development history.</li>
+          <li>Verified the full pump-workflow redesign is present in the shipped source.</li>
+          <li>Added aggressive cache cleanup, versioned start URL, and forced service-worker update checks.</li>
+        </ul>
+      </details>
+
+      <details>
+        <summary><strong>v15.0</strong><span>Pump workflow redesign</span></summary>
+        <ul>
+          <li>Reorganized Pump Hydraulics into Overview, Selection, Operating Point, Field Tools, Curves, and Reference.</li>
+          <li>Added task-based navigation and a “What are you trying to do?” launcher.</li>
+          <li>Added mobile expandable pump-comparison cards and a detailed Advanced Mode table.</li>
+          <li>Added estimated input-kW and annual-cost comparisons using editable assumptions.</li>
+          <li>Added the energy-use comparison bar graph.</li>
+          <li>Added multi-model pump-curve overlays and a sticky operating summary.</li>
+        </ul>
+      </details>
+
+      <details>
+        <summary><strong>v13.0</strong><span>Pentair EQ pump sizing</span></summary>
+        <ul>
+          <li>Added simultaneous comparison of all EQ and EQW models.</li>
+          <li>Added desired flow, TDH, frequency limits, and reserve inputs.</li>
+          <li>Added required-Hz, speed percentage, water horsepower, reserve, and capability status.</li>
+          <li>Deliberately omitted unsupported manufacturer BHP and efficiency claims.</li>
+        </ul>
+      </details>
+
+      <details>
+        <summary><strong>v12.0</strong><span>Pentair EQ model curves</span></summary>
+        <ul>
+          <li>Added EQW300, EQW500, EQ500, EQ750, EQ1000, and EQ1500 selections.</li>
+          <li>Added automatic curve loading by pump model and horsepower.</li>
+          <li>Added estimated flow from TDH and VFD frequency.</li>
+          <li>Added required VFD frequency for a desired flow and TDH.</li>
+        </ul>
+      </details>
+
+      <details>
+        <summary><strong>v11.0</strong><span>Pump curves and incident PDFs</span></summary>
+        <ul>
+          <li>Added the original pump/system-curve calculator, live graph, field TDH tool, and VFD predictor.</li>
+          <li>Added the incident-report workflow with local drafts.</li>
+          <li>Added on-device PDF creation and iPhone share-sheet support for manual email.</li>
+        </ul>
+      </details>
+
+      <details>
+        <summary><strong>v10.0</strong><span>Consolidated dark-only rebuild</span></summary>
+        <ul>
+          <li>Replaced accumulated conflicting scripts with one consolidated application controller.</li>
+          <li>Restored all chemistry calculators and field utilities.</li>
+          <li>Removed appearance switching and standardized the application on dark mode.</li>
+        </ul>
+      </details>
+
+      <details>
+        <summary><strong>v9.0</strong><span>Clock and converter repairs</span></summary>
+        <ul>
+          <li>Repaired header date and time updates.</li>
+          <li>Repaired unit-converter menu population.</li>
+          <li>Set dark mode as the default and removed automatic theme selection.</li>
+        </ul>
+      </details>
+
+      <details>
+        <summary><strong>v8.0</strong><span>Safari interaction repairs</span></summary>
+        <ul>
+          <li>Added defensive utility-tab and theme-control handling for iPhone Safari.</li>
+          <li>Updated cache behavior to replace stale scripts.</li>
+        </ul>
+      </details>
+
+      <details>
+        <summary><strong>v7.0</strong><span>Utilities and appearance controls</span></summary>
+        <ul>
+          <li>Added LSI, unit-conversion, and dilution utilities.</li>
+          <li>Added the separate Field Utilities launcher.</li>
+          <li>Added Light, Dark, and Auto appearance options.</li>
+        </ul>
+      </details>
+
+      <details>
+        <summary><strong>v6.0</strong><span>Six-calculator expansion</span></summary>
+        <ul>
+          <li>Added Manual Chlorination using Pulsar Briquettes and Power Shock.</li>
+          <li>Added Sodium Bicarbonate alkalinity dosing.</li>
+          <li>Redesigned the top header and expanded the dashboard to six calculators.</li>
+        </ul>
+      </details>
+
+      <details>
+        <summary><strong>v5.0</strong><span>Dashboard refinement</span></summary>
+        <ul>
+          <li>Added the large icon dashboard and removed redundant metric cards.</li>
+          <li>Added per-calculator quick-reference tables for every body of water.</li>
+          <li>Improved mobile table sizing and calculator-page visual hierarchy.</li>
+        </ul>
+      </details>
+
+      <details>
+        <summary><strong>v4.0</strong><span>Dechlorination</span></summary>
+        <ul>
+          <li>Added sodium thiosulfate pentahydrate dechlorination dosing.</li>
+          <li>Added current-FC and goal-FC inputs with per-pool calculations.</li>
+        </ul>
+      </details>
+
+      <details>
+        <summary><strong>v3.0</strong><span>CYA dosing</span></summary>
+        <ul>
+          <li>Added the CYA dosing calculator with a 14 ppm target.</li>
+          <li>Added calibration cautions at 7–10 ppm and required-calibration warnings at 7 ppm or below.</li>
+          <li>Added pool-specific CYA quick-reference data.</li>
+        </ul>
+      </details>
+
+      <details>
+        <summary><strong>v2.0</strong><span>Chlorine feed</span></summary>
+        <ul>
+          <li>Added manual chlorine-feed calculations using each pool’s measured five-minute feed response.</li>
+          <li>Added dynamic desired-FC increase and validation up to 60 ppm.</li>
+        </ul>
+      </details>
+
+      <details>
+        <summary><strong>v1.0</strong><span>Original soda-ash calculator</span></summary>
+        <ul>
+          <li>Created the original pool-specific soda-ash dosing calculator.</li>
+          <li>Added body-of-water selection, volume lookup, pH validation, and a static 7.6 target.</li>
+          <li>Converted the calculator into the original GitHub-hosted PWA.</li>
+        </ul>
+      </details>
+    </div>
+  </div>
+</div>
+
+<div class="footer">Offline-capable PWA • Version 15.0 • Pump Workflow + Incident PDF</div>
+
 </div>
 
 
@@ -2287,7 +2472,7 @@ window.addEventListener('pageshow',function(){
 });
 
 
-/* ---------------- Pump Workflow v14 ---------------- */
+/* ---------------- Pump Workflow v15 ---------------- */
 const pentairEqCurves={
   eqw300:{label:'EQW300 WaterFall',hp:3,points:[[0,28],[100,26.5],[200,24],[300,20],[350,16],[400,10],[450,6]]},
   eqw500:{label:'EQW500 WaterFall',hp:5,points:[[0,27],[100,28],[200,29],[300,29],[400,27.5],[500,24],[600,19],[680,13]]},
@@ -2603,11 +2788,56 @@ byId('incidentPdfButton').addEventListener('click',function(){shareIncidentPdf(f
 function updateIncidentTimer(){const s=Math.max(0,Math.floor((Date.now()-incidentState.startedAt)/1000));setText('incidentElapsed',String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0'));}
 loadIncidentDraft();updateIncidentTimer();setInterval(updateIncidentTimer,1000);
 
+
+/* ---------------- v15 version and update controls ---------------- */
+(function(){
+  const modal=byId('changeLogModal');
+  byId('openChangeLog').addEventListener('click',function(){modal.hidden=false;document.body.style.overflow='hidden';});
+  byId('closeChangeLog').addEventListener('click',function(){modal.hidden=true;document.body.style.overflow='';});
+  modal.addEventListener('click',function(event){if(event.target===modal){modal.hidden=true;document.body.style.overflow='';}});
+  document.addEventListener('keydown',function(event){if(event.key==='Escape'&&!modal.hidden){modal.hidden=true;document.body.style.overflow='';}});
+
+  try{
+    localStorage.setItem('swChemInstalledVersion','15.0');
+  }catch(error){}
+
+  if('caches' in window){
+    caches.keys().then(function(keys){
+      return Promise.all(keys.filter(function(key){return key!=='seaworld-chemistry-console-v15';}).map(function(key){return caches.delete(key);}));
+    }).then(function(){
+      setText('versionUpdateStatus','Version 15 active • old caches cleared');
+    }).catch(function(){
+      setText('versionUpdateStatus','Version 15 active');
+    });
+  }
+})();
+
 if('serviceWorker' in navigator && location.protocol.indexOf('http')===0){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('./service-worker.js?build=v14',{updateViaCache:'none'})
-      .then(function(registration){return registration.update();})
-      .catch(function(){});
+    navigator.serviceWorker.register('./service-worker.js?build=v15',{updateViaCache:'none'})
+      .then(function(registration){
+        registration.update();
+        if(registration.waiting)registration.waiting.postMessage({type:'SKIP_WAITING'});
+        registration.addEventListener('updatefound',function(){
+          const worker=registration.installing;
+          if(worker){
+            worker.addEventListener('statechange',function(){
+              if(worker.state==='installed'&&navigator.serviceWorker.controller){
+                setText('versionUpdateStatus','Update installed • reopen app if needed');
+              }
+            });
+          }
+        });
+      })
+      .catch(function(){
+        setText('versionUpdateStatus','Version 15 active • service worker unavailable');
+      });
+  });
+  navigator.serviceWorker.addEventListener('controllerchange',function(){
+    if(!sessionStorage.getItem('swV15Reloaded')){
+      sessionStorage.setItem('swV15Reloaded','1');
+      location.reload();
+    }
   });
 }
 })();

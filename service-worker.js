@@ -1,1 +1,58 @@
-const CACHE='seaworld-chemistry-console-v14';const ASSETS=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png'];self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)));self.skipWaiting();});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))));self.clients.claim();});self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;e.respondWith(fetch(e.request,{cache:'no-store'}).then(r=>{const c=r.clone();caches.open(CACHE).then(x=>x.put(e.request,c));return r;}).catch(()=>caches.match(e.request).then(r=>r||caches.match('./index.html'))));});
+const CACHE='seaworld-chemistry-console-v15';
+const ASSETS=[
+  './',
+  './index.html',
+  './index.html?version=15',
+  './manifest.webmanifest?v=15',
+  './icon-192.png',
+  './icon-512.png'
+];
+
+self.addEventListener('message',event=>{
+  if(event.data&&event.data.type==='SKIP_WAITING')self.skipWaiting();
+});
+
+self.addEventListener('install',event=>{
+  event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)));
+  self.skipWaiting();
+});
+
+self.addEventListener('activate',event=>{
+  event.waitUntil(
+    caches.keys().then(keys=>Promise.all(
+      keys.filter(key=>key!==CACHE).map(key=>caches.delete(key))
+    ))
+  );
+  self.clients.claim();
+});
+
+self.addEventListener('fetch',event=>{
+  if(event.request.method!=='GET')return;
+
+  const isNavigation=event.request.mode==='navigate';
+
+  if(isNavigation){
+    event.respondWith(
+      fetch(event.request,{cache:'no-store'})
+        .then(response=>{
+          const copy=response.clone();
+          caches.open(CACHE).then(cache=>cache.put('./index.html',copy));
+          return response;
+        })
+        .catch(()=>caches.match('./index.html'))
+    );
+    return;
+  }
+
+  event.respondWith(
+    caches.match(event.request).then(cached=>{
+      const network=fetch(event.request,{cache:'no-store'})
+        .then(response=>{
+          const copy=response.clone();
+          caches.open(CACHE).then(cache=>cache.put(event.request,copy));
+          return response;
+        });
+      return cached||network;
+    })
+  );
+});
