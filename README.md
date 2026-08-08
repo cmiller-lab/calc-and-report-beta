@@ -1,25 +1,27 @@
-# SeaWorld Water Chemistry Console v15.2
+# SeaWorld Water Chemistry Console v15.3
 
-## Pump sizing changes
-- Hydraulic suitability is now the primary pump-selection criterion.
-- Hydraulic Fit score:
-  - 50% operating-speed quality
-  - 35% scaled-curve position
-  - 15% frequency reserve
-- Overall Selection Score:
-  - 85% Hydraulic Fit
-  - 15% estimated energy score
-- Operating-speed quality:
-  - 45–55 Hz: Preferred
-  - 35–45 Hz: Good
-  - 30–35 Hz: Low Speed
-  - Below 30 Hz: Caution
-  - 55–60 Hz: High Utilization
-- Energy comparison remains visible but does not determine the recommendation by itself.
-- Hydraulic-fit metrics are proxies because Pentair BEP/BHP/efficiency contour data are not included.
+## Pump selection logic
+Pump sizing now uses a tiered hydraulic-selection hierarchy:
 
-## UI fix
-The pump sticky status bar is explicitly hidden whenever the Pump Hydraulics panel is not active, preventing it from appearing on the main dashboard.
+1. Pump must meet the required GPM and TDH.
+2. Pump must meet the required VFD reserve.
+3. Operating-speed tier is evaluated:
+   - Tier 1: 45–55 Hz — Preferred
+   - Tier 2: 35–45 Hz — Good
+   - Tier 3: 55–60 Hz — High Utilization
+   - Tier 4: 30–35 Hz — Low Speed
+   - Tier 5: Below 30 Hz — Caution
+4. Within the highest available tier, curve position and frequency reserve rank the models.
+5. Energy is used only as a tie-breaker between hydraulically similar pumps in the same tier.
+
+The calculator now distinguishes:
+- Recommended
+- Hydraulic Alternative
+- Energy-Favorable Alternative
+- Near Limit
+- Not Capable
+
+This prevents a larger pump running substantially slower from being recommended solely because the affinity-law energy model predicts lower kW.
 
 ## Deployment
-Upload all files in this ZIP to the repository root, replacing the existing files. Verify the footer shows Version 15.2 after GitHub Pages deploys.
+Upload all files in this ZIP to the GitHub Pages repository root and replace the existing files. Verify the footer shows Version 15.3 after deployment.
