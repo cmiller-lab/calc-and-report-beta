@@ -920,7 +920,9 @@ body{background:#020b16!important;color:#eef6ff!important}
 .curve-point-header,.curve-point-row{display:grid;grid-template-columns:48px 1fr 1fr;gap:8px;align-items:center}
 .curve-point-header{padding:0 4px 6px;color:#819db4;font-size:10px;font-weight:900;text-transform:uppercase}
 .curve-point-row{margin-bottom:7px}.curve-point-row span{display:grid;place-items:center;height:42px;border:1px solid #244866;border-radius:9px;background:#071729;color:#7fa0b8;font-weight:800}.curve-point-row input{padding:10px}
-.pump-chart-card{padding:12px;border:1px solid #224a6e;border-radius:16px;background:#051528}
+.pump-chart-card{padding:12px;border:1px solid #224a6e;border-radius:16px;background:#051528;overflow:hidden}
+#multiCurveCanvas{display:block;width:100%;max-width:100%;height:auto;aspect-ratio:1.45/1;background:#03101f;border-radius:11px}
+.curve-axis-note{display:flex;justify-content:space-between;gap:12px;margin:8px 4px 0;color:#7897af;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em}
 #pumpCurveCanvas{display:block;width:100%;height:auto;border-radius:11px;background:#03101f}
 .chart-legend{display:flex;flex-wrap:wrap;gap:13px;padding:10px 3px 0;color:#91a9bd;font-size:11px}.chart-legend span{display:flex;align-items:center;gap:6px}.chart-legend i{width:17px;height:3px;border-radius:3px}.legend-pump{background:#4ec3ff}.legend-system{background:#ffb34c}.legend-point{background:#69ed9f}
 .pump-result{margin-top:12px}
@@ -993,7 +995,7 @@ body{background:#020b16!important;color:#eef6ff!important}
 .energy-chart-card{margin-top:14px;border:1px solid #224a6e;border-radius:16px;overflow:hidden;background:#061426}.energy-chart-card canvas{display:block;width:100%;height:auto;background:#03101f}
 .sizing-mobile-list{display:grid;gap:9px;margin-top:14px}.sizing-model-card{border:1px solid #244866;border-radius:14px;background:#07172a;overflow:hidden}.sizing-model-card summary{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:10px;padding:14px;cursor:pointer}.sizing-model-card summary span{font-size:11px;color:#88a5ba}.sizing-model-detail{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;padding:0 12px 12px}.sizing-model-detail>div{padding:9px;border:1px solid #1d3b58;border-radius:9px;background:#061426}.sizing-model-detail span{display:block;color:#7793a9;font-size:9px;text-transform:uppercase}.sizing-model-detail strong{display:block;margin-top:4px;font-size:13px}
 .sizing-model-card.preferred{border-color:#38ce87}.sizing-model-card.not-capable{opacity:.62}
-.advanced-pump-data{display:none}.pump-panel.advanced-mode .advanced-pump-data{display:block}
+.advanced-pump-data{display:block}
 .field-tool{margin-top:12px;border:1px solid #244866;border-radius:15px;background:#061426;overflow:hidden}.field-tool summary{padding:15px 17px;background:#0b2948;font-weight:850;cursor:pointer}.field-tool-content{padding:13px}
 .curve-toolbar{display:grid;grid-template-columns:1fr 220px;gap:12px;align-items:end;margin-bottom:12px}.curve-check-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.curve-check-grid label{padding:10px;border:1px solid #244866;border-radius:10px;background:#07172a;color:#c7d8e5;font-size:12px}
 .raw-curve-card{margin-top:12px;padding:14px;border:1px solid #244866;border-radius:14px;background:#07172a}.raw-curve-card h3{margin:0 0 6px}
@@ -1622,33 +1624,15 @@ body{background:#020b16!important;color:#eef6ff!important}
   </div>
 
   <div class="pump-primary-nav" role="tablist">
-    <button type="button" class="pump-nav active" data-pump-view="overview">Overview</button>
-    <button type="button" class="pump-nav" data-pump-view="selection">Selection</button>
+    <button type="button" class="pump-nav active" data-pump-view="selection">Selection</button>
     <button type="button" class="pump-nav" data-pump-view="operating">Operating Point</button>
     <button type="button" class="pump-nav" data-pump-view="field">Field Tools</button>
     <button type="button" class="pump-nav" data-pump-view="curves">Curves</button>
     <button type="button" class="pump-nav" data-pump-view="reference">Reference</button>
+    <button type="button" class="pump-nav" data-pump-view="advanced">Advanced</button>
   </div>
 
-  <section class="pump-view active" id="pumpOverviewView">
-    <div class="pump-overview-summary">
-      <div><span>Duty Point</span><strong id="overviewDuty">470 GPM @ 30 ft</strong></div>
-      <div><span>Preferred Pump</span><strong id="overviewPump">—</strong></div>
-      <div><span>Required Speed</span><strong id="overviewHz">— Hz</strong></div>
-      <div><span>Estimated Input</span><strong id="overviewKw">— kW</strong></div>
-    </div>
-
-    <div class="pump-goal-grid">
-      <button type="button" onclick="showPumpView('selection')"><span>⚖️</span><strong>Select the best pump</strong><small>Compare all EQ models at one duty point.</small></button>
-      <button type="button" onclick="showPumpView('operating')"><span>🎯</span><strong>Estimate existing-pump flow</strong><small>Enter pump, TDH and VFD frequency.</small></button>
-      <button type="button" onclick="showPumpView('field')"><span>🧰</span><strong>Calculate field TDH</strong><small>Use suction and discharge readings.</small></button>
-      <button type="button" onclick="showPumpView('curves')"><span>📊</span><strong>Compare pump curves</strong><small>Overlay multiple EQ curves.</small></button>
-      <button type="button" onclick="showPumpView('reference')"><span>📚</span><strong>View pump reference</strong><small>Quick model and curve limits.</small></button>
-      <button type="button" onclick="togglePumpAdvanced()"><span>⚙️</span><strong>Advanced mode</strong><small>Show assumptions and curve diagnostics.</small></button>
-    </div>
-  </section>
-
-  <section class="pump-view" id="pumpSelectionView">
+  <section class="pump-view active" id="pumpSelectionView">
     <div class="grid">
       <div class="card">
         <h2>Required Duty</h2>
@@ -1695,8 +1679,6 @@ body{background:#020b16!important;color:#eef6ff!important}
 
     <div class="sizing-mobile-list" id="pumpSizingCards"></div>
 
-    <div class="sizing-table-card advanced-pump-data">
-      <div class="reference-header"><h3>Detailed Pump Comparison</h3><p>Scroll horizontally for all engineering metrics.</p></div>
       <div class="table-wrap">
         <table class="sizing-table">
           <thead><tr>
@@ -1783,15 +1765,28 @@ body{background:#020b16!important;color:#eef6ff!important}
       </div>
       <div class="field"><label for="curveDisplayHz">Display Frequency (Hz)</label><input id="curveDisplayHz" type="number" min="10" max="60" step="0.1" value="60"></div>
     </div>
-    <div class="pump-chart-card"><canvas id="multiCurveCanvas" width="760" height="520"></canvas></div>
-    <div class="advanced-pump-data raw-curve-card">
-      <h3>Curve Data Notes</h3>
-      <p>Curves are digitized field-estimation points from Pentair’s published EQ performance chart. Interpolation is linear between points and affinity laws are used for reduced speed.</p>
-    </div>
+    <div class="pump-chart-card"><canvas id="multiCurveCanvas" width="760" height="520"></canvas><div class="curve-axis-note"><span>Y: Total Dynamic Head (ft)</span><span>X: Flow (GPM)</span></div></div>
   </section>
 
   <section class="pump-view" id="pumpReferenceView">
     <div class="pump-reference-grid" id="pumpReferenceGrid"></div>
+  </section>
+
+  <section class="pump-view" id="pumpAdvancedView">
+    <div class="card">
+      <h2>Advanced Engineering Data</h2>
+      <div class="card-body">
+        <p class="muted">Detailed comparison metrics, calculation assumptions, and curve methodology are grouped here so routine field workflows stay uncluttered.</p>
+      </div>
+    </div>
+    <div class="sizing-table-card">
+      <div class="reference-header"><h3>Detailed Pump Comparison</h3><p>Scroll horizontally for all engineering metrics.</p></div>
+
+    <div class="raw-curve-card">
+      <h3>Curve Data & Calculation Notes</h3>
+      <p>Curves are digitized field-estimation points from Pentair’s published EQ performance chart. Interpolation is linear between points and affinity laws are used for reduced speed.</p>
+      <p>Energy values are screening estimates. Shaft power uses nameplate HP × speed ratio³; estimated input kW applies the entered motor and VFD efficiencies. These are not Pentair-certified BHP or efficiency values.</p>
+    </div>
   </section>
 
   <div class="pump-sticky-summary">
@@ -1868,7 +1863,7 @@ body{background:#020b16!important;color:#eef6ff!important}
   <div class="version-summary">
     <div>
       <span class="version-label">Installed Build</span>
-      <strong>Version 15.0</strong>
+      <strong>Version 15.1</strong>
       <small id="versionUpdateStatus">Pump workflow redesign verified</small>
     </div>
     <button type="button" class="version-button" id="openChangeLog">View Change Notes</button>
@@ -1886,6 +1881,16 @@ body{background:#020b16!important;color:#eef6ff!important}
     </div>
 
     <div class="change-log-list">
+      <details open>
+        <summary><strong>v15.1</strong><span>Pump navigation and curve chart fix</span></summary>
+        <ul>
+          <li>Removed the redundant Overview tab and made Selection the default pump workspace.</li>
+          <li>Added a dedicated Advanced tab for detailed engineering comparison data and calculation notes.</li>
+          <li>Corrected the multi-pump curve chart so it scales to the mobile viewport without horizontal overflow.</li>
+          <li>Added responsive chart sizing, cleaner axis scaling, axis labels, and a non-overlapping compact legend.</li>
+        </ul>
+      </details>
+
       <details open>
         <summary><strong>v15.0</strong><span>Update reliability and version history</span></summary>
         <ul>
@@ -2027,7 +2032,7 @@ body{background:#020b16!important;color:#eef6ff!important}
   </div>
 </div>
 
-<div class="footer">Offline-capable PWA • Version 15.0 • Pump Workflow + Incident PDF</div>
+<div class="footer">Offline-capable PWA • Version 15.1 • Pump Workflow + Incident PDF</div>
 
 </div>
 
@@ -2481,7 +2486,6 @@ const pentairEqCurves={
   eq1000:{label:'EQ1000',hp:10,points:[[0,106],[100,103],[200,98],[300,90],[400,76],[500,53],[550,32],[600,11]]},
   eq1500:{label:'EQ1500',hp:15,points:[[0,106],[100,104],[200,101],[300,98],[400,94],[500,88],[600,80],[700,61],[800,20]]}
 };
-let pumpAdvanced=false;
 let latestSizing=[];
 
 function showPumpView(name){
@@ -2491,11 +2495,6 @@ function showPumpView(name){
 window.showPumpView=showPumpView;
 document.querySelectorAll('.pump-nav').forEach(btn=>btn.addEventListener('click',()=>showPumpView(btn.dataset.pumpView)));
 
-function togglePumpAdvanced(){
-  pumpAdvanced=!pumpAdvanced;
-  byId('pumpPanel').classList.toggle('advanced-mode',pumpAdvanced);
-}
-window.togglePumpAdvanced=togglePumpAdvanced;
 
 function interpolateCurve(points,q){
   if(q<points[0][0]||q>points[points.length-1][0])return null;
@@ -2629,19 +2628,34 @@ function updateAffinity(){
 ['affinityOldHz','affinityNewHz','affinityFlow','affinityHead'].forEach(id=>bind([id],['input','change'],updateAffinity));
 
 function drawMultiCurves(){
- const canvas=byId('multiCurveCanvas'),ctx=canvas.getContext('2d'),w=canvas.width,h=canvas.height,hz=numberValue('curveDisplayHz');
+ const canvas=byId('multiCurveCanvas'); if(!canvas)return;
+ const cssW=Math.max(280,Math.floor(canvas.parentElement.clientWidth-24));
+ const cssH=Math.max(300,Math.min(520,Math.round(cssW/1.45)));
+ const dpr=Math.min(window.devicePixelRatio||1,2);
+ canvas.style.width=cssW+'px'; canvas.style.height=cssH+'px';
+ canvas.width=Math.round(cssW*dpr); canvas.height=Math.round(cssH*dpr);
+ const ctx=canvas.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+ const w=cssW,h=cssH,hz=numberValue('curveDisplayHz');
  const keys=[...document.querySelectorAll('.curve-model-check:checked')].map(x=>x.value);
  ctx.clearRect(0,0,w,h);ctx.fillStyle='#03101f';ctx.fillRect(0,0,w,h);if(!keys.length)return;
  const curves=keys.map(k=>({key:k,m:pentairEqCurves[k],pts:scaleCurve(pentairEqCurves[k],hz)}));
- const maxQ=Math.max(...curves.flatMap(c=>c.pts.map(p=>p[0])))*1.08,maxH=Math.max(...curves.flatMap(c=>c.pts.map(p=>p[1])))*1.12,p={l:65,r:20,t:24,b:58};
+ const dataMaxQ=Math.max(...curves.flatMap(c=>c.pts.map(p=>p[0]))),dataMaxH=Math.max(...curves.flatMap(c=>c.pts.map(p=>p[1])));
+ const niceMax=(v,step)=>Math.ceil(v/step)*step;
+ const maxQ=niceMax(dataMaxQ,100), maxH=niceMax(dataMaxH,20);
+ const p={l:52,r:14,t:18,b:42};
  const x=q=>p.l+q/maxQ*(w-p.l-p.r),y=v=>h-p.b-v/maxH*(h-p.t-p.b);
- ctx.strokeStyle='#18344f';ctx.fillStyle='#7897af';ctx.font='13px sans-serif';
- for(let i=0;i<=5;i++){let q=maxQ*i/5,xx=x(q);ctx.beginPath();ctx.moveTo(xx,p.t);ctx.lineTo(xx,h-p.b);ctx.stroke();ctx.fillText(Math.round(q),xx-10,h-p.b+22);}
- for(let i=0;i<=5;i++){let v=maxH*i/5,yy=y(v);ctx.beginPath();ctx.moveTo(p.l,yy);ctx.lineTo(w-p.r,yy);ctx.stroke();ctx.fillText(Math.round(v),20,yy+4);}
+ ctx.lineWidth=1;ctx.strokeStyle='#18344f';ctx.fillStyle='#7897af';ctx.font='11px sans-serif';ctx.textAlign='center';
+ for(let i=0;i<=5;i++){const q=maxQ*i/5,xx=x(q);ctx.beginPath();ctx.moveTo(xx,p.t);ctx.lineTo(xx,h-p.b);ctx.stroke();ctx.fillText(Math.round(q),xx,h-p.b+18);}
+ ctx.textAlign='right';
+ for(let i=0;i<=5;i++){const v=maxH*i/5,yy=y(v);ctx.beginPath();ctx.moveTo(p.l,yy);ctx.lineTo(w-p.r,yy);ctx.stroke();ctx.fillText(Math.round(v),p.l-7,yy+4);}
  const colors=['#4ec3ff','#ffb34c','#69ed9f','#d78cff','#ff7586','#f0e266'];
- curves.forEach((c,idx)=>{ctx.strokeStyle=colors[idx%colors.length];ctx.lineWidth=3;ctx.beginPath();c.pts.forEach((pt,i)=>i?ctx.lineTo(x(pt[0]),y(pt[1])):ctx.moveTo(x(pt[0]),y(pt[1])));ctx.stroke();ctx.fillStyle=colors[idx%colors.length];ctx.fillText(c.m.label,w-160,p.t+18*idx);});
+ curves.forEach((c,idx)=>{ctx.strokeStyle=colors[idx%colors.length];ctx.lineWidth=2.5;ctx.beginPath();c.pts.forEach((pt,i)=>i?ctx.lineTo(x(pt[0]),y(pt[1])):ctx.moveTo(x(pt[0]),y(pt[1])));ctx.stroke();});
+ // Compact legend below the plotting area, preventing labels from covering curves.
+ ctx.textAlign='left';ctx.font='10px sans-serif';let lx=p.l,ly=h-8;
+ curves.forEach((c,idx)=>{const label=c.m.label,tw=ctx.measureText(label).width+26;if(lx+tw>w-p.r){ly-=14;lx=p.l;}ctx.strokeStyle=colors[idx%colors.length];ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(lx,ly-3);ctx.lineTo(lx+12,ly-3);ctx.stroke();ctx.fillStyle='#9ab1c4';ctx.fillText(label,lx+16,ly);lx+=tw;});
 }
 document.querySelectorAll('.curve-model-check').forEach(x=>x.addEventListener('change',drawMultiCurves));bind(['curveDisplayHz'],['input','change'],drawMultiCurves);
+window.addEventListener('resize',()=>{clearTimeout(window.__curveResize);window.__curveResize=setTimeout(drawMultiCurves,120);});
 
 function buildReference(){
  byId('pumpReferenceGrid').innerHTML=Object.entries(pentairEqCurves).map(([k,m])=>{
@@ -2805,9 +2819,9 @@ loadIncidentDraft();updateIncidentTimer();setInterval(updateIncidentTimer,1000);
     caches.keys().then(function(keys){
       return Promise.all(keys.filter(function(key){return key!=='seaworld-chemistry-console-v15';}).map(function(key){return caches.delete(key);}));
     }).then(function(){
-      setText('versionUpdateStatus','Version 15 active • old caches cleared');
+      setText('versionUpdateStatus','Version 15.1 active • old caches cleared');
     }).catch(function(){
-      setText('versionUpdateStatus','Version 15 active');
+      setText('versionUpdateStatus','Version 15.1 active');
     });
   }
 })();
@@ -2830,7 +2844,7 @@ if('serviceWorker' in navigator && location.protocol.indexOf('http')===0){
         });
       })
       .catch(function(){
-        setText('versionUpdateStatus','Version 15 active • service worker unavailable');
+        setText('versionUpdateStatus','Version 15.1 active • service worker unavailable');
       });
   });
   navigator.serviceWorker.addEventListener('controllerchange',function(){

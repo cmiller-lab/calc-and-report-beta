@@ -1,4 +1,4 @@
-# SeaWorld Water Chemistry Console v15
+# SeaWorld Water Chemistry Console v15.1
 
 Verified pump features:
 - Overview
@@ -20,10 +20,10 @@ Update reliability:
 - Versioned PWA start URL
 - Network-first navigation
 - Forced service-worker update checks
-- Automatic deletion of pre-v15 caches
+- Automatic deletion of pre-v15.1 caches
 - Controller-change reload
 
 Deployment:
 Upload every file from this package, replacing the existing files.
 After GitHub Pages finishes deploying, open the site once in Safari before reopening the Home Screen app.
-The bottom of the page must display Version 15.0. new
+The bottom of the page must display Version 15.1.0.
