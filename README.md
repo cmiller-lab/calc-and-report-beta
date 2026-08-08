@@ -1,29 +1,25 @@
-# SeaWorld Water Chemistry Console v15.1
+# SeaWorld Water Chemistry Console v15.2
 
-Verified pump features:
-- Overview
-- Selection
-- Operating Point
-- Field Tools
-- Curves
-- Reference
-- Energy comparison table
-- Energy comparison graph
-- Mobile expandable model cards
-- Advanced Mode
-- Multi-model curve graph
-- Sticky summary
+## Pump sizing changes
+- Hydraulic suitability is now the primary pump-selection criterion.
+- Hydraulic Fit score:
+  - 50% operating-speed quality
+  - 35% scaled-curve position
+  - 15% frequency reserve
+- Overall Selection Score:
+  - 85% Hydraulic Fit
+  - 15% estimated energy score
+- Operating-speed quality:
+  - 45–55 Hz: Preferred
+  - 35–45 Hz: Good
+  - 30–35 Hz: Low Speed
+  - Below 30 Hz: Caution
+  - 55–60 Hz: High Utilization
+- Energy comparison remains visible but does not determine the recommendation by itself.
+- Hydraulic-fit metrics are proxies because Pentair BEP/BHP/efficiency contour data are not included.
 
-Update reliability:
-- Visible version number
-- In-app version-history viewer
-- Versioned PWA start URL
-- Network-first navigation
-- Forced service-worker update checks
-- Automatic deletion of pre-v15.1 caches
-- Controller-change reload
+## UI fix
+The pump sticky status bar is explicitly hidden whenever the Pump Hydraulics panel is not active, preventing it from appearing on the main dashboard.
 
-Deployment:
-Upload every file from this package, replacing the existing files.
-After GitHub Pages finishes deploying, open the site once in Safari before reopening the Home Screen app.
-The bottom of the page must display Version 15.1.0.
+## Deployment
+Upload all files in this ZIP to the repository root, replacing the existing files. Verify the footer shows Version 15.2 after GitHub Pages deploys.

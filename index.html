@@ -888,14 +888,14 @@ body.light-mode .alkalinity-tile::before{
 }
 
 
-/* v15 dark-only build */
+/* v15.2 dark-only build */
 html{color-scheme:dark}
 body{background:#020b16!important;color:#eef6ff!important}
 .footer{padding-bottom:max(28px,env(safe-area-inset-bottom))}
 .utility-workspace[hidden]{display:none!important}
 
 
-/* ===== v15 Pump Workflow + Incident PDF ===== */
+/* ===== v15.2 Pump Workflow + Incident PDF ===== */
 .pump-launcher,.incident-launcher{
   width:100%;margin-top:12px;padding:16px 18px;display:grid;
   grid-template-columns:54px minmax(0,1fr) 24px;align-items:center;gap:14px;
@@ -980,7 +980,7 @@ body{background:#020b16!important;color:#eef6ff!important}
 }
 
 
-/* ===== v15 pump workflow redesign ===== */
+/* ===== v15.2 pump workflow redesign ===== */
 .pump-primary-nav{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin:13px 0;padding:7px;border:1px solid #234767;border-radius:15px;background:#07172a;position:sticky;top:6px;z-index:20}
 .pump-nav{min-height:43px;border:1px solid transparent;border-radius:9px;background:transparent;color:#829db5;font-weight:850;font-size:11px}
 .pump-nav.active{background:#123e68;border-color:#48b8e7;color:#fff}
@@ -1013,7 +1013,7 @@ body{background:#020b16!important;color:#eef6ff!important}
 }
 
 
-/* ===== v15 version and update interface ===== */
+/* ===== v15.2 version and update interface ===== */
 .version-panel{margin-top:18px;padding:14px;border:1px solid #254d70;border-radius:15px;background:linear-gradient(180deg,#091d33,#061426)}
 .version-summary{display:flex;align-items:center;justify-content:space-between;gap:14px}
 .version-label{display:block;color:#7e9bb2;font-size:9px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}
@@ -1031,6 +1031,49 @@ body{background:#020b16!important;color:#eef6ff!important}
 .change-log-list summary strong{color:#65d7ff}.change-log-list summary span{color:#dce8f1;font-weight:750}
 .change-log-list ul{margin:0;padding:0 28px 15px 45px;color:#9db2c3;font-size:13px;line-height:1.5}
 @media(max-width:520px){.version-summary{align-items:flex-start}.version-button{font-size:11px}.change-log-list summary{grid-template-columns:62px 1fr;font-size:12px}}
+
+
+/* ===== v15.2.2 hydraulic-priority pump sizing ===== */
+.hydraulic-priority-card{
+  margin-top:14px;padding:15px;border:1px solid #36c985;border-radius:16px;
+  background:linear-gradient(135deg,#0a352c,#07192a)
+}
+.hydraulic-priority-card h3{margin:4px 0 6px;font-size:20px}
+.hydraulic-priority-card p{margin:0;color:#a9c1d0;font-size:12px;line-height:1.45}
+.hydraulic-priority-kicker{font-size:9px;font-weight:900;letter-spacing:.12em;color:#70e4ac}
+.hydraulic-weight-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:12px}
+.hydraulic-weight-grid>div{padding:10px;border:1px solid rgba(255,255,255,.11);border-radius:10px;background:rgba(0,0,0,.14);text-align:center}
+.hydraulic-weight-grid strong{display:block;font-size:19px;color:#75e7b1}
+.hydraulic-weight-grid span{display:block;margin-top:3px;font-size:9px;color:#93aabc;text-transform:uppercase}
+.hydraulic-priority-card small{display:block;margin-top:10px;color:#819db3}
+.speed-quality-badge{display:inline-block;padding:4px 7px;border-radius:999px;font-size:10px;font-weight:900;white-space:nowrap}
+.speed-preferred-badge{background:#125b3b;color:#92f3c2;border:1px solid #37cc87}
+.speed-good-badge{background:#123e61;color:#8bd5ff;border:1px solid #3f9fd7}
+.speed-low-badge{background:#5a4510;color:#f3d67c;border:1px solid #ae8c2c}
+.speed-caution-badge{background:#5a2028;color:#ff9baa;border:1px solid #ba5160}
+.speed-high-badge{background:#553516;color:#ffc487;border:1px solid #b87430}
+.hydraulic-fit-value{color:#75e7b1}
+.selection-score-value{color:#8bd5ff}
+.speed-quality-reference{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
+.speed-quality-reference>div{padding:10px;border:1px solid #244866;border-radius:10px;background:#061426;text-align:center}
+.speed-quality-reference strong{display:block;font-size:13px}
+.speed-quality-reference span{display:block;margin-top:4px;font-size:9px;text-transform:uppercase}
+.speed-preferred{border-color:#37cc87!important}.speed-preferred span{color:#75e7b1}
+.speed-good{border-color:#3f9fd7!important}.speed-good span{color:#8bd5ff}
+.speed-low{border-color:#ae8c2c!important}.speed-low span{color:#f3d67c}
+.speed-caution{border-color:#ba5160!important}.speed-caution span{color:#ff9baa}
+.speed-high{border-color:#b87430!important}.speed-high span{color:#ffc487}
+
+/* Explicitly contain the pump sticky summary inside the active pump panel. */
+.pump-sticky-summary{display:none!important}
+#pumpPanel.active .pump-sticky-summary{display:grid!important}
+#homePanel.active ~ #pumpPanel .pump-sticky-summary,
+body:has(#homePanel.active) .pump-sticky-summary{display:none!important}
+
+@media(max-width:700px){
+  .speed-quality-reference{grid-template-columns:1fr 1fr}
+  .speed-quality-reference>div:first-child{grid-column:1/-1}
+}
 
 </style>
 </head>
@@ -1662,18 +1705,32 @@ body{background:#020b16!important;color:#eef6ff!important}
         <div class="tiles">
           <div class="tile"><span>Water HP</span><b id="sizeWaterHp">— HP</b></div>
           <div class="tile"><span>Capable Models</span><b id="sizeCapable">—</b></div>
-          <div class="tile"><span>Lowest Estimated kW</span><b id="sizeLowestKw">—</b></div>
-          <div class="tile"><span>Lowest Annual Cost</span><b id="sizeLowestCost">—</b></div>
+          <div class="tile"><span>Hydraulic Fit</span><b id="sizeHydraulicFit">—</b></div>
+          <div class="tile"><span>Operating Speed</span><b id="sizeSpeedQuality">—</b></div>
         </div>
         <div class="estimate-warning">
-          <strong>Energy values are screening estimates.</strong>
-          <span>Shaft power uses nameplate HP × speed ratio³. Input kW then applies the entered motor and VFD efficiencies. These are not Pentair-certified BHP or efficiency values.</span>
+          <strong>Selection priority: hydraulic fit first, energy second.</strong>
+          <span>The recommended model is ranked primarily by operating-speed quality, curve position, and frequency reserve. Estimated energy use contributes only a secondary weighting. Pentair-certified BHP and pump-efficiency data are not available in this model.</span>
         </div>
       </div>
     </div>
 
+    <div class="hydraulic-priority-card">
+      <div>
+        <span class="hydraulic-priority-kicker">PRIMARY SELECTION CRITERIA</span>
+        <h3>Hydraulic Fit</h3>
+        <p>Ranking favors a useful VFD operating range, a healthy position on the scaled pump curve, and available frequency reserve. Energy use is deliberately a smaller part of the recommendation.</p>
+      </div>
+      <div class="hydraulic-weight-grid">
+        <div><strong>50%</strong><span>Speed quality</span></div>
+        <div><strong>35%</strong><span>Curve position</span></div>
+        <div><strong>15%</strong><span>Frequency reserve</span></div>
+      </div>
+      <small>Overall selection score: 85% hydraulic fit + 15% estimated energy score.</small>
+    </div>
+
     <div class="energy-chart-card">
-      <div class="reference-header"><h3>Estimated Energy Use by Capable Model</h3><p>Input kW at the required frequency using the assumptions above.</p></div>
+      <div class="reference-header"><h3>Energy Comparison — Secondary Selection Factor</h3><p>Estimated input kW is shown for context after hydraulic suitability is evaluated.</p></div>
       <canvas id="pumpEnergyCanvas" width="760" height="430"></canvas>
     </div>
 
@@ -1683,8 +1740,8 @@ body{background:#020b16!important;color:#eef6ff!important}
         <table class="sizing-table">
           <thead><tr>
             <th>Model</th><th>HP</th><th>Required Hz</th><th>Speed</th><th>Reserve</th>
-            <th>Water HP</th><th>Est. Shaft HP</th><th>Implied Pump Eff.</th>
-            <th>Est. Input kW</th><th>Annual kWh</th><th>Annual Cost</th><th>Status</th>
+            <th>Hydraulic Fit</th><th>Speed Quality</th><th>Curve Position</th>
+            <th>Est. Input kW</th><th>Annual kWh</th><th>Annual Cost</th><th>Selection Score</th><th>Status</th>
           </tr></thead>
           <tbody id="pumpSizingTable"></tbody>
         </table>
@@ -1712,6 +1769,7 @@ body{background:#020b16!important;color:#eef6ff!important}
         <div class="tiles">
           <div class="tile"><span>Water HP</span><b id="opWaterHp">—</b></div>
           <div class="tile"><span>Rated Speed</span><b id="opSpeedPct">—%</b></div>
+          <div class="tile speed-quality-tile"><span>Operating Speed Quality</span><b id="opSpeedQuality">—</b></div>
           <div class="tile"><span>Curve Head Range</span><b id="opHeadRange">—</b></div>
           <div class="tile"><span>Status</span><b id="opStatus">Ready</b></div>
         </div>
@@ -1776,16 +1834,49 @@ body{background:#020b16!important;color:#eef6ff!important}
     <div class="card">
       <h2>Advanced Engineering Data</h2>
       <div class="card-body">
-        <p class="muted">Detailed comparison metrics, calculation assumptions, and curve methodology are grouped here so routine field workflows stay uncluttered.</p>
+        <p class="muted">Detailed comparison metrics and calculation assumptions are grouped here so the main sizing workflow stays focused on hydraulic selection.</p>
       </div>
     </div>
+
     <div class="sizing-table-card">
-      <div class="reference-header"><h3>Detailed Pump Comparison</h3><p>Scroll horizontally for all engineering metrics.</p></div>
+      <div class="reference-header">
+        <h3>Detailed Pump Comparison</h3>
+        <p>Hydraulic-fit metrics are shown before the energy estimates. Scroll horizontally for all columns.</p>
+      </div>
+      <div class="table-wrap">
+        <table class="sizing-table">
+          <thead><tr>
+            <th>Model</th><th>HP</th><th>Required Hz</th><th>Speed</th><th>Reserve</th>
+            <th>Hydraulic Fit</th><th>Speed Quality</th><th>Curve Position</th>
+            <th>Est. Input kW</th><th>Annual kWh</th><th>Annual Cost</th><th>Selection Score</th><th>Status</th>
+          </tr></thead>
+          <tbody id="pumpSizingTable"></tbody>
+        </table>
+      </div>
+    </div>
 
     <div class="raw-curve-card">
-      <h3>Curve Data & Calculation Notes</h3>
-      <p>Curves are digitized field-estimation points from Pentair’s published EQ performance chart. Interpolation is linear between points and affinity laws are used for reduced speed.</p>
-      <p>Energy values are screening estimates. Shaft power uses nameplate HP × speed ratio³; estimated input kW applies the entered motor and VFD efficiencies. These are not Pentair-certified BHP or efficiency values.</p>
+      <h3>Hydraulic Selection Method</h3>
+      <p><strong>Hydraulic fit is the primary criterion.</strong> The fit score weights operating-speed quality at 50%, scaled-curve position at 35%, and available frequency reserve at 15%.</p>
+      <p>The final selection score weights hydraulic fit at 85% and the estimated energy score at 15%. This prevents a theoretically lower-energy pump from displacing a substantially better hydraulic selection.</p>
+      <p>Curve position is a field-selection proxy, not Pentair Best Efficiency Point data. Pentair-certified BHP, pump-efficiency contours, and NPSHr are not included.</p>
+    </div>
+
+    <div class="raw-curve-card">
+      <h3>Energy Estimate Method</h3>
+      <p>Estimated shaft power = motor nameplate HP × (required Hz ÷ 60)³. Estimated electrical input then applies the user-entered motor and VFD efficiencies.</p>
+      <p>These values are useful for relative screening only and are not manufacturer-certified electrical-consumption predictions.</p>
+    </div>
+
+    <div class="raw-curve-card">
+      <h3>Operating Speed Quality</h3>
+      <div class="speed-quality-reference">
+        <div class="speed-preferred"><strong>45–55 Hz</strong><span>Preferred</span></div>
+        <div class="speed-good"><strong>35–45 Hz</strong><span>Good</span></div>
+        <div class="speed-low"><strong>30–35 Hz</strong><span>Low Speed</span></div>
+        <div class="speed-caution"><strong>&lt;30 Hz</strong><span>Caution</span></div>
+        <div class="speed-high"><strong>55–60 Hz</strong><span>High Utilization</span></div>
+      </div>
     </div>
   </section>
 
@@ -1863,7 +1954,7 @@ body{background:#020b16!important;color:#eef6ff!important}
   <div class="version-summary">
     <div>
       <span class="version-label">Installed Build</span>
-      <strong>Version 15.1</strong>
+      <strong>Version 15.2</strong>
       <small id="versionUpdateStatus">Pump workflow redesign verified</small>
     </div>
     <button type="button" class="version-button" id="openChangeLog">View Change Notes</button>
@@ -1882,7 +1973,20 @@ body{background:#020b16!important;color:#eef6ff!important}
 
     <div class="change-log-list">
       <details open>
-        <summary><strong>v15.1</strong><span>Pump navigation and curve chart fix</span></summary>
+        <summary><strong>v15.2</strong><span>Hydraulic-priority pump sizing</span></summary>
+        <ul>
+          <li>Changed pump recommendation logic so hydraulic suitability is the primary selection criterion.</li>
+          <li>Added a hydraulic-fit score based on operating speed quality, scaled-curve position, and frequency reserve.</li>
+          <li>Energy use now contributes only 15% of the overall selection score.</li>
+          <li>Added operating-speed quality bands: Preferred, Good, Low Speed, Caution, and High Utilization.</li>
+          <li>Added speed-quality reporting to the existing-pump operating-point calculator.</li>
+          <li>Contained the sticky pump-status summary so it cannot appear on the main dashboard.</li>
+          <li>Repaired and consolidated the Advanced Engineering Data section.</li>
+        </ul>
+      </details>
+      
+      <details open>
+        <summary><strong>v15.2.2</strong><span>Pump navigation and curve chart fix</span></summary>
         <ul>
           <li>Removed the redundant Overview tab and made Selection the default pump workspace.</li>
           <li>Added a dedicated Advanced tab for detailed engineering comparison data and calculation notes.</li>
@@ -1892,7 +1996,7 @@ body{background:#020b16!important;color:#eef6ff!important}
       </details>
 
       <details open>
-        <summary><strong>v15.0</strong><span>Update reliability and version history</span></summary>
+        <summary><strong>v15.2.0</strong><span>Update reliability and version history</span></summary>
         <ul>
           <li>Added a visible installed-build number at the bottom of the application.</li>
           <li>Added an in-app change log covering the development history.</li>
@@ -1902,7 +2006,7 @@ body{background:#020b16!important;color:#eef6ff!important}
       </details>
 
       <details>
-        <summary><strong>v15.0</strong><span>Pump workflow redesign</span></summary>
+        <summary><strong>v15.2.0</strong><span>Pump workflow redesign</span></summary>
         <ul>
           <li>Reorganized Pump Hydraulics into Overview, Selection, Operating Point, Field Tools, Curves, and Reference.</li>
           <li>Added task-based navigation and a “What are you trying to do?” launcher.</li>
@@ -2032,7 +2136,7 @@ body{background:#020b16!important;color:#eef6ff!important}
   </div>
 </div>
 
-<div class="footer">Offline-capable PWA • Version 15.1 • Pump Workflow + Incident PDF</div>
+<div class="footer">Offline-capable PWA • Version 15.2 • Pump Workflow + Incident PDF</div>
 
 </div>
 
@@ -2477,7 +2581,7 @@ window.addEventListener('pageshow',function(){
 });
 
 
-/* ---------------- Pump Workflow v15 ---------------- */
+/* ---------------- Pump Workflow v15.2 ---------------- */
 const pentairEqCurves={
   eqw300:{label:'EQW300 WaterFall',hp:3,points:[[0,28],[100,26.5],[200,24],[300,20],[350,16],[400,10],[450,6]]},
   eqw500:{label:'EQW500 WaterFall',hp:5,points:[[0,27],[100,28],[200,29],[300,29],[400,27.5],[500,24],[600,19],[680,13]]},
@@ -2534,6 +2638,36 @@ function requiredHz(model,flow,head,minHz,maxHz){
 }
 function money(v){return v.toLocaleString(undefined,{style:'currency',currency:'USD',maximumFractionDigits:0});}
 
+function operatingSpeedQuality(hz){
+  if(!Number.isFinite(hz)) return {label:'—',score:0,cls:'speed-caution-badge'};
+  if(hz>=45 && hz<=55) return {label:'Preferred',score:100,cls:'speed-preferred-badge'};
+  if(hz>=35 && hz<45)  return {label:'Good',score:88,cls:'speed-good-badge'};
+  if(hz>55 && hz<=60)  return {label:'High Utilization',score:78,cls:'speed-high-badge'};
+  if(hz>=30 && hz<35)  return {label:'Low Speed',score:65,cls:'speed-low-badge'};
+  return {label:'Caution',score:40,cls:'speed-caution-badge'};
+}
+function curvePositionScore(position){
+  // Position = duty flow divided by the maximum flow of the affinity-scaled curve.
+  // Best score is intentionally broad because actual Pentair BEP data is unavailable.
+  if(!Number.isFinite(position) || position<=0) return 0;
+  if(position>=0.48 && position<=0.78) return 100;
+  if(position>=0.40 && position<0.48) return 88;
+  if(position>0.78 && position<=0.86) return 88;
+  if(position>=0.30 && position<0.40) return 72;
+  if(position>0.86 && position<=0.93) return 68;
+  if(position>=0.20 && position<0.30) return 52;
+  if(position>0.93 && position<=1.00) return 45;
+  return 30;
+}
+function reserveScore(reserve,requiredReserve){
+  if(!Number.isFinite(reserve)) return 0;
+  const target=Math.max(requiredReserve,2);
+  if(reserve>=target+5) return 100;
+  if(reserve>=target+2) return 90;
+  if(reserve>=target) return 78;
+  if(reserve>=0) return 50;
+  return 0;
+}
 function computeSizing(){
   const flow=numberValue('sizeFlow'),head=numberValue('sizeHead'),minHz=numberValue('sizeMinHz'),maxHz=numberValue('sizeMaxHz'),reserve=numberValue('sizeReserve');
   const motorEff=numberValue('sizeMotorEff')/100,vfdEff=numberValue('sizeVfdEff')/100,hours=numberValue('sizeHours'),rate=numberValue('sizeRate'),days=numberValue('sizeDays');
@@ -2542,52 +2676,121 @@ function computeSizing(){
   }
   showError('sizeError','');
   const whp=flow*head/3960;
+
   latestSizing=Object.entries(pentairEqCurves).map(([key,m])=>{
     const r=requiredHz(m,flow,head,10,60);
-    if(!r||r.diff>3||r.hz>maxHz)return {key,...m,capable:false,status:'Not capable'};
+    if(!r||r.diff>3||r.hz>maxHz) return {key,...m,capable:false,status:'Not capable'};
+
     const speed=r.hz/60;
     const shaftHp=m.hp*Math.pow(speed,3);
-    const implied=shaftHp>0?whp/shaftHp*100:null;
     const inputKw=shaftHp*0.746/(motorEff*vfdEff);
     const annualKwh=inputKw*hours*days;
     const annualCost=annualKwh*rate;
+    const maxScaledFlow=Math.max(...scaleCurve(m,r.hz).map(p=>p[0]));
+    const curvePosition=maxScaledFlow>0?flow/maxScaledFlow:0;
+    const speedQuality=operatingSpeedQuality(r.hz);
+    const cScore=curvePositionScore(curvePosition);
+    const rScore=reserveScore(maxHz-r.hz,reserve);
+    const hydraulicFit=0.50*speedQuality.score + 0.35*cScore + 0.15*rScore;
+
     let status='Capable';
-    if(r.hz<minHz)status='Below minimum Hz';
-    else if(maxHz-r.hz>=reserve)status='Preferred';
-    else status='Near limit';
-    return {key,...m,capable:true,status,hz:r.hz,reserve:maxHz-r.hz,speedPct:speed*100,whp,shaftHp,implied,inputKw,annualKwh,annualCost};
+    if(r.hz<minHz) status='Below minimum Hz';
+    else if(maxHz-r.hz<reserve) status='Near limit';
+
+    return {
+      key,...m,capable:true,status,hz:r.hz,reserve:maxHz-r.hz,speedPct:speed*100,
+      whp,shaftHp,inputKw,annualKwh,annualCost,maxScaledFlow,curvePosition,
+      speedQuality,curvePositionScore:cScore,reserveScore:rScore,hydraulicFit
+    };
   });
+
   const usable=latestSizing.filter(r=>r.capable&&r.status!=='Below minimum Hz');
-  const best=usable.slice().sort((a,b)=>a.inputKw-b.inputKw)[0]||null;
-  setText('sizeWaterHp',whp.toFixed(2)+' HP');setText('sizeCapable',usable.length+' of 6');
+  const minKw=usable.length?Math.min(...usable.map(r=>r.inputKw)):null;
+  const maxKw=usable.length?Math.max(...usable.map(r=>r.inputKw)):null;
+
+  usable.forEach(r=>{
+    let energyScore=100;
+    if(maxKw!==null && minKw!==null && maxKw>minKw){
+      energyScore=100-(r.inputKw-minKw)/(maxKw-minKw)*100;
+    }
+    r.energyScore=energyScore;
+    r.selectionScore=r.hydraulicFit*0.85 + energyScore*0.15;
+  });
+
+  const best=usable.slice().sort((a,b)=>{
+    if(Math.abs(b.selectionScore-a.selectionScore)>0.01) return b.selectionScore-a.selectionScore;
+    if(Math.abs(b.hydraulicFit-a.hydraulicFit)>0.01) return b.hydraulicFit-a.hydraulicFit;
+    return a.inputKw-b.inputKw;
+  })[0]||null;
+
+  latestSizing.forEach(r=>{
+    if(r.capable && r.status!=='Below minimum Hz' && best && r.key===best.key) r.status='Recommended';
+  });
+
+  setText('sizeWaterHp',whp.toFixed(2)+' HP');
+  setText('sizeCapable',usable.length+' of 6');
   setText('sizeBestPump',best?best.label:'No suitable model');
-  setText('sizeBestSummary',best?best.hz.toFixed(1)+' Hz • '+best.inputKw.toFixed(2)+' estimated kW':'Duty point falls outside entered limits.');
-  setText('sizeLowestKw',best?best.inputKw.toFixed(2)+' kW':'—');setText('sizeLowestCost',best?money(best.annualCost):'—');
-  setText('overviewDuty',Math.round(flow)+' GPM @ '+head.toFixed(0)+' ft');setText('overviewPump',best?best.label:'—');setText('overviewHz',best?best.hz.toFixed(1)+' Hz':'—');setText('overviewKw',best?best.inputKw.toFixed(2)+' kW':'—');
-  setText('stickyPump',best?best.label:'No model');setText('stickyFlow',Math.round(flow)+' GPM');setText('stickyHead',head.toFixed(0)+' ft');setText('stickyHz',best?best.hz.toFixed(1)+' Hz':'—');setText('stickyStatus',best?'Preferred':'Check duty');
-  renderSizingCards(latestSizing,best);renderSizingTable(latestSizing,best);drawEnergyChart(latestSizing,best);
+  setText('sizeBestSummary',best?best.hz.toFixed(1)+' Hz • '+best.speedQuality.label+' • Hydraulic fit '+best.hydraulicFit.toFixed(0)+'/100':'Duty point falls outside entered limits.');
+  setText('sizeHydraulicFit',best?best.hydraulicFit.toFixed(0)+'/100':'—');
+  setText('sizeSpeedQuality',best?best.speedQuality.label:'—');
+
+  setText('stickyPump',best?best.label:'No model');
+  setText('stickyFlow',Math.round(flow)+' GPM');
+  setText('stickyHead',head.toFixed(0)+' ft');
+  setText('stickyHz',best?best.hz.toFixed(1)+' Hz':'—');
+  setText('stickyStatus',best?'Recommended':'Check duty');
+
+  renderSizingCards(latestSizing,best);
+  renderSizingTable(latestSizing,best);
+  drawEnergyChart(latestSizing,best);
 }
-function statusClass(s){return s==='Preferred'?'status-preferred':s==='Capable'?'status-capable':s==='Near limit'||s==='Below minimum Hz'?'status-low-speed':'status-not-capable';}
+function statusClass(s){
+  return s==='Recommended'?'status-preferred':
+         s==='Capable'?'status-capable':
+         s==='Near limit'||s==='Below minimum Hz'?'status-low-speed':'status-not-capable';
+}
 function renderSizingCards(rows,best){
   byId('pumpSizingCards').innerHTML=rows.map(r=>{
     const cls=!r.capable?'not-capable':best&&r.key===best.key?'preferred':'';
-    return `<details class="sizing-model-card ${cls}"><summary><strong>${r.label}</strong><span>${r.capable?r.hz.toFixed(1)+' Hz':'—'}</span><span class="status-pill ${statusClass(r.status)}">${r.status}</span></summary>
+    const sq=r.capable?r.speedQuality:{label:'—',cls:'speed-caution-badge'};
+    return `<details class="sizing-model-card ${cls}">
+      <summary>
+        <strong>${r.label}</strong>
+        <span>${r.capable?r.hz.toFixed(1)+' Hz':'—'}</span>
+        <span class="status-pill ${statusClass(r.status)}">${r.status}</span>
+      </summary>
       <div class="sizing-model-detail">
+       <div><span>Hydraulic Fit</span><strong class="hydraulic-fit-value">${r.capable?r.hydraulicFit.toFixed(0)+'/100':'—'}</strong></div>
+       <div><span>Speed Quality</span><strong><span class="speed-quality-badge ${sq.cls}">${sq.label}</span></strong></div>
+       <div><span>Curve Position</span><strong>${r.capable?(r.curvePosition*100).toFixed(0)+'%':'—'}</strong></div>
+       <div><span>Frequency Reserve</span><strong>${r.capable?r.reserve.toFixed(1)+' Hz':'—'}</strong></div>
+       <div><span>Estimated Input</span><strong>${r.capable?r.inputKw.toFixed(2)+' kW':'—'}</strong></div>
+       <div><span>Annual Cost</span><strong>${r.capable?money(r.annualCost):'—'}</strong></div>
+       <div><span>Selection Score</span><strong class="selection-score-value">${r.selectionScore!==undefined?r.selectionScore.toFixed(0)+'/100':'—'}</strong></div>
        <div><span>Motor</span><strong>${r.hp} HP</strong></div>
-       <div><span>Estimated input</span><strong>${r.capable?r.inputKw.toFixed(2)+' kW':'—'}</strong></div>
-       <div><span>Annual cost</span><strong>${r.capable?money(r.annualCost):'—'}</strong></div>
-       <div><span>Frequency reserve</span><strong>${r.capable?r.reserve.toFixed(1)+' Hz':'—'}</strong></div>
-       <div><span>Est. shaft HP</span><strong>${r.capable?r.shaftHp.toFixed(2):'—'}</strong></div>
-       <div><span>Implied pump eff.</span><strong>${r.capable?r.implied.toFixed(1)+'%':'—'}</strong></div>
-      </div></details>`;
+      </div>
+    </details>`;
   }).join('');
 }
 function renderSizingTable(rows,best){
-  byId('pumpSizingTable').innerHTML=rows.map(r=>`<tr class="${best&&r.key===best.key?'preferred':r.capable?'capable':'not-capable'}">
-    <td><strong>${r.label}</strong></td><td>${r.hp}</td><td>${r.capable?r.hz.toFixed(1):'—'}</td><td>${r.capable?r.speedPct.toFixed(1)+'%':'—'}</td><td>${r.capable?r.reserve.toFixed(1)+' Hz':'—'}</td>
-    <td>${r.capable?r.whp.toFixed(2):'—'}</td><td>${r.capable?r.shaftHp.toFixed(2):'—'}</td><td>${r.capable?r.implied.toFixed(1)+'%':'—'}</td>
-    <td>${r.capable?r.inputKw.toFixed(2):'—'}</td><td>${r.capable?Math.round(r.annualKwh).toLocaleString():'—'}</td><td>${r.capable?money(r.annualCost):'—'}</td>
-    <td><span class="status-pill ${statusClass(r.status)}">${r.status}</span></td></tr>`).join('');
+  byId('pumpSizingTable').innerHTML=rows.map(r=>{
+    const sq=r.capable?r.speedQuality:{label:'—',cls:'speed-caution-badge'};
+    return `<tr class="${best&&r.key===best.key?'preferred':r.capable?'capable':'not-capable'}">
+      <td><strong>${r.label}</strong></td>
+      <td>${r.hp}</td>
+      <td>${r.capable?r.hz.toFixed(1):'—'}</td>
+      <td>${r.capable?r.speedPct.toFixed(1)+'%':'—'}</td>
+      <td>${r.capable?r.reserve.toFixed(1)+' Hz':'—'}</td>
+      <td class="hydraulic-fit-value">${r.capable?r.hydraulicFit.toFixed(0)+'/100':'—'}</td>
+      <td><span class="speed-quality-badge ${sq.cls}">${sq.label}</span></td>
+      <td>${r.capable?(r.curvePosition*100).toFixed(0)+'%':'—'}</td>
+      <td>${r.capable?r.inputKw.toFixed(2):'—'}</td>
+      <td>${r.capable?Math.round(r.annualKwh).toLocaleString():'—'}</td>
+      <td>${r.capable?money(r.annualCost):'—'}</td>
+      <td class="selection-score-value">${r.selectionScore!==undefined?r.selectionScore.toFixed(0)+'/100':'—'}</td>
+      <td><span class="status-pill ${statusClass(r.status)}">${r.status}</span></td>
+    </tr>`;
+  }).join('');
 }
 function drawEnergyChart(rows,best){
   const canvas=byId('pumpEnergyCanvas'),ctx=canvas.getContext('2d'),w=canvas.width,h=canvas.height;
@@ -2607,10 +2810,26 @@ function drawEnergyChart(rows,best){
 function updateOperating(){
   const key=byId('opModel').value,m=pentairEqCurves[key],head=numberValue('opHead'),hz=numberValue('opHz');
   const flow=flowAtHead(m,head,hz);
-  setText('opModelLabel',m.label);setText('opSpeedPct',(hz/60*100).toFixed(1)+'%');
-  const pts=scaleCurve(m,hz),heads=pts.map(p=>p[1]);setText('opHeadRange',Math.min(...heads).toFixed(0)+'–'+Math.max(...heads).toFixed(0)+' ft');
-  if(flow===null){setText('opFlow','Outside curve');setText('opWaterHp','—');setText('opStatus','Check TDH/Hz');}
-  else{setText('opFlow',Math.round(flow)+' GPM');setText('opWaterHp',(flow*head/3960).toFixed(2)+' HP');setText('opStatus','Estimated');}
+  const sq=operatingSpeedQuality(hz);
+  setText('opModelLabel',m.label);
+  setText('opSpeedPct',(hz/60*100).toFixed(1)+'%');
+  setText('opSpeedQuality',sq.label);
+  const qualityEl=byId('opSpeedQuality');
+  if(qualityEl){
+    qualityEl.className='';
+    qualityEl.classList.add('speed-quality-badge',sq.cls);
+  }
+  const pts=scaleCurve(m,hz),heads=pts.map(p=>p[1]);
+  setText('opHeadRange',Math.min(...heads).toFixed(0)+'–'+Math.max(...heads).toFixed(0)+' ft');
+  if(flow===null){
+    setText('opFlow','Outside curve');
+    setText('opWaterHp','—');
+    setText('opStatus','Check TDH/Hz');
+  }else{
+    setText('opFlow',Math.round(flow)+' GPM');
+    setText('opWaterHp',(flow*head/3960).toFixed(2)+' HP');
+    setText('opStatus','Estimated');
+  }
 }
 ['opModel','opHead','opHz'].forEach(id=>bind([id],['input','change'],updateOperating));
 
@@ -2803,7 +3022,7 @@ function updateIncidentTimer(){const s=Math.max(0,Math.floor((Date.now()-inciden
 loadIncidentDraft();updateIncidentTimer();setInterval(updateIncidentTimer,1000);
 
 
-/* ---------------- v15 version and update controls ---------------- */
+/* ---------------- v15.2 version and update controls ---------------- */
 (function(){
   const modal=byId('changeLogModal');
   byId('openChangeLog').addEventListener('click',function(){modal.hidden=false;document.body.style.overflow='hidden';});
@@ -2812,23 +3031,23 @@ loadIncidentDraft();updateIncidentTimer();setInterval(updateIncidentTimer,1000);
   document.addEventListener('keydown',function(event){if(event.key==='Escape'&&!modal.hidden){modal.hidden=true;document.body.style.overflow='';}});
 
   try{
-    localStorage.setItem('swChemInstalledVersion','15.0');
+    localStorage.setItem('swChemInstalledVersion','15.2');
   }catch(error){}
 
   if('caches' in window){
     caches.keys().then(function(keys){
-      return Promise.all(keys.filter(function(key){return key!=='seaworld-chemistry-console-v15';}).map(function(key){return caches.delete(key);}));
+      return Promise.all(keys.filter(function(key){return key!=='seaworld-chemistry-console-v15.2';}).map(function(key){return caches.delete(key);}));
     }).then(function(){
-      setText('versionUpdateStatus','Version 15.1 active • old caches cleared');
+      setText('versionUpdateStatus','Version 15.2 active • old caches cleared');
     }).catch(function(){
-      setText('versionUpdateStatus','Version 15.1 active');
+      setText('versionUpdateStatus','Version 15.2 active');
     });
   }
 })();
 
 if('serviceWorker' in navigator && location.protocol.indexOf('http')===0){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('./service-worker.js?build=v15',{updateViaCache:'none'})
+    navigator.serviceWorker.register('./service-worker.js?build=v15.2',{updateViaCache:'none'})
       .then(function(registration){
         registration.update();
         if(registration.waiting)registration.waiting.postMessage({type:'SKIP_WAITING'});
@@ -2844,12 +3063,12 @@ if('serviceWorker' in navigator && location.protocol.indexOf('http')===0){
         });
       })
       .catch(function(){
-        setText('versionUpdateStatus','Version 15.1 active • service worker unavailable');
+        setText('versionUpdateStatus','Version 15.2 active • service worker unavailable');
       });
   });
   navigator.serviceWorker.addEventListener('controllerchange',function(){
-    if(!sessionStorage.getItem('swV15Reloaded')){
-      sessionStorage.setItem('swV15Reloaded','1');
+    if(!sessionStorage.getItem('swV152Reloaded')){
+      sessionStorage.setItem('swV152Reloaded','1');
       location.reload();
     }
   });
