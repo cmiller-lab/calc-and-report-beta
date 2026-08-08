@@ -26,4 +26,4 @@ Update reliability:
 Deployment:
 Upload every file from this package, replacing the existing files.
 After GitHub Pages finishes deploying, open the site once in Safari before reopening the Home Screen app.
-The bottom of the page must display Version 15.0.
+The bottom of the page must display Version 15.0. new
