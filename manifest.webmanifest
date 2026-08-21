@@ -1,13 +1,13 @@
 {
-  "id": "./?version=15.4",
+  "id": "./?version=15.5",
   "name": "SeaWorld Water Chemistry Console",
   "short_name": "SW Chemistry",
-  "start_url": "./index.html?version=15.4",
+  "start_url": "./index.html?version=15.5",
   "scope": "./",
   "display": "standalone",
   "background_color": "#020b16",
   "theme_color": "#041b3d",
-  "description": "Responsive chemical dosing, Pentair EQ pump selection and hydraulics, utilities, and incident PDF reporting.",
+  "description": "Responsive chemical dosing, single and parallel Pentair EQ pump sizing, hydraulics, utilities, and incident PDF reporting.",
   "icons": [
     {
       "src": "icon-192.png",
