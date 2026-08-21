@@ -1,8 +1,8 @@
-const CACHE='seaworld-chemistry-console-v15.3-1';
+const CACHE='seaworld-chemistry-console-v15.4-1';
 const ASSETS=[
   './',
   './index.html',
-  './index.html?version=15.3.2',
+  './index.html?version=15.4.2',
   './manifest.webmanifest?v=15.1',
   './icon-192.png',
   './icon-512.png'

@@ -1098,6 +1098,118 @@ body:has(#homePanel.active) .pump-sticky-summary{display:none!important}
   .hydraulic-tier-grid>div:first-child{grid-column:1/-1}
 }
 
+
+/* ===== v15.4 responsive layout system ===== */
+:root{
+  --content-max:1440px;
+  --page-gutter:clamp(12px,2.2vw,28px);
+  --section-gap:clamp(10px,1.6vw,18px);
+}
+html,body{width:100%;max-width:100%;overflow-x:hidden}
+.wrap,.app-shell,main{
+  width:min(100%,var(--content-max));
+  max-width:var(--content-max);
+  margin-inline:auto;
+  padding-inline:var(--page-gutter);
+}
+img,svg,canvas,video{max-width:100%;height:auto}
+canvas{width:100%!important;display:block}
+button,input,select,textarea{max-width:100%;min-width:0}
+.grid>*,.card,.panel,.calculator-shell,.pump-view,.utility-workspace,.incident-step{min-width:0}
+body{font-size:clamp(14px,1vw,16px)}
+.hero h1,.pump-hero h2,.incident-hero h2{font-size:clamp(28px,4vw,48px)}
+.card h2{font-size:clamp(17px,1.7vw,22px)}
+.result .big{font-size:clamp(28px,4vw,48px)}
+.grid{display:grid;grid-template-columns:minmax(280px,.85fr) minmax(0,1.15fr);gap:var(--section-gap);align-items:start}
+.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(7px,1vw,11px)}
+.metric-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(7px,1vw,11px)}
+.primary-calculator-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:clamp(10px,1.3vw,16px)!important}
+.primary-calculator-grid>.launch-tile{height:auto!important;min-height:clamp(230px,25vw,340px)!important}
+.utilities-launcher,.pump-launcher,.incident-launcher{grid-template-columns:clamp(48px,4vw,64px) minmax(0,1fr) 24px!important}
+.hero,.pump-hero,.incident-hero{padding:clamp(18px,2.5vw,30px)!important}
+.pump-hero,.incident-hero{grid-template-columns:minmax(0,1fr) clamp(90px,10vw,140px)!important}
+.pump-primary-nav{display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:6px!important}
+.pump-nav{min-width:0;padding-inline:8px;white-space:normal}
+.pump-overview-summary{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+.pump-goal-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+.sizing-mobile-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.sizing-model-detail{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+.table-wrap{width:100%;max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse}
+.sizing-table{min-width:980px}.ref-table{min-width:620px}
+.pump-chart-card,.energy-chart-card{width:100%;overflow:hidden}
+#pumpCurveCanvas,#multiCurveCanvas,#pumpEnergyCanvas{width:100%!important;height:auto!important;aspect-ratio:16/9}
+.chart-legend{flex-wrap:wrap!important}
+.curve-toolbar{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(180px,260px)!important;gap:12px!important}
+.curve-check-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+.pump-reference-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+.incident-pool-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+.incident-choice-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+.incident-choice-grid.three{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+.utility-tabs{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+.pump-sticky-summary{width:100%;max-width:100%;grid-template-columns:1.2fr 1fr .9fr .9fr 1fr!important;gap:6px!important}
+
+@media (min-width:700px) and (max-width:1099px){
+  :root{--content-max:1024px}
+  .grid{grid-template-columns:minmax(250px,.95fr) minmax(0,1.05fr)}
+  .primary-calculator-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .primary-calculator-grid>.launch-tile{min-height:250px!important}
+  .pump-primary-nav{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  .pump-goal-grid,.pump-overview-summary{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .sizing-mobile-list{grid-template-columns:1fr}
+  .sizing-model-detail{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  .curve-check-grid,.incident-pool-grid,.incident-choice-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .pump-reference-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .metric-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pump-hero,.incident-hero{grid-template-columns:minmax(0,1fr) 100px!important}
+}
+
+@media (max-width:699px){
+  :root{--page-gutter:10px;--section-gap:10px}
+  .wrap,.app-shell,main{width:100%;padding-inline:var(--page-gutter)}
+  .grid{grid-template-columns:1fr!important}
+  .primary-calculator-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+  .primary-calculator-grid>.launch-tile{min-height:205px!important;padding:12px 7px!important}
+  .primary-calculator-grid .launch-art{width:min(52%,110px)!important}
+  .primary-calculator-grid .launch-title{font-size:clamp(14px,4.5vw,19px)!important}
+  .primary-calculator-grid .launch-desc{font-size:9.5px!important}
+  .utilities-launcher,.pump-launcher,.incident-launcher{grid-template-columns:44px minmax(0,1fr) 20px!important;gap:10px!important;padding:13px!important}
+  .module-launcher-icon,.utilities-launcher-icon{width:44px!important;height:44px!important;font-size:24px!important}
+  .calculator-breadcrumb{display:flex;flex-wrap:wrap;gap:6px}
+  .pump-hero,.incident-hero{grid-template-columns:minmax(0,1fr) 70px!important;padding:15px!important}
+  .pump-primary-nav{grid-template-columns:repeat(2,minmax(0,1fr))!important;position:static!important;gap:5px!important}
+  .pump-nav{min-height:40px!important;font-size:10px!important}
+  .pump-overview-summary{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .pump-goal-grid{grid-template-columns:1fr!important}
+  .pump-goal-grid button{min-height:95px!important}
+  .tiles,.metric-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .sizing-mobile-list{grid-template-columns:1fr!important}
+  .sizing-model-card summary{grid-template-columns:1fr auto!important}
+  .sizing-model-detail{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .hydraulic-tier-grid,.hydraulic-weight-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .curve-toolbar{grid-template-columns:1fr!important}
+  .curve-check-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #pumpCurveCanvas,#multiCurveCanvas,#pumpEnergyCanvas{aspect-ratio:4/3!important;min-height:280px}
+  .pump-reference-grid{grid-template-columns:1fr!important}
+  .incident-pool-grid,.incident-choice-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .incident-choice-grid.three{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  .incident-review-row{grid-template-columns:95px minmax(0,1fr)!important}
+  .incident-actions,.action-row{grid-template-columns:1fr!important}
+  .utility-tab{font-size:10px!important;padding-inline:3px!important}
+  .pump-sticky-summary{grid-template-columns:1fr 1fr 1fr!important;padding:9px 10px!important}
+  .pump-sticky-summary span:nth-child(3),.pump-sticky-summary span:nth-child(4){display:none!important}
+  .version-summary{flex-direction:column;align-items:stretch!important}
+  .version-button{width:100%}
+}
+
+@media (max-width:390px){
+  .primary-calculator-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .primary-calculator-grid>.launch-tile{min-height:190px!important}
+  .tiles,.metric-grid{grid-template-columns:1fr!important}
+  .incident-choice-grid.three{grid-template-columns:1fr!important}
+  .pump-overview-summary{grid-template-columns:1fr!important}
+}
+
 </style>
 </head>
 <body>
@@ -1979,7 +2091,7 @@ body:has(#homePanel.active) .pump-sticky-summary{display:none!important}
   <div class="version-summary">
     <div>
       <span class="version-label">Installed Build</span>
-      <strong>Version 15.3</strong>
+      <strong>Version 15.4</strong>
       <small id="versionUpdateStatus">Pump workflow redesign verified</small>
     </div>
     <button type="button" class="version-button" id="openChangeLog">View Change Notes</button>
@@ -1997,6 +2109,20 @@ body:has(#homePanel.active) .pump-sticky-summary{display:none!important}
     </div>
 
     <div class="change-log-list">
+      <details open>
+        <summary><strong>v15.4</strong><span>Responsive layout system</span></summary>
+        <ul>
+          <li>Added dedicated mobile, tablet, and desktop layout breakpoints across the entire PWA.</li>
+          <li>Added fluid typography, spacing, card sizing, and page gutters.</li>
+          <li>Dashboard uses 2 columns on phones, 2 on tablets, and 3 on desktop.</li>
+          <li>Calculator pages switch from stacked mobile layouts to two-column tablet/desktop layouts where appropriate.</li>
+          <li>Pump navigation, sizing cards, reference cards, and curve controls now reflow for each device class.</li>
+          <li>Graphs now size to their parent container and redraw after orientation or viewport changes.</li>
+          <li>Tables retain full data density with controlled horizontal scrolling on smaller screens.</li>
+          <li>Incident reporting and utility controls now adapt independently for phone, tablet, and desktop widths.</li>
+        </ul>
+      </details>
+      
       <details open>
         <summary><strong>v15.3</strong><span>Tiered hydraulic recommendation</span></summary>
         <ul>
@@ -2173,7 +2299,7 @@ body:has(#homePanel.active) .pump-sticky-summary{display:none!important}
   </div>
 </div>
 
-<div class="footer">Offline-capable PWA • Version 15.3 • Pump Workflow + Incident PDF</div>
+<div class="footer">Offline-capable PWA • Version 15.4 • Pump Workflow + Incident PDF</div>
 
 </div>
 
@@ -3110,23 +3236,40 @@ loadIncidentDraft();updateIncidentTimer();setInterval(updateIncidentTimer,1000);
   document.addEventListener('keydown',function(event){if(event.key==='Escape'&&!modal.hidden){modal.hidden=true;document.body.style.overflow='';}});
 
   try{
-    localStorage.setItem('swChemInstalledVersion','15.3');
+    localStorage.setItem('swChemInstalledVersion','15.4');
   }catch(error){}
 
   if('caches' in window){
     caches.keys().then(function(keys){
-      return Promise.all(keys.filter(function(key){return key!=='seaworld-chemistry-console-v15.3';}).map(function(key){return caches.delete(key);}));
+      return Promise.all(keys.filter(function(key){return key!=='seaworld-chemistry-console-v15.4';}).map(function(key){return caches.delete(key);}));
     }).then(function(){
-      setText('versionUpdateStatus','Version 15.3 active • old caches cleared');
+      setText('versionUpdateStatus','Version 15.4 active • old caches cleared');
     }).catch(function(){
-      setText('versionUpdateStatus','Version 15.3 active');
+      setText('versionUpdateStatus','Version 15.4 active');
     });
   }
 })();
 
+
+/* ---------------- v15.4 responsive redraw ---------------- */
+(function(){
+  let resizeTimer=null;
+  function redrawResponsiveCanvases(){
+    try{ if(typeof drawEnergyChart==='function' && typeof latestSizing!=='undefined') drawEnergyChart(latestSizing, latestSizing.filter(r=>r.capable).sort((a,b)=>(a.inputKw||999)-(b.inputKw||999))[0]||null); }catch(e){}
+    try{ if(typeof drawMultiCurves==='function') drawMultiCurves(); }catch(e){}
+  }
+  window.addEventListener('resize',function(){
+    clearTimeout(resizeTimer);
+    resizeTimer=setTimeout(redrawResponsiveCanvases,180);
+  });
+  window.addEventListener('orientationchange',function(){
+    setTimeout(redrawResponsiveCanvases,250);
+  });
+})();
+
 if('serviceWorker' in navigator && location.protocol.indexOf('http')===0){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('./service-worker.js?build=v15.3',{updateViaCache:'none'})
+    navigator.serviceWorker.register('./service-worker.js?build=v15.4',{updateViaCache:'none'})
       .then(function(registration){
         registration.update();
         if(registration.waiting)registration.waiting.postMessage({type:'SKIP_WAITING'});
@@ -3142,12 +3285,12 @@ if('serviceWorker' in navigator && location.protocol.indexOf('http')===0){
         });
       })
       .catch(function(){
-        setText('versionUpdateStatus','Version 15.3 active • service worker unavailable');
+        setText('versionUpdateStatus','Version 15.4 active • service worker unavailable');
       });
   });
   navigator.serviceWorker.addEventListener('controllerchange',function(){
-    if(!sessionStorage.getItem('swV153Reloaded')){
-      sessionStorage.setItem('swV153Reloaded','1');
+    if(!sessionStorage.getItem('swV154Reloaded')){
+      sessionStorage.setItem('swV154Reloaded','1');
       location.reload();
     }
   });
