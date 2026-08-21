@@ -1,27 +1,16 @@
-# SeaWorld Water Chemistry Console v15.5
+# SeaWorld Water Chemistry Console v15.7
 
-## Parallel pump sizing
-The Pump Selection page can now evaluate 1–4 identical Pentair EQ pumps operating in parallel.
+Operating Point now compares estimated annual electrical cost at the selected VFD speed with the same pump configuration at 60 Hz.
 
-For N pumps:
-- Total system GPM is divided by N.
-- Each pump sees the full system TDH.
-- Each pump uses the same calculated VFD frequency.
-- Total estimated electrical power is the sum of all running pumps.
+New editable inputs:
+- Operating hours/day
+- Operating days/year
+- Electric rate ($/kWh)
 
-Comparison modes:
-- Selected pump count only
-- 1 pump versus selected count
-- All counts from 1 through selected count
+New outputs:
+- Annual cost at current Hz
+- Annual cost at 60 Hz
+- Annual dollar savings
+- Savings percentage
 
-## Energy comparison
-For every capable configuration the calculator shows:
-- Required VFD frequency
-- Estimated total input kW at required frequency
-- Estimated total input kW for the same pump configuration at 60 Hz
-- Estimated VFD savings %
-- Annual kWh
-- Annual cost
-- Annual cost savings compared with 60 Hz
-
-Energy estimates remain affinity-law screening values. Hydraulic suitability and operating-speed tier remain the primary selection criteria.
+Energy values remain affinity-law screening estimates because Pentair-certified BHP and pump-efficiency data are not included.

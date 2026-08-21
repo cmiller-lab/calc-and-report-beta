@@ -1239,6 +1239,14 @@ table{width:100%;border-collapse:collapse}
   .parallel-pump-icon{width:42px;height:42px;font-size:22px}
 }
 
+
+/* ===== v15.6 operating point parallel pumps ===== */
+#pumpOperatingView .tiles{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(min-width:1100px){
+  #pumpOperatingView .tiles{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+
+#opAnnualSavings{color:#75e7b1}
 </style>
 </head>
 <body>
@@ -1955,18 +1963,50 @@ table{width:100%;border-collapse:collapse}
           <option value="eq1000">EQ1000 — 10 HP</option>
           <option value="eq1500" selected>EQ1500 — 15 HP</option>
         </select></div>
+        <div class="field">
+          <label for="opPumpCount">Pumps Running in Parallel</label>
+          <select id="opPumpCount">
+            <option value="1" selected>1 pump</option>
+            <option value="2">2 pumps</option>
+            <option value="3">3 pumps</option>
+            <option value="4">4 pumps</option>
+          </select>
+          <small>Each identical pump sees the same TDH and VFD frequency. Total flow is the sum of the individual pump flows.</small>
+        </div>
         <div class="field"><label for="opHead">Measured / Estimated TDH (ft)</label><input id="opHead" type="number" min="0" step="0.1" value="30"></div>
         <div class="field"><label for="opHz">VFD Frequency (Hz)</label><input id="opHz" type="number" min="10" max="60" step="0.1" value="41"></div>
+        <div class="input-section-label">ENERGY ESTIMATE</div>
+        <div class="field"><label for="opMotorEff">Motor Efficiency (%)</label><input id="opMotorEff" type="number" min="50" max="100" step="0.1" value="93"></div>
+        <div class="field"><label for="opVfdEff">VFD Efficiency (%)</label><input id="opVfdEff" type="number" min="50" max="100" step="0.1" value="97"></div>
+        <div class="field"><label for="opHours">Operating Hours per Day</label><input id="opHours" type="number" min="0" max="24" step="0.1" value="24"></div>
+        <div class="field"><label for="opDays">Operating Days per Year</label><input id="opDays" type="number" min="0" max="366" step="1" value="365"></div>
+        <div class="field"><label for="opRate">Electric Rate ($/kWh)</label><input id="opRate" type="number" min="0" step="0.001" value="0.12"></div>
         <div class="error" id="opError"></div>
       </div></div>
       <div>
-        <div class="result pump-result"><small>Estimated Flow</small><div class="big" id="opFlow">— GPM</div><div class="sub" id="opModelLabel">EQ1500</div></div>
+        <div class="result pump-result">
+          <small>Estimated Total System Flow</small>
+          <div class="big" id="opFlow">— GPM</div>
+          <div class="sub" id="opModelLabel">EQ1500</div>
+        </div>
         <div class="tiles">
-          <div class="tile"><span>Water HP</span><b id="opWaterHp">—</b></div>
+          <div class="tile"><span>Flow per Pump</span><b id="opFlowPerPump">—</b></div>
+          <div class="tile"><span>Pumps Running</span><b id="opCountTile">1</b></div>
+          <div class="tile"><span>Total Water HP</span><b id="opWaterHp">—</b></div>
           <div class="tile"><span>Rated Speed</span><b id="opSpeedPct">—%</b></div>
           <div class="tile speed-quality-tile"><span>Operating Speed Quality</span><b id="opSpeedQuality">—</b></div>
           <div class="tile"><span>Curve Head Range</span><b id="opHeadRange">—</b></div>
+          <div class="tile"><span>Est. Input @ Current Hz</span><b id="opInputKw">—</b></div>
+          <div class="tile"><span>Est. Input @ 60 Hz</span><b id="opFullSpeedKw">—</b></div>
+          <div class="tile"><span>Annual Cost @ Current Hz</span><b id="opAnnualCost">—</b></div>
+          <div class="tile"><span>Annual Cost @ 60 Hz</span><b id="opAnnualCost60">—</b></div>
+          <div class="tile"><span>Annual VFD Savings</span><b id="opAnnualSavings">—</b></div>
+          <div class="tile"><span>Savings %</span><b id="opVfdSavings">—</b></div>
           <div class="tile"><span>Status</span><b id="opStatus">Ready</b></div>
+        </div>
+        <div class="estimate-warning">
+          <strong>Parallel operating-point estimate</strong>
+          <span>Total flow = estimated flow per pump × pumps running. All pumps are assumed identical, operating at the same TDH and Hz. Energy and cost values use affinity-law screening assumptions with your entered runtime and electric rate; they are not Pentair-certified BHP data.</span>
         </div>
       </div>
     </div>
@@ -2156,7 +2196,7 @@ table{width:100%;border-collapse:collapse}
   <div class="version-summary">
     <div>
       <span class="version-label">Installed Build</span>
-      <strong>Version 15.5</strong>
+      <strong>Version 15.7</strong>
       <small id="versionUpdateStatus">Pump workflow redesign verified</small>
     </div>
     <button type="button" class="version-button" id="openChangeLog">View Change Notes</button>
@@ -2174,6 +2214,30 @@ table{width:100%;border-collapse:collapse}
     </div>
 
     <div class="change-log-list">
+      <details open>
+        <summary><strong>v15.7</strong><span>Operating Point dollar savings</span></summary>
+        <ul>
+          <li>Added operating hours/day, operating days/year, and electric-rate inputs to the Operating Point tab.</li>
+          <li>Added estimated annual operating cost at the selected VFD frequency.</li>
+          <li>Added estimated annual operating cost for the same pump configuration at 60 Hz.</li>
+          <li>Added estimated annual dollar savings from VFD operation versus 60 Hz.</li>
+          <li>Retained percentage savings as a secondary reference.</li>
+        </ul>
+      </details>
+      
+      <details open>
+        <summary><strong>v15.6</strong><span>Operating Point parallel pumps</span></summary>
+        <ul>
+          <li>Added selection for 1–4 identical pumps running in parallel on the Operating Point tab.</li>
+          <li>Operating Point now reports estimated flow per pump and total system flow.</li>
+          <li>Added total water horsepower for the combined pump configuration.</li>
+          <li>Added estimated total input kW at the selected VFD frequency.</li>
+          <li>Added estimated total input kW for the same pump count at 60 Hz.</li>
+          <li>Added estimated VFD energy-savings percentage versus the same configuration at 60 Hz.</li>
+          <li>Motor and VFD efficiency assumptions are editable on the Operating Point tab.</li>
+        </ul>
+      </details>
+      
       <details open>
         <summary><strong>v15.5</strong><span>Parallel pump sizing</span></summary>
         <ul>
@@ -2379,7 +2443,7 @@ table{width:100%;border-collapse:collapse}
   </div>
 </div>
 
-<div class="footer">Offline-capable PWA • Version 15.5 • Pump Workflow + Incident PDF</div>
+<div class="footer">Offline-capable PWA • Version 15.7 • Pump Workflow + Incident PDF</div>
 
 </div>
 
@@ -3185,30 +3249,85 @@ function drawEnergyChart(rows,best){
   ctx.fillStyle='#dce9f3';ctx.fillText('60 Hz',w-85,25);
 }
 function updateOperating(){
-  const key=byId('opModel').value,m=pentairEqCurves[key],head=numberValue('opHead'),hz=numberValue('opHz');
-  const flow=flowAtHead(m,head,hz);
+  const key=byId('opModel').value;
+  const m=pentairEqCurves[key];
+  const head=numberValue('opHead');
+  const hz=numberValue('opHz');
+  const count=parseInt(byId('opPumpCount').value,10);
+  const motorEff=numberValue('opMotorEff')/100;
+  const vfdEff=numberValue('opVfdEff')/100;
+  const hours=numberValue('opHours');
+  const days=numberValue('opDays');
+  const rate=numberValue('opRate');
+
+  if(!m || !Number.isFinite(head) || head<0 || !Number.isFinite(hz) || hz<=0 ||
+     !Number.isFinite(count) || count<1 || !Number.isFinite(motorEff) || motorEff<=0 ||
+     !Number.isFinite(vfdEff) || vfdEff<=0 || !Number.isFinite(hours) || hours<0 ||
+     !Number.isFinite(days) || days<0 || !Number.isFinite(rate) || rate<0){
+    setText('opFlow','Invalid input');
+    setText('opStatus','Check inputs');
+    return;
+  }
+
+  const flowEach=flowAtHead(m,head,hz);
   const sq=operatingSpeedQuality(hz);
-  setText('opModelLabel',m.label);
+
+  setText('opModelLabel',count+'× '+m.label+' @ '+hz.toFixed(1)+' Hz');
+  setText('opCountTile',count.toString());
   setText('opSpeedPct',(hz/60*100).toFixed(1)+'%');
   setText('opSpeedQuality',sq.label);
+
   const qualityEl=byId('opSpeedQuality');
   if(qualityEl){
     qualityEl.className='';
     qualityEl.classList.add('speed-quality-badge',sq.cls);
   }
-  const pts=scaleCurve(m,hz),heads=pts.map(p=>p[1]);
+
+  const pts=scaleCurve(m,hz);
+  const heads=pts.map(p=>p[1]);
   setText('opHeadRange',Math.min(...heads).toFixed(0)+'–'+Math.max(...heads).toFixed(0)+' ft');
-  if(flow===null){
+
+  if(flowEach===null){
     setText('opFlow','Outside curve');
+    setText('opFlowPerPump','—');
     setText('opWaterHp','—');
+    setText('opInputKw','—');
+    setText('opFullSpeedKw','—');
+    setText('opAnnualCost','—');
+    setText('opAnnualCost60','—');
+    setText('opAnnualSavings','—');
+    setText('opVfdSavings','—');
     setText('opStatus','Check TDH/Hz');
-  }else{
-    setText('opFlow',Math.round(flow)+' GPM');
-    setText('opWaterHp',(flow*head/3960).toFixed(2)+' HP');
-    setText('opStatus','Estimated');
+    return;
   }
+
+  const totalFlow=flowEach*count;
+  const totalWaterHp=totalFlow*head/3960;
+
+  const speedRatio=hz/60;
+  const shaftHpEach=m.hp*Math.pow(speedRatio,3);
+  const totalInputKw=shaftHpEach*count*0.746/(motorEff*vfdEff);
+  const fullSpeedKw=m.hp*count*0.746/(motorEff*vfdEff);
+  const savingsPct=fullSpeedKw>0 ? (1-totalInputKw/fullSpeedKw)*100 : 0;
+
+  const annualKwhCurrent=totalInputKw*hours*days;
+  const annualKwh60=fullSpeedKw*hours*days;
+  const annualCostCurrent=annualKwhCurrent*rate;
+  const annualCost60=annualKwh60*rate;
+  const annualSavings=annualCost60-annualCostCurrent;
+
+  setText('opFlow',Math.round(totalFlow).toLocaleString()+' GPM');
+  setText('opFlowPerPump',Math.round(flowEach).toLocaleString()+' GPM');
+  setText('opWaterHp',totalWaterHp.toFixed(2)+' HP');
+  setText('opInputKw',totalInputKw.toFixed(2)+' kW');
+  setText('opFullSpeedKw',fullSpeedKw.toFixed(2)+' kW');
+  setText('opAnnualCost',money(annualCostCurrent));
+  setText('opAnnualCost60',money(annualCost60));
+  setText('opAnnualSavings',money(annualSavings));
+  setText('opVfdSavings',savingsPct.toFixed(1)+'%');
+  setText('opStatus','Estimated');
 }
-['opModel','opHead','opHz'].forEach(id=>bind([id],['input','change'],updateOperating));
+['opModel','opPumpCount','opHead','opHz','opMotorEff','opVfdEff','opHours','opDays','opRate'].forEach(id=>bind([id],['input','change'],updateOperating));
 
 function updateFieldTdh(){
  const d=numberValue('fieldDischarge'),s=numberValue('fieldSuction'),sg=numberValue('fieldSG'),e=numberValue('fieldElevation'),mode=byId('fieldSuctionMode').value;
@@ -3408,16 +3527,16 @@ loadIncidentDraft();updateIncidentTimer();setInterval(updateIncidentTimer,1000);
   document.addEventListener('keydown',function(event){if(event.key==='Escape'&&!modal.hidden){modal.hidden=true;document.body.style.overflow='';}});
 
   try{
-    localStorage.setItem('swChemInstalledVersion','15.5');
+    localStorage.setItem('swChemInstalledVersion','15.7');
   }catch(error){}
 
   if('caches' in window){
     caches.keys().then(function(keys){
-      return Promise.all(keys.filter(function(key){return key!=='seaworld-chemistry-console-v15.5';}).map(function(key){return caches.delete(key);}));
+      return Promise.all(keys.filter(function(key){return key!=='seaworld-chemistry-console-v15.7';}).map(function(key){return caches.delete(key);}));
     }).then(function(){
-      setText('versionUpdateStatus','Version 15.5 active • old caches cleared');
+      setText('versionUpdateStatus','Version 15.7 active • old caches cleared');
     }).catch(function(){
-      setText('versionUpdateStatus','Version 15.5 active');
+      setText('versionUpdateStatus','Version 15.7 active');
     });
   }
 })();
@@ -3441,7 +3560,7 @@ loadIncidentDraft();updateIncidentTimer();setInterval(updateIncidentTimer,1000);
 
 if('serviceWorker' in navigator && location.protocol.indexOf('http')===0){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('./service-worker.js?build=v15.5',{updateViaCache:'none'})
+    navigator.serviceWorker.register('./service-worker.js?build=v15.7',{updateViaCache:'none'})
       .then(function(registration){
         registration.update();
         if(registration.waiting)registration.waiting.postMessage({type:'SKIP_WAITING'});
@@ -3457,12 +3576,12 @@ if('serviceWorker' in navigator && location.protocol.indexOf('http')===0){
         });
       })
       .catch(function(){
-        setText('versionUpdateStatus','Version 15.5 active • service worker unavailable');
+        setText('versionUpdateStatus','Version 15.7 active • service worker unavailable');
       });
   });
   navigator.serviceWorker.addEventListener('controllerchange',function(){
-    if(!sessionStorage.getItem('swV155Reloaded')){
-      sessionStorage.setItem('swV155Reloaded','1');
+    if(!sessionStorage.getItem('swV157Reloaded')){
+      sessionStorage.setItem('swV157Reloaded','1');
       location.reload();
     }
   });
