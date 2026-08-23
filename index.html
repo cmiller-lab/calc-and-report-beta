@@ -1879,7 +1879,11 @@ table{width:100%;border-collapse:collapse}
   <section class="chemical-view active" id="chemicalSizingView">
     <div class="grid">
       <div class="card"><h2>Sizing Inputs</h2><div class="card-body">
-        <div class="field"><label for="chemSizePool">Body of Water</label><select id="chemSizePool"></select></div>
+        <div class="field">
+      <label for="chemSizeVolumeInput">Pool Volume (gallons)</label>
+      <input id="chemSizeVolumeInput" type="number" min="1" step="1" value="100000" inputmode="decimal">
+      <small>Enter the actual body-of-water volume.</small>
+    </div>
         <div class="field"><label for="chemSizeStrength">Liquid Chlorine Strength (%)</label><input id="chemSizeStrength" type="number" min="1" max="20" step="0.1" value="12.5"></div>
         <div class="field"><label for="chemSizePpm">Desired FC Rise (ppm)</label><input id="chemSizePpm" type="number" min="0.01" step="0.01" value="0.5"></div>
         <div class="field"><label for="chemSizeMinutes">Feed Interval (minutes)</label><input id="chemSizeMinutes" type="number" min="1" step="1" value="30"></div>
@@ -1901,7 +1905,11 @@ table{width:100%;border-collapse:collapse}
   <section class="chemical-view" id="chemicalExistingView">
     <div class="grid">
       <div class="card"><h2>Existing Pump Inputs</h2><div class="card-body">
-        <div class="field"><label for="chemExistingPool">Body of Water</label><select id="chemExistingPool"></select></div>
+        <div class="field">
+      <label for="chemExistingVolumeInput">Pool Volume (gallons)</label>
+      <input id="chemExistingVolumeInput" type="number" min="1" step="1" value="100000" inputmode="decimal">
+      <small>Enter the actual body-of-water volume.</small>
+    </div>
         <div class="field"><label for="chemExistingStrength">Liquid Chlorine Strength (%)</label><input id="chemExistingStrength" type="number" min="1" max="20" step="0.1" value="12.5"></div>
         <div class="field"><label for="chemExistingModel">Stenner Model</label><select id="chemExistingModel"></select></div>
         <div class="field"><label for="chemExistingSetting">Feed Rate Setting</label><select id="chemExistingSetting"></select></div>
@@ -1920,6 +1928,11 @@ table{width:100%;border-collapse:collapse}
       </div></div>
     </div>
   </section>
+  <div class="formula-card stenner-formula-card">
+    <h3>12.5% Liquid Chlorine Formula</h3>
+    <div>ppm/min = (GPD × 86.8056 × [strength ÷ 12.5]) ÷ pool gallons</div>
+    <small>Required GPD = (target ppm × pool gallons) ÷ (86.8056 × feed minutes × [strength ÷ 12.5])</small>
+  </div>
   <div class="estimate-warning"><strong>Theoretical output only</strong><span>Stenner publishes these values as approximate guide outputs. Field calibration is recommended because actual output varies with pressure, tubing condition, suction lift, chemical properties and installation.</span></div>
 </section>
 <section class="panel calculator-shell pump-panel" id="pumpPanel">
@@ -2297,7 +2310,7 @@ table{width:100%;border-collapse:collapse}
   <div class="version-summary">
     <div>
       <span class="version-label">Installed Build</span>
-      <strong>Version 15.9</strong>
+      <strong>Version 15.10</strong>
       <small id="versionUpdateStatus">Pump workflow redesign verified</small>
     </div>
     <button type="button" class="version-button" id="openChangeLog">View Change Notes</button>
@@ -2314,7 +2327,17 @@ table{width:100%;border-collapse:collapse}
       <button type="button" class="change-log-close" id="closeChangeLog" aria-label="Close change log">×</button>
     </div>
 
-    <div class="change-log-list"><details open><summary><strong>v15.9</strong><span>Stenner chemical-feed calculator</span></summary><ul><li>Added Pump Sizing and Existing Pump modes for liquid chlorine.</li><li>Loaded Stenner 45, 85, 100 and 170 Series 60 Hz adjustable GPD data.</li><li>Added required GPD, gal/hr, oz/min and ppm/min calculations.</li><li>Added model/feed-setting recommendations and theoretical FC rise by interval.</li><li>Default concentration is 12.5% sodium hypochlorite and remains editable.</li><li>Added field-calibration warning for approximate Stenner chart outputs.</li></ul></details>
+    <div class="change-log-list"><details open>
+      <summary><strong>v15.10</strong><span>Stenner calculator repair</span></summary>
+      <ul>
+        <li>Removed the Stenner calculator dependency on the preconfigured pool database.</li>
+        <li>Both Stenner modes now use manually entered pool volume.</li>
+        <li>Fixed the broken v15.9 volume/property references.</li>
+        <li>Rebuilt live update listeners and input validation.</li>
+        <li>Added output utilization and excess-capacity values to pump recommendations.</li>
+        <li>Added the liquid-chlorine calculation formulas directly to the page.</li>
+      </ul>
+    </details><details open><summary><strong>v15.9</strong><span>Stenner chemical-feed calculator</span></summary><ul><li>Added Pump Sizing and Existing Pump modes for liquid chlorine.</li><li>Loaded Stenner 45, 85, 100 and 170 Series 60 Hz adjustable GPD data.</li><li>Added required GPD, gal/hr, oz/min and ppm/min calculations.</li><li>Added model/feed-setting recommendations and theoretical FC rise by interval.</li><li>Default concentration is 12.5% sodium hypochlorite and remains editable.</li><li>Added field-calibration warning for approximate Stenner chart outputs.</li></ul></details>
       <details open>
         <summary><strong>v15.8</strong><span>Live pump-sizing recalculation</span></summary>
         <ul>
@@ -2553,7 +2576,7 @@ table{width:100%;border-collapse:collapse}
   </div>
 </div>
 
-<div class="footer">Offline-capable PWA • Version 15.9 • Pump Workflow + Incident PDF</div>
+<div class="footer">Offline-capable PWA • Version 15.10 • Pump Workflow + Incident PDF</div>
 
 </div>
 
@@ -3661,16 +3684,16 @@ loadIncidentDraft();updateIncidentTimer();setInterval(updateIncidentTimer,1000);
   document.addEventListener('keydown',function(event){if(event.key==='Escape'&&!modal.hidden){modal.hidden=true;document.body.style.overflow='';}});
 
   try{
-    localStorage.setItem('swChemInstalledVersion','15.9');
+    localStorage.setItem('swChemInstalledVersion','15.10');
   }catch(error){}
 
   if('caches' in window){
     caches.keys().then(function(keys){
-      return Promise.all(keys.filter(function(key){return key!=='seaworld-chemistry-console-v15.9';}).map(function(key){return caches.delete(key);}));
+      return Promise.all(keys.filter(function(key){return key!=='seaworld-chemistry-console-v15.10';}).map(function(key){return caches.delete(key);}));
     }).then(function(){
-      setText('versionUpdateStatus','Version 15.9 active • old caches cleared');
+      setText('versionUpdateStatus','Version 15.10 active • old caches cleared');
     }).catch(function(){
-      setText('versionUpdateStatus','Version 15.9 active');
+      setText('versionUpdateStatus','Version 15.10 active');
     });
   }
 })();
@@ -3728,44 +3751,225 @@ const stennerModels=[
 const stennerSettings=['L','1','2','3','4','5','6','7','8','9','10'];
 function ppmMinFromGpd(gpd,gal,strength){return (gpd*86.8055556*(strength/12.5))/gal}
 function requiredGpd(ppm,gal,min,strength){return (ppm*gal)/(86.8055556*min*(strength/12.5))}
-function populateChemPools(){
- ['chemSizePool','chemExistingPool'].forEach(id=>{const s=byId(id);s.innerHTML=pools.map((p,i)=>`<option value="${i}">${p.num?p.num+' - ':''}${p.name}</option>`).join('')})
-}
 function populateStennerModels(){
- const s=byId('chemExistingModel');s.innerHTML=stennerModels.map(m=>`<option value="${m.id}">${m.id} • ${m.p} psi • ${m.t}</option>`).join('');updateStennerSettings()
+  const select=byId('chemExistingModel');
+  if(!select)return;
+  select.innerHTML=stennerModels.map(m =>
+    `<option value="${m.id}">${m.id} • ${m.p} psi • Tube ${m.t}</option>`
+  ).join('');
+  updateStennerSettings();
 }
+
 function updateStennerSettings(){
- const m=stennerModels.find(x=>x.id===byId('chemExistingModel').value)||stennerModels[0];
- byId('chemExistingSetting').innerHTML=stennerSettings.map((x,i)=>`<option value="${i}">${x} — ${m.g[i]} GPD</option>`).join('')
+  const modelSelect=byId('chemExistingModel');
+  const settingSelect=byId('chemExistingSetting');
+  if(!modelSelect || !settingSelect)return;
+
+  const model=stennerModels.find(m=>m.id===modelSelect.value) || stennerModels[0];
+  settingSelect.innerHTML=stennerSettings.map((setting,index) =>
+    `<option value="${index}">${setting} — ${model.g[index]} GPD</option>`
+  ).join('');
 }
+
+function stennerPpmPerMinute(gpd,poolGallons,strengthPercent){
+  if(!Number.isFinite(gpd) || !Number.isFinite(poolGallons) || !Number.isFinite(strengthPercent) ||
+     gpd<0 || poolGallons<=0 || strengthPercent<=0) return NaN;
+
+  // 12.5% NaOCl basis:
+  // 1 gal in 10,000 gal ≈ 12.5 ppm FC
+  // 86.8055556 = 12.5 * 10,000 / 1,440 minutes/day
+  return (gpd * 86.8055556 * (strengthPercent/12.5)) / poolGallons;
+}
+
+function stennerRequiredGpd(targetPpm,poolGallons,feedMinutes,strengthPercent){
+  if(!Number.isFinite(targetPpm) || !Number.isFinite(poolGallons) ||
+     !Number.isFinite(feedMinutes) || !Number.isFinite(strengthPercent) ||
+     targetPpm<=0 || poolGallons<=0 || feedMinutes<=0 || strengthPercent<=0) return NaN;
+
+  return (targetPpm * poolGallons) /
+         (86.8055556 * feedMinutes * (strengthPercent/12.5));
+}
+
 function updateChemSizing(){
- const p=pools[+byId('chemSizePool').value],str=numberValue('chemSizeStrength'),ppm=numberValue('chemSizePpm'),mins=numberValue('chemSizeMinutes'),pressure=byId('chemSizePressure').value;
- if(!p||!str||!ppm||!mins)return;
- const req=requiredGpd(ppm,p.vol,mins,str);
- setText('chemRequiredGpd',req.toFixed(2)+' GPD');setText('chemRequiredSub',ppm.toFixed(2)+' ppm in '+mins.toFixed(0)+' min');
- setText('chemSizeVolume',Math.round(p.vol).toLocaleString()+' gal');setText('chemRequiredGph',(req/24).toFixed(3)+' gal/hr');setText('chemRequiredOzMin',(req*128/1440).toFixed(3)+' oz/min');setText('chemTargetPpmMin',(ppm/mins).toFixed(4));
- let opts=[];
- stennerModels.filter(m=>pressure==='all'||String(m.p)===pressure).forEach(m=>m.g.forEach((g,i)=>{if(g>=req)opts.push({m,i,g,ex:g-req,pm:ppmMinFromGpd(g,p.vol,str)})}));
- opts.sort((a,b)=>a.ex-b.ex||a.g-b.g);opts=opts.slice(0,8);
- byId('stennerRecommendations').innerHTML=opts.length?opts.map((o,i)=>`<div class="stenner-option-card ${i===0?'best':''}"><h3>${o.m.id} ${i===0?'<span class="status-pill status-preferred">Best Fit</span>':''}</h3><div class="stenner-meta">${o.m.s} Series • ${o.m.p} psi • Tube ${o.m.t}</div><div class="stenner-option-metrics"><div><span>Feed setting</span><strong>${stennerSettings[o.i]}</strong></div><div><span>Chart output</span><strong>${o.g.toFixed(1)} GPD</strong></div><div><span>ppm/min</span><strong>${o.pm.toFixed(4)}</strong></div><div><span>${mins.toFixed(0)} min rise</span><strong>${(o.pm*mins).toFixed(3)} ppm</strong></div></div></div>`).join(''):'<div class="muted">No listed Stenner setting can meet this target.</div>'
+  const volume=numberValue('chemSizeVolumeInput');
+  const strength=numberValue('chemSizeStrength');
+  const targetPpm=numberValue('chemSizePpm');
+  const minutes=numberValue('chemSizeMinutes');
+  const pressure=byId('chemSizePressure') ? byId('chemSizePressure').value : 'all';
+
+  const outputBox=byId('stennerRecommendations');
+
+  if(!Number.isFinite(volume) || volume<=0 ||
+     !Number.isFinite(strength) || strength<=0 ||
+     !Number.isFinite(targetPpm) || targetPpm<=0 ||
+     !Number.isFinite(minutes) || minutes<=0){
+
+    setText('chemRequiredGpd','Check inputs');
+    setText('chemRequiredSub','Enter valid positive values.');
+    setText('chemSizeVolume','—');
+    setText('chemRequiredGph','—');
+    setText('chemRequiredOzMin','—');
+    setText('chemTargetPpmMin','—');
+    if(outputBox) outputBox.innerHTML='<div class="muted">Enter a valid pool volume, concentration, target ppm and feed interval.</div>';
+    return;
+  }
+
+  const required=stennerRequiredGpd(targetPpm,volume,minutes,strength);
+
+  setText('chemRequiredGpd',required.toFixed(2)+' GPD');
+  setText('chemRequiredSub',targetPpm.toFixed(2)+' ppm in '+minutes.toFixed(0)+' min');
+  setText('chemSizeVolume',Math.round(volume).toLocaleString()+' gal');
+  setText('chemRequiredGph',(required/24).toFixed(3)+' gal/hr');
+  setText('chemRequiredOzMin',(required*128/1440).toFixed(3)+' oz/min');
+  setText('chemTargetPpmMin',(targetPpm/minutes).toFixed(4)+' ppm/min');
+
+  const candidates=[];
+
+  stennerModels
+    .filter(m=>pressure==='all' || String(m.p)===pressure)
+    .forEach(model=>{
+      model.g.forEach((gpd,index)=>{
+        if(gpd>=required){
+          const ppmMin=stennerPpmPerMinute(gpd,volume,strength);
+          candidates.push({
+            model,
+            settingIndex:index,
+            setting:stennerSettings[index],
+            gpd,
+            excess:gpd-required,
+            utilization:(required/gpd)*100,
+            ppmMin,
+            intervalRise:ppmMin*minutes
+          });
+        }
+      });
+    });
+
+  candidates.sort((a,b)=>{
+    if(Math.abs(a.excess-b.excess)>0.0001)return a.excess-b.excess;
+    if(a.model.p!==b.model.p)return b.model.p-a.model.p;
+    return a.gpd-b.gpd;
+  });
+
+  const recommendations=candidates.slice(0,8);
+
+  if(!outputBox)return;
+
+  if(!recommendations.length){
+    outputBox.innerHTML=
+      '<div class="muted">No listed Stenner model/feed setting can meet this target. Increase the feed interval, use multiple pumps, or select a higher-output feeder.</div>';
+    return;
+  }
+
+  outputBox.innerHTML=recommendations.map((r,index)=>`
+    <div class="stenner-option-card ${index===0?'best':''}">
+      <h3>${r.model.id} ${index===0?'<span class="status-pill status-preferred">Best Fit</span>':''}</h3>
+      <div class="stenner-meta">${r.model.s} Series • ${r.model.p} psi • Tube ${r.model.t}</div>
+      <div class="stenner-option-metrics">
+        <div><span>Feed Setting</span><strong>${r.setting}</strong></div>
+        <div><span>Chart Output</span><strong>${r.gpd.toFixed(1)} GPD</strong></div>
+        <div><span>Output Utilization</span><strong>${r.utilization.toFixed(1)}%</strong></div>
+        <div><span>ppm / minute</span><strong>${r.ppmMin.toFixed(4)}</strong></div>
+        <div><span>${minutes.toFixed(0)} min FC rise</span><strong>${r.intervalRise.toFixed(3)} ppm</strong></div>
+        <div><span>Excess Capacity</span><strong>${r.excess.toFixed(2)} GPD</strong></div>
+      </div>
+    </div>
+  `).join('');
 }
+
 function updateChemExisting(){
- const p=pools[+byId('chemExistingPool').value],str=numberValue('chemExistingStrength'),runtime=numberValue('chemExistingRuntime'),m=stennerModels.find(x=>x.id===byId('chemExistingModel').value),i=+byId('chemExistingSetting').value;
- if(!p||!str||!runtime||!m)return;const g=m.g[i],pm=ppmMinFromGpd(g,p.vol,str);
- setText('chemExistingRise',(pm*runtime).toFixed(3)+' ppm');setText('chemExistingModelSummary',m.id+' • setting '+stennerSettings[i]+' • '+str.toFixed(1)+'% NaOCl');setText('chemExistingGpd',g.toFixed(1)+' GPD');setText('chemExistingPpmMin',pm.toFixed(4));setText('chemExistingPpm5',(pm*5).toFixed(3));setText('chemExistingPpm10',(pm*10).toFixed(3));setText('chemExistingPpmHour',(pm*60).toFixed(3));setText('chemExistingOzMin',(g*128/1440).toFixed(3))
+  const volume=numberValue('chemExistingVolumeInput');
+  const strength=numberValue('chemExistingStrength');
+  const runtime=numberValue('chemExistingRuntime');
+
+  const modelSelect=byId('chemExistingModel');
+  const settingSelect=byId('chemExistingSetting');
+  if(!modelSelect || !settingSelect)return;
+
+  const model=stennerModels.find(m=>m.id===modelSelect.value);
+  const settingIndex=parseInt(settingSelect.value,10);
+
+  if(!Number.isFinite(volume) || volume<=0 ||
+     !Number.isFinite(strength) || strength<=0 ||
+     !Number.isFinite(runtime) || runtime<=0 ||
+     !model || !Number.isInteger(settingIndex) ||
+     settingIndex<0 || settingIndex>=model.g.length){
+
+    setText('chemExistingRise','Check inputs');
+    setText('chemExistingModelSummary','Enter valid positive values.');
+    setText('chemExistingGpd','—');
+    setText('chemExistingPpmMin','—');
+    setText('chemExistingPpm5','—');
+    setText('chemExistingPpm10','—');
+    setText('chemExistingPpmHour','—');
+    setText('chemExistingOzMin','—');
+    return;
+  }
+
+  const gpd=model.g[settingIndex];
+  const ppmMin=stennerPpmPerMinute(gpd,volume,strength);
+  const totalRise=ppmMin*runtime;
+
+  setText('chemExistingRise',totalRise.toFixed(3)+' ppm');
+  setText(
+    'chemExistingModelSummary',
+    model.id+' • setting '+stennerSettings[settingIndex]+
+    ' • '+gpd.toFixed(1)+' GPD • '+strength.toFixed(1)+'% NaOCl'
+  );
+  setText('chemExistingGpd',gpd.toFixed(1)+' GPD');
+  setText('chemExistingPpmMin',ppmMin.toFixed(4));
+  setText('chemExistingPpm5',(ppmMin*5).toFixed(3));
+  setText('chemExistingPpm10',(ppmMin*10).toFixed(3));
+  setText('chemExistingPpmHour',(ppmMin*60).toFixed(3));
+  setText('chemExistingOzMin',(gpd*128/1440).toFixed(3));
 }
-(function(){
- populateChemPools();populateStennerModels();
- document.querySelectorAll('.chemical-tab').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.chemical-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.chemical-view').forEach(x=>x.classList.remove('active'));b.classList.add('active');byId(b.dataset.chemView==='sizing'?'chemicalSizingView':'chemicalExistingView').classList.add('active')}));
- ['chemSizePool','chemSizeStrength','chemSizePpm','chemSizeMinutes','chemSizePressure'].forEach(id=>{let e=byId(id);e.addEventListener('input',updateChemSizing);e.addEventListener('change',updateChemSizing)});
- ['chemExistingPool','chemExistingStrength','chemExistingRuntime','chemExistingSetting'].forEach(id=>{let e=byId(id);e.addEventListener('input',updateChemExisting);e.addEventListener('change',updateChemExisting)});
- byId('chemExistingModel').addEventListener('change',()=>{updateStennerSettings();updateChemExisting()});
- updateChemSizing();updateChemExisting()
+
+(function initializeStennerCalculator(){
+  populateStennerModels();
+
+  document.querySelectorAll('.chemical-tab').forEach(button=>{
+    button.addEventListener('click',()=>{
+      document.querySelectorAll('.chemical-tab').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('.chemical-view').forEach(view=>view.classList.remove('active'));
+      button.classList.add('active');
+      const target=button.dataset.chemView==='sizing'
+        ? byId('chemicalSizingView')
+        : byId('chemicalExistingView');
+      if(target)target.classList.add('active');
+    });
+  });
+
+  ['chemSizeVolumeInput','chemSizeStrength','chemSizePpm','chemSizeMinutes','chemSizePressure']
+    .forEach(id=>{
+      const element=byId(id);
+      if(!element)return;
+      element.addEventListener('input',updateChemSizing);
+      element.addEventListener('change',updateChemSizing);
+    });
+
+  ['chemExistingVolumeInput','chemExistingStrength','chemExistingRuntime','chemExistingSetting']
+    .forEach(id=>{
+      const element=byId(id);
+      if(!element)return;
+      element.addEventListener('input',updateChemExisting);
+      element.addEventListener('change',updateChemExisting);
+    });
+
+  const modelElement=byId('chemExistingModel');
+  if(modelElement){
+    modelElement.addEventListener('change',()=>{
+      updateStennerSettings();
+      updateChemExisting();
+    });
+  }
+
+  updateChemSizing();
+  updateChemExisting();
 })();
 
 if('serviceWorker' in navigator && location.protocol.indexOf('http')===0){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('./service-worker.js?build=v15.9',{updateViaCache:'none'})
+    navigator.serviceWorker.register('./service-worker.js?build=v15.10',{updateViaCache:'none'})
       .then(function(registration){
         registration.update();
         if(registration.waiting)registration.waiting.postMessage({type:'SKIP_WAITING'});
@@ -3781,12 +3985,12 @@ if('serviceWorker' in navigator && location.protocol.indexOf('http')===0){
         });
       })
       .catch(function(){
-        setText('versionUpdateStatus','Version 15.9 active • service worker unavailable');
+        setText('versionUpdateStatus','Version 15.10 active • service worker unavailable');
       });
   });
   navigator.serviceWorker.addEventListener('controllerchange',function(){
-    if(!sessionStorage.getItem('swV159Reloaded')){
-      sessionStorage.setItem('swV159Reloaded','1');
+    if(!sessionStorage.getItem('swV1510Reloaded')){
+      sessionStorage.setItem('swV1510Reloaded','1');
       location.reload();
     }
   });
