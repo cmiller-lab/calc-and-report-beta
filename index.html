@@ -1247,6 +1247,16 @@ table{width:100%;border-collapse:collapse}
 }
 
 #opAnnualSavings{color:#75e7b1}
+
+.selection-live-status{
+  display:inline-flex;align-items:center;gap:7px;margin-bottom:8px;
+  padding:5px 9px;border:1px solid #2d6d50;border-radius:999px;
+  background:#0a2f25;color:#87e7b4;font-size:10px;font-weight:850;
+  text-transform:uppercase;letter-spacing:.06em
+}
+.selection-live-status span{
+  width:7px;height:7px;border-radius:50%;background:#4add91;
+}
 </style>
 </head>
 <body>
@@ -1889,6 +1899,7 @@ table{width:100%;border-collapse:collapse}
       </div>
 
       <div>
+        <div class="selection-live-status"><span></span> Live calculation</div>
         <div class="result pump-result">
           <small>Recommended Hydraulic Selection</small>
           <div class="big" id="sizeBestPump">—</div>
@@ -2196,7 +2207,7 @@ table{width:100%;border-collapse:collapse}
   <div class="version-summary">
     <div>
       <span class="version-label">Installed Build</span>
-      <strong>Version 15.7</strong>
+      <strong>Version 15.8</strong>
       <small id="versionUpdateStatus">Pump workflow redesign verified</small>
     </div>
     <button type="button" class="version-button" id="openChangeLog">View Change Notes</button>
@@ -2214,6 +2225,15 @@ table{width:100%;border-collapse:collapse}
     </div>
 
     <div class="change-log-list">
+      <details open>
+        <summary><strong>v15.8</strong><span>Live pump-sizing recalculation</span></summary>
+        <ul>
+          <li>Fixed Desired Flow so sizing results update immediately while typing.</li>
+          <li>Added reliable input, change, and keyup listeners for all sizing controls.</li>
+          <li>TDH, pump count, comparison mode, frequency limits, energy assumptions, runtime, and electric rate now update live.</li>
+        </ul>
+      </details>
+      
       <details open>
         <summary><strong>v15.7</strong><span>Operating Point dollar savings</span></summary>
         <ul>
@@ -2443,7 +2463,7 @@ table{width:100%;border-collapse:collapse}
   </div>
 </div>
 
-<div class="footer">Offline-capable PWA • Version 15.7 • Pump Workflow + Incident PDF</div>
+<div class="footer">Offline-capable PWA • Version 15.8 • Pump Workflow + Incident PDF</div>
 
 </div>
 
@@ -3378,6 +3398,30 @@ function buildReference(){
    return `<article class="pump-reference-card"><h3>${m.label}</h3><dl><dt>Motor</dt><dd>${m.hp} HP</dd><dt>Published speed</dt><dd>60 Hz</dd><dt>Curve max flow</dt><dd>${maxQ} GPM</dd><dt>Shutoff / max head</dt><dd>${maxH} ft</dd><dt>Curve points</dt><dd>${m.points.length}</dd></dl></article>`;
  }).join('');
 }
+
+/* v15.8: robust live sizing recalculation */
+(function(){
+  const ids=[
+    'sizeFlow','sizeHead','sizePumpCount','sizeCompareMode',
+    'sizeMinHz','sizeMaxHz','sizeReserve',
+    'sizeMotorEff','sizeVfdEff','sizeHours','sizeRate','sizeDays'
+  ];
+  let timer=null;
+  function refreshSizing(){
+    clearTimeout(timer);
+    timer=setTimeout(function(){
+      try{computeSizing();}catch(error){console.error('Pump sizing update failed:',error);}
+    },60);
+  }
+  ids.forEach(function(id){
+    const el=byId(id);
+    if(!el)return;
+    el.addEventListener('input',refreshSizing);
+    el.addEventListener('change',refreshSizing);
+    el.addEventListener('keyup',refreshSizing);
+  });
+})();
+
 computeSizing();updateOperating();updateFieldTdh();updateAffinity();drawMultiCurves();buildReference();
 /* ---------------- Incident Report + Local PDF ---------------- */
 const incidentState={step:1,startedAt:Date.now(),pools:[],contact:'',resolution:'',follow:''};
@@ -3527,16 +3571,16 @@ loadIncidentDraft();updateIncidentTimer();setInterval(updateIncidentTimer,1000);
   document.addEventListener('keydown',function(event){if(event.key==='Escape'&&!modal.hidden){modal.hidden=true;document.body.style.overflow='';}});
 
   try{
-    localStorage.setItem('swChemInstalledVersion','15.7');
+    localStorage.setItem('swChemInstalledVersion','15.8');
   }catch(error){}
 
   if('caches' in window){
     caches.keys().then(function(keys){
-      return Promise.all(keys.filter(function(key){return key!=='seaworld-chemistry-console-v15.7';}).map(function(key){return caches.delete(key);}));
+      return Promise.all(keys.filter(function(key){return key!=='seaworld-chemistry-console-v15.8';}).map(function(key){return caches.delete(key);}));
     }).then(function(){
-      setText('versionUpdateStatus','Version 15.7 active • old caches cleared');
+      setText('versionUpdateStatus','Version 15.8 active • old caches cleared');
     }).catch(function(){
-      setText('versionUpdateStatus','Version 15.7 active');
+      setText('versionUpdateStatus','Version 15.8 active');
     });
   }
 })();
@@ -3560,7 +3604,7 @@ loadIncidentDraft();updateIncidentTimer();setInterval(updateIncidentTimer,1000);
 
 if('serviceWorker' in navigator && location.protocol.indexOf('http')===0){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('./service-worker.js?build=v15.7',{updateViaCache:'none'})
+    navigator.serviceWorker.register('./service-worker.js?build=v15.8',{updateViaCache:'none'})
       .then(function(registration){
         registration.update();
         if(registration.waiting)registration.waiting.postMessage({type:'SKIP_WAITING'});
@@ -3576,12 +3620,12 @@ if('serviceWorker' in navigator && location.protocol.indexOf('http')===0){
         });
       })
       .catch(function(){
-        setText('versionUpdateStatus','Version 15.7 active • service worker unavailable');
+        setText('versionUpdateStatus','Version 15.8 active • service worker unavailable');
       });
   });
   navigator.serviceWorker.addEventListener('controllerchange',function(){
-    if(!sessionStorage.getItem('swV157Reloaded')){
-      sessionStorage.setItem('swV157Reloaded','1');
+    if(!sessionStorage.getItem('swV158Reloaded')){
+      sessionStorage.setItem('swV158Reloaded','1');
       location.reload();
     }
   });
