@@ -1,11 +1,10 @@
-# SeaWorld Water Chemistry Console v15.10
+# SeaWorld Water Chemistry Console v15.11
 
-## Stenner calculator fix
-- Removed preconfigured pool selection.
-- Pool volume is entered manually in gallons in both Pump Sizing and Existing Pump modes.
-- Fixed the broken v15.9 pool-volume references.
-- Added live recalculation and validation.
-- Added output utilization and excess-capacity metrics.
+Stenner calculator simplified:
+- Motor series: 45, 85, 170
+- Select tube size
+- Ideal output = 50% of maximum tube/pump capacity
+- Sizing ranks combinations by how closely required GPD matches the 50% target
+- Manual pool volume remains in both modes
 
-12.5% NaOCl basis:
-ppm/min = GPD × 86.8056 × (strength / 12.5) / pool gallons
+This retains the theoretical 12.5% NaOCl ppm/min relationship and field-calibration warning.
