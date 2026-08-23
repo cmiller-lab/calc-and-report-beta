@@ -1,5 +1,3 @@
-# SeaWorld Water Chemistry Console v15.8
+SeaWorld Water Chemistry Console v15.9
 
-Pump Selection now recalculates immediately when Desired Flow changes.
-The same live update behavior applies to TDH, pump count, comparison mode,
-frequency limits, motor/VFD efficiency, runtime, electric rate, and operating days.
+Adds Stenner liquid chlorine chemical-feed sizing and existing-pump output calculator using the supplied 60 Hz GPD chart.
