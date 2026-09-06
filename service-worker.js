@@ -1,11 +1,15 @@
-const CACHE='seaworld-chemistry-console-v15.11-1';
+const CACHE='seaworld-chemistry-console-v15.11-labs-poc-1';
 const ASSETS=[
   './',
   './index.html',
   './index.html?version=15.11.2',
   './manifest.webmanifest?v=15.1',
   './icon-192.png',
-  './icon-512.png'
+  './icon-512.png',
+  './lab-sheets.html',
+  './lab-upload.html',
+  './lab-config.js',
+  './lab-api.js'
 ];
 
 self.addEventListener('message',event=>{
@@ -36,10 +40,15 @@ self.addEventListener('fetch',event=>{
       fetch(event.request,{cache:'no-store'})
         .then(response=>{
           const copy=response.clone();
-          caches.open(CACHE).then(cache=>cache.put('./index.html',copy));
+          // Only replace the cached console fallback when the request is for
+          // the console itself. Lab pages keep their own cached responses.
+          const url=new URL(event.request.url);
+          const isConsole=url.pathname.endsWith('/')||url.pathname.endsWith('/index.html');
+          if(isConsole)caches.open(CACHE).then(cache=>cache.put('./index.html',copy.clone()));
+          caches.open(CACHE).then(cache=>cache.put(event.request,copy));
           return response;
         })
-        .catch(()=>caches.match('./index.html'))
+        .catch(()=>caches.match(event.request).then(cached=>cached||caches.match('./index.html')))
     );
     return;
   }
@@ -51,7 +60,8 @@ self.addEventListener('fetch',event=>{
           const copy=response.clone();
           caches.open(CACHE).then(cache=>cache.put(event.request,copy));
           return response;
-        });
+        })
+        .catch(()=>cached);
       return cached||network;
     })
   );
