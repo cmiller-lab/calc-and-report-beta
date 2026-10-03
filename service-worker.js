@@ -1,4 +1,4 @@
-const CACHE='seaworld-chemistry-console-v15.11-labs-poc-1';
+const CACHE='seaworld-chemistry-console-v15.11-maintenance-1';
 const ASSETS=[
   './',
   './index.html',
@@ -9,7 +9,9 @@ const ASSETS=[
   './lab-sheets.html',
   './lab-upload.html',
   './lab-config.js',
-  './lab-api.js'
+  './lab-api.js',
+  './calibration.html',
+  './calibration.html?embedded=1'
 ];
 
 self.addEventListener('message',event=>{
@@ -32,6 +34,7 @@ self.addEventListener('activate',event=>{
 
 self.addEventListener('fetch',event=>{
   if(event.request.method!=='GET')return;
+  if(new URL(event.request.url).origin!==self.location.origin)return;
 
   const isNavigation=event.request.mode==='navigate';
 
@@ -66,3 +69,4 @@ self.addEventListener('fetch',event=>{
     })
   );
 });
+
