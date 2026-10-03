@@ -1288,7 +1288,7 @@ table{width:100%;border-collapse:collapse}
 <div class="wrap">
 <section class="hero header-clean">
 <svg aria-hidden="true" class="hero-wave" preserveaspectratio="none" viewbox="0 0 700 330"><defs><lineargradient id="h2" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#36c6ff" stop-opacity=".12"></stop><stop offset=".5" stop-color="#0d83d9" stop-opacity=".58"></stop><stop offset="1" stop-color="#002b68" stop-opacity=".86"></stop></lineargradient></defs><path d="M0 210C110 150 180 225 280 162c90-58 170-82 270-28 52 28 99 28 150 5v191H0z" fill="url(#h2)"></path><path d="M15 198c85-38 130-2 185 7 76 13 119-74 203-72 84 2 126 61 202 52 35-4 66-15 95-34" fill="none" opacity=".58" stroke="#baf1ff" stroke-width="6"></path></svg>
-<div class="clean-header-layout"><div class="clean-brand"><div class="eyebrow">AQUATIC OPERATIONS</div><h1>SeaWorld</h1><div class="product-title">Water Chemistry Console</div><p>Chemical dosing tools and pool-specific operational references.</p></div><aside class="clean-status"><div class="status-head">SYSTEM</div><div class="online-row"><span class="online-dot"></span><strong id="onlineStatus">System Online</strong></div><div class="status-row2"><span>Date</span><strong id="headerDate">—</strong></div><div class="status-row2"><span>Time</span><strong id="headerTime">—</strong></div><div class="status-row2"><span>Calculators</span><strong>6 Active</strong></div></aside></div></section>
+<div class="clean-header-layout"><div class="clean-brand"><div class="eyebrow">AQUATIC OPERATIONS</div><h1>SeaWorld</h1><div class="product-title">Water Chemistry Console</div><p>Chemical dosing, calibration records, and feeder maintenance.</p></div><aside class="clean-status"><div class="status-head">SYSTEM</div><div class="online-row"><span class="online-dot"></span><strong id="onlineStatus">System Online</strong></div><div class="status-row2"><span>Date</span><strong id="headerDate">—</strong></div><div class="status-row2"><span>Time</span><strong id="headerTime">—</strong></div><div class="status-row2"><span>Calculators</span><strong>6 Active</strong></div></aside></div></section>
 <div class="tabs">
 <button class="tab active" id="tabSoda" onclick="showTab('soda')">Soda Ash</button>
 <button class="tab" id="tabFC" onclick="showTab('fc')">Chlorine Feed</button>
@@ -1388,6 +1388,14 @@ table{width:100%;border-collapse:collapse}
   <span class="module-arrow">›</span>
 </button>
 
+<button class="pump-launcher" onclick="showTab('calibration')" aria-label="Open calibration log"><div class="module-launcher-icon">📋</div><div class="module-launcher-copy"><span class="module-kicker">WATER QUALITY</span><strong>Calibration Log</strong><small>Spot checks, calibration history, and pool-specific ORP trends</small></div><span class="module-arrow">›</span></button>
+<button class="pump-launcher" onclick="showTab('feeders')" aria-label="Open feeder cleaning"><div class="module-launcher-icon">🪣</div><div class="module-launcher-copy"><span class="module-kicker">PULSAR MAINTENANCE</span><strong>Feeder Cleaning</strong><small>Shared feed-down, cleaning status, notes, and history</small></div><span class="module-arrow">›</span></button>
+
+</section>
+<section class="panel calculator-shell" id="calibrationPanel">
+<div class="calculator-breadcrumb"><button class="back-button" onclick="showTab('home')">← Dashboard</button><span>/</span><strong>Calibration &amp; Feeder Maintenance</strong></div>
+<div class="pump-hero"><div><span class="module-kicker">WATER QUALITY &amp; MAINTENANCE</span><h2>Calibration &amp; Feeder Maintenance</h2><p>Record field readings, review trends, and manage shared feeder cleaning.</p></div><div class="pump-hero-icon">📋</div></div>
+<iframe id="calibrationFrame" title="Calibration log and Pulsar feeder cleaning" style="display:block;width:100%;border:0;min-height:700px;margin-top:14px" data-src="calibration.html?embedded=1"></iframe>
 </section>
 <section class="panel calculator-shell" id="sodaPanel">
 <div class="calculator-breadcrumb">
@@ -2657,9 +2665,18 @@ function fmtTime(minutes){
 }
 
 window.showTab=function(name){
+  const maintenance=name==='calibration'||name==='feeders';
+  const frame=byId('calibrationFrame');
+  if(maintenance){
+    const view=name==='feeders'?'feeders':'spot';
+    if(!frame.getAttribute('src'))frame.src=frame.dataset.src+'#'+view;
+    else if(frame.contentWindow&&frame.contentWindow.openMaintenanceView)frame.contentWindow.openMaintenanceView(view);
+    else frame.src=frame.dataset.src+'#'+view;
+    name='calibration';
+  }
   const dashboard=byId('opsDashboard');
   if(dashboard)dashboard.classList.toggle('hidden',name!=='home');
-  ['soda','fc','cya','dechlor','calhypo','alk','utilities','pump','chemfeed','incident'].forEach(function(key){
+  ['soda','fc','cya','dechlor','calhypo','alk','utilities','pump','chemfeed','incident','calibration'].forEach(function(key){
     const panel=byId(key+'Panel');
     if(panel)panel.classList.toggle('active',name===key);
   });
@@ -4048,5 +4065,13 @@ if('serviceWorker' in navigator && location.protocol.indexOf('http')===0){
 })();
 </script>
 
+<script>
+window.addEventListener('message',function(event){
+ const frame=document.getElementById('calibrationFrame');
+ if(event.origin!==location.origin||event.source!==frame.contentWindow)return;
+ if(event.data&&event.data.type==='maintenance-height'&&Number.isFinite(event.data.height))frame.style.height=Math.max(500,Math.min(50000,event.data.height))+'px';
+});
+</script>
 </body>
 </html>
+
