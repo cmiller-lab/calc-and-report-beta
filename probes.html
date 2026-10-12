@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#041b3d">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon-192.png">
+  <link rel="stylesheet" href="probe-tracker.css">
+  <title>Probe ages · SeaWorld Water Chemistry Console</title>
+  <script src="probe-core.js" defer></script>
+  <script src="probe-store.js" defer></script>
+  <script src="probe-tracker.js" defer></script>
+</head>
+<body class="probe-standalone">
+  <main><a class="probe-home" href="index.html">← Water Chemistry Console</a><div id="probeTrackerRoot"></div>
+  <noscript>Enable JavaScript to record and view probe ages.</noscript></main>
+  <script>
+    if ('serviceWorker' in navigator) window.addEventListener('load',function () {
+      navigator.serviceWorker.register('./service-worker.js?build=v15.12-probes',{updateViaCache:'none'}).catch(function () {});
+    });
+  </script>
+</body>
+</html>

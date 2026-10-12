@@ -11,6 +11,10 @@
 <link href="manifest.webmanifest" rel="manifest"/>
 <link href="icon-192.png" rel="apple-touch-icon"/>
 <link href="icon-192.png" rel="icon"/>
+<link href="probe-tracker.css" rel="stylesheet"/>
+<script src="probe-core.js" defer></script>
+<script src="probe-store.js" defer></script>
+<script src="probe-tracker.js" defer></script>
 <title>SeaWorld Water Chemistry Console</title>
 <style>
 :root{--navy:#17365d;--blue:#d9eaf7;--green:#e2f0d9;--red:#fce4d6;--ink:#1f2937;--muted:#667085;--border:#cfd8e3;--white:#fff;--light:#f7fafc;--error:#b42318;--errorbg:#fef3f2}
@@ -1390,12 +1394,17 @@ table{width:100%;border-collapse:collapse}
 
 <button class="pump-launcher" onclick="showTab('calibration')" aria-label="Open calibration log"><div class="module-launcher-icon">📋</div><div class="module-launcher-copy"><span class="module-kicker">WATER QUALITY</span><strong>Calibration Log</strong><small>Spot checks, calibration history, and pool-specific ORP trends</small></div><span class="module-arrow">›</span></button>
 <button class="pump-launcher" onclick="showTab('feeders')" aria-label="Open feeder cleaning"><div class="module-launcher-icon">🪣</div><div class="module-launcher-copy"><span class="module-kicker">PULSAR MAINTENANCE</span><strong>Feeder Cleaning</strong><small>Shared feed-down, cleaning status, notes, and history</small></div><span class="module-arrow">›</span></button>
+<button class="pump-launcher" onclick="showTab('probes')" aria-label="Open probe age tracker"><div class="module-launcher-icon" aria-hidden="true">◷</div><div class="module-launcher-copy"><span class="module-kicker">PROBE INVENTORY</span><strong>Probe Ages</strong><small>pH, ORP &amp; CP-1 replacement tracking · spreadsheet export</small></div><span class="module-arrow">›</span></button>
 
 </section>
 <section class="panel calculator-shell" id="calibrationPanel">
 <div class="calculator-breadcrumb"><button class="back-button" onclick="showTab('home')">← Dashboard</button><span>/</span><strong>Calibration &amp; Feeder Maintenance</strong></div>
 <div class="pump-hero"><div><span class="module-kicker">WATER QUALITY &amp; MAINTENANCE</span><h2>Calibration &amp; Feeder Maintenance</h2><p>Record field readings, review trends, and manage shared feeder cleaning.</p></div><div class="pump-hero-icon">📋</div></div>
 <iframe id="calibrationFrame" title="Calibration log and Pulsar feeder cleaning" style="display:block;width:100%;border:0;min-height:700px;margin-top:14px" data-src="calibration.html?embedded=1"></iframe>
+</section>
+<section class="panel calculator-shell" id="probesPanel">
+<div class="calculator-breadcrumb"><button class="back-button" onclick="showTab('home')">← Dashboard</button><span>/</span><strong>Probe Ages</strong></div>
+<div id="probeTrackerRoot"></div>
 </section>
 <section class="panel calculator-shell" id="sodaPanel">
 <div class="calculator-breadcrumb">
@@ -2342,7 +2351,7 @@ table{width:100%;border-collapse:collapse}
   <div class="version-summary">
     <div>
       <span class="version-label">Installed Build</span>
-      <strong>Version 15.11</strong>
+      <strong>Version 15.12</strong>
       <small id="versionUpdateStatus">Pump workflow redesign verified</small>
     </div>
     <button type="button" class="version-button" id="openChangeLog">View Change Notes</button>
@@ -2360,6 +2369,15 @@ table{width:100%;border-collapse:collapse}
     </div>
 
     <div class="change-log-list"><details open>
+      <summary><strong>v15.12</strong><span>Shared probe age tracker</span></summary>
+      <ul>
+        <li>Added pH and ORP date-code decoding with stored manufacture dates and current approximate ages.</li>
+        <li>Added CP-1 free chlorine installation/replacement dates, history, and shared offline-first records.</li>
+        <li>Added a pool age overview and Excel-compatible CSV exports for pool inventory and probe history.</li>
+        <li>Imported the supplied Aquatica probe inventory; PV and PX remain unknown pending verification.</li>
+        <li>Scoped beta caches so updates preserve other PWAs on this origin.</li>
+      </ul>
+    </details><details open>
       <summary><strong>v15.11</strong><span>Simplified Stenner sizing</span></summary>
       <ul>
         <li>Reduced Stenner selection to 45, 85, and 170 motor series.</li>
@@ -2618,7 +2636,7 @@ table{width:100%;border-collapse:collapse}
   </div>
 </div>
 
-<div class="footer">Offline-capable PWA • Version 15.11 • Pump Workflow + Incident PDF</div>
+<div class="footer">Offline-capable PWA • Version 15.12 • Probe Ages + Maintenance</div>
 
 </div>
 
@@ -2676,7 +2694,7 @@ window.showTab=function(name){
   }
   const dashboard=byId('opsDashboard');
   if(dashboard)dashboard.classList.toggle('hidden',name!=='home');
-  ['soda','fc','cya','dechlor','calhypo','alk','utilities','pump','chemfeed','incident','calibration'].forEach(function(key){
+  ['soda','fc','cya','dechlor','calhypo','alk','utilities','pump','chemfeed','incident','calibration','probes'].forEach(function(key){
     const panel=byId(key+'Panel');
     if(panel)panel.classList.toggle('active',name===key);
   });
@@ -3735,18 +3753,11 @@ loadIncidentDraft();updateIncidentTimer();setInterval(updateIncidentTimer,1000);
   document.addEventListener('keydown',function(event){if(event.key==='Escape'&&!modal.hidden){modal.hidden=true;document.body.style.overflow='';}});
 
   try{
-    localStorage.setItem('swChemInstalledVersion','15.11');
+    localStorage.setItem('swChemInstalledVersion','15.12');
   }catch(error){}
 
-  if('caches' in window){
-    caches.keys().then(function(keys){
-      return Promise.all(keys.filter(function(key){return key!=='seaworld-chemistry-console-v15.11';}).map(function(key){return caches.delete(key);}));
-    }).then(function(){
-      setText('versionUpdateStatus','Version 15.11 active • old caches cleared');
-    }).catch(function(){
-      setText('versionUpdateStatus','Version 15.11 active');
-    });
-  }
+  // Cache cleanup belongs to the scoped service worker. Other PWAs share this origin.
+  setText('versionUpdateStatus','Version 15.12 active');
 })();
 
 
@@ -4036,7 +4047,7 @@ function updateChemExisting(){
 
 if('serviceWorker' in navigator && location.protocol.indexOf('http')===0){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('./service-worker.js?build=v15.11',{updateViaCache:'none'})
+    navigator.serviceWorker.register('./service-worker.js?build=v15.12-probes',{updateViaCache:'none'})
       .then(function(registration){
         registration.update();
         if(registration.waiting)registration.waiting.postMessage({type:'SKIP_WAITING'});
@@ -4052,12 +4063,12 @@ if('serviceWorker' in navigator && location.protocol.indexOf('http')===0){
         });
       })
       .catch(function(){
-        setText('versionUpdateStatus','Version 15.11 active • service worker unavailable');
+        setText('versionUpdateStatus','Version 15.12 active • service worker unavailable');
       });
   });
   navigator.serviceWorker.addEventListener('controllerchange',function(){
-    if(!sessionStorage.getItem('swV1511Reloaded')){
-      sessionStorage.setItem('swV1511Reloaded','1');
+    if(!sessionStorage.getItem('swV1512Reloaded')){
+      sessionStorage.setItem('swV1512Reloaded','1');
       location.reload();
     }
   });

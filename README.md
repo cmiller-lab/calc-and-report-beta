@@ -1,4 +1,8 @@
-# SeaWorld Water Chemistry Console v15.11
+# SeaWorld Water Chemistry Console v15.12
+
+**Probe Ages** now tracks pH/ORP date codes and CP-1 free chlorine replacement dates with shared offline-first history, a 27-pool overview, and Excel-compatible CSV exports. The supplied Aquatica inventory is preloaded; PV/PX and unknown CP-1 dates remain flagged. See [PROBE_TRACKER.md](PROBE_TRACKER.md) for field use, storage, exports, and verification.
+
+## Existing Stenner calculator
 
 Stenner calculator simplified:
 - Motor series: 45, 85, 170
