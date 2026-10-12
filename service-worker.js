@@ -1,7 +1,7 @@
 'use strict';
 const SCOPE = new URL(self.registration.scope);
 const CACHE_PREFIX = 'sw-chemistry-beta:'+SCOPE.pathname+':';
-const CACHE = CACHE_PREFIX+'v15.12-probes-1';
+const CACHE = CACHE_PREFIX+'v15.12-probes-2';
 const ASSETS = [
   './','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png',
   './lab-sheets.html','./lab-upload.html','./lab-config.js','./lab-api.js','./calibration.html',

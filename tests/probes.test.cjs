@@ -70,6 +70,16 @@ test('CP-1 replacement history retains older sensors; backfilled replacements do
   const newPh = record({dateCode:'A5'},{loggedAt:'2026-10-12T17:00:00Z'});
   assert.equal(Core.currentRecords([record(),newPh],TODAY).get('Aquatica|501|ph').id,newPh.id);
 });
+test('correcting a current CP-1 date updates its age while retaining older backfills',() => {
+  const wrong = record({probeType:'fc',action:'replacement',installedOn:'2026-09-15'});
+  const corrected = record({probeType:'fc',action:'inventory',installedOn:'2026-09-01'},{loggedAt:'2026-10-12T16:00:00Z'});
+  const backfill = record({probeType:'fc',action:'replacement',installedOn:'2026-10-01'},{loggedAt:'2026-10-12T17:00:00Z'});
+  const current = Core.currentRecords([wrong,corrected,backfill],TODAY).get('Aquatica|501|fc');
+  assert.equal(current.id,corrected.id); assert.equal(Core.describeRecord(current,TODAY).age.days,41);
+  const next = record({probeType:'fc',action:'replacement',installedOn:'2026-10-13',observedOn:'2026-10-13'},
+    {today:'2026-10-13',loggedAt:'2026-10-13T15:00:00Z'});
+  assert.equal(Core.currentRecords([wrong,corrected,backfill,next],'2026-10-13').get('Aquatica|501|fc').id,next.id);
+});
 test('invalid/future dates, unknown pools and missing CP-1 dates fail; unrecognized codes can be retained without invented age',() => {
   for (const invalid of [{poolKey:'Other|501'},{dateCode:'PV'},{observedOn:'2026-02-30'},{observedOn:'2026-10-13'},
     {probeType:'fc',installedOn:''},{probeType:'fc',installedOn:'2026-10-13'},{technician:' '},{notes:'x'.repeat(2001)}]) assert.throws(() => record(invalid));
