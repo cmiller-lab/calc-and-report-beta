@@ -18,7 +18,7 @@ The overview includes 27 bodies of water: the existing 24-pool catalog plus Aqua
 - Retain the resolved date permanently. An existing 2017 A7 record must not become 2027 when its code recurs.
 - `YYYY-MM-01` represents a manufacturing month, not an exact manufacturing day. pH/ORP ages use calendar month differences and do not establish installation age.
 - CP-1 uses the actual installation/replacement date, with exact day counts in the history export. Older backfilled replacements remain in history without displacing a newer replacement in the overview.
-- Current pH/ORP inventory uses latest record date, then entry timestamp. CP-1 uses latest installation date, then entry timestamp. Corrections append an event rather than overwrite history.
+- Current pH/ORP inventory uses latest record date, then entry timestamp. CP-1 replacement entries use their installation date; **Record / correct current probe** is an authoritative inventory update on its record date, so a corrected earlier installation date can take effect. Later actual replacements supersede it; older replacement backfills remain historical. Corrections append an event rather than overwrite history.
 - Ages refresh using the Florida operating date (`America/New_York`). The 5- and 8-year pH/ORP markers are planning cues, not manufacturer replacement limits. CP-1 does not use those manufacturing-age thresholds.
 
 ## Starting inventory
@@ -43,9 +43,9 @@ CSV uses UTF-8 BOM, CRLF rows, escaped quotes/multiline text, and formula-charac
 
 ## Verification
 
-Run `node --test tests/probes.test.cjs`. Tests cover all 120 date codes across boundaries, the supplied inventory, retained decades, CP-1 replacement/backfill ordering, invalid dates, CSV protection, offline reload/failed writes, sync failure/retry, second-device retrieval, 1,001-row pagination, offline page variants/cache isolation, and HTML syntax/asset wiring.
+Run `node --test tests/probes.test.cjs` (15 checks). Tests cover all 120 date codes across boundaries, the supplied inventory, retained decades, CP-1 replacement/backfill/correction ordering, invalid dates, CSV protection, offline reload/failed writes, sync failure/retry, second-device retrieval, 1,001-row pagination, offline page variants/cache isolation, and HTML syntax/asset wiring.
 
-Database checks confirmed 28 baseline events, RLS, read/append privileges and denied update/delete. A rolled-back transaction tested a valid CP-1 insert, duplicate retry, mismatched code, missing CP-1 date, future date, and denied overwrite/deletion. No test records were retained.
+Database checks confirmed 28 baseline events, RLS, read/append privileges and denied update/delete. A rolled-back transaction tested a valid CP-1 insert, duplicate retry, mismatched code, missing CP-1 date, future date, and denied overwrite/deletion. No test records were retained. Read-only REST access returned HTTP 200 with the beta browser origin permitted. A duplicate-record REST write check was blocked by automatic approval review and was not retried; live browser writes remain unverified.
 
 The database advisor reported pre-existing security-definer execution warnings for `public.rls_auto_enable()` (anon/authenticated); this change does not modify that function. Advisor reference: https://supabase.com/docs/guides/database/database-linter?lint=0028_anon_security_definer_function_executable
 

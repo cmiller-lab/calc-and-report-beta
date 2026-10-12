@@ -110,7 +110,9 @@
     for (const r of remote) if (!rows.has(r.id) || rows.get(r.id).syncStatus !== 'pending') rows.set(r.id,r);
     return [...rows.values()];
   }
-  function effectiveOn(r) { return r.probeType === 'fc' ? r.installedOn || r.observedOn : r.observedOn; }
+  // A current-inventory correction is authoritative on its record date. Replacement
+  // backfills retain their actual installation ordering so older sensors stay historical.
+  function effectiveOn(r) { return r.probeType === 'fc' && r.action === 'replacement' ? r.installedOn || r.observedOn : r.observedOn; }
   function compareRecords(a,b) {
     return effectiveOn(a).localeCompare(effectiveOn(b)) || a.loggedAt.localeCompare(b.loggedAt) || (a.recordedAt || '').localeCompare(b.recordedAt || '') || a.id.localeCompare(b.id);
   }
