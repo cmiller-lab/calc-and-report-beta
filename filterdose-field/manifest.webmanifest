@@ -1,0 +1,14 @@
+{
+  "name": "FilterDose — Chem-Clean Field Calculator",
+  "short_name": "FilterDose",
+  "description": "Offline field dosing estimator for Chem-Clean Express sand filter cleaning",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f3f7fa",
+  "theme_color": "#092942",
+  "icons": [
+    {"src":"./icons/icon-192.png","sizes":"192x192","type":"image/png","purpose":"any maskable"},
+    {"src":"./icons/icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}
+  ]
+}
